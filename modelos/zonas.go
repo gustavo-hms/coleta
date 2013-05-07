@@ -5,7 +5,7 @@ const (
 	ZonaCongonhasBerrini  = "Congonhas/Berrini"
 	ZonaIbirapuera        = "Ibirapuera"
 	ZonaVilaMariana       = "Vila Mariana"
-	ZonaAclimaçãoIpiranga = "AclimaçãoIpiranga"
+	ZonaAclimaçãoIpiranga = "Aclimação/Ipiranga"
 	ZonaPaulista          = "Paulista"
 	ZonaPinheiros         = "Pinheiros"
 	ZonaButantã           = "Butantã"
@@ -18,3 +18,22 @@ const (
 )
 
 type Zona string
+
+func ListaDeZonas() []Zona {
+	return []Zona{
+		ZonaSantoAmaro,
+		ZonaCongonhasBerrini,
+		ZonaIbirapuera,
+		ZonaVilaMariana,
+		ZonaAclimaçãoIpiranga,
+		ZonaPaulista,
+		ZonaPinheiros,
+		ZonaButantã,
+		ZonaLapaPompéia,
+		ZonaPacaembu,
+		ZonaCentro,
+		ZonaTatuapé,
+		ZonaNorte,
+		ZonaSaúde,
+	}
+}

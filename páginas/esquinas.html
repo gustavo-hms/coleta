@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<form action="esquinas" method="POST">
+			Cruzamento: <input type="text" name="cruzamento" value={{.Cruzamento}}><br/>
+			Localização: <input type="text" name="url" value={{.Localização.String}}><br/>
+			Zona:
+			<select name="zona">
+				{{range zonas}}
+				<option value="{{.}}">{{.}}</option>
+				{{end}}
+			</select>
+			<br/>
+			<input type="submit" value="Submit">
+		</form> 
+	</body>
+</html>
