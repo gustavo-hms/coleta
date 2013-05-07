@@ -2,12 +2,12 @@
 <html>
 	<body>
 		<form action="esquinas" method="POST">
-			Cruzamento: <input type="text" name="cruzamento" value={{.Cruzamento}}><br/>
-			Localização: <input type="text" name="url" value={{.Localização.String}}><br/>
+			Cruzamento: <input type="text" name="cruzamento" value="{{.Cruzamento}}" class="{{if .MsgCruzamento}}erro{{end}}"/> {{.MsgCruzamento}}<br/>
+			Localização: <input type="text" name="url" value="{{.Localização.String}}" class="{{if .MsgLocalização}}erro{{end}}"/> {{.MsgLocalização}}<br/>
 			Zona:
 			<select name="zona">
 				{{range zonas}}
-				<option value="{{.}}">{{.}}</option>
+					<option value="{{.}}">{{.}}</option>
 				{{end}}
 			</select>
 			<br/>
