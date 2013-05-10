@@ -26,7 +26,7 @@ CREATE TABLE lider (
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
-CREATE TABLE voluntarios (
+CREATE TABLE voluntario (
 	id INT(11) NOT NULL AUTO_INCREMENT,
 	zona_id INT(11) NOT NULL,
 	lider_id INT(11) NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE voluntarios (
 	turno VARCHAR(255),
 	como_soube_coleta_2013 VARCHAR(255),
 	PRIMARY KEY (id)
-) ENGINE=InnoDB
+) ENGINE=InnoDB;
 
 INSERT INTO zona
 	(nome)

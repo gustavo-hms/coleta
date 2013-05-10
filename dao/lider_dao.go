@@ -85,7 +85,7 @@ func (dao *LiderDAO) update(lider *modelos.Líder) error {
 	return nil
 }
 
-func (dao *LiderDAO) findById(id int) (*modelos.Zona, error) {
+func (dao *LiderDAO) FindById(id int) (*modelos.Zona, error) {
 	query := fmt.Sprintf("SELECT %s FROM lider WHERE id = ?", dao.fields)
 	row := dao.QueryRow(query, id)
 
