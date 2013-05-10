@@ -38,4 +38,22 @@ CREATE TABLE voluntarios (
 	turno VARCHAR(255),
 	como_soube_coleta_2013 VARCHAR(255),
 	PRIMARY KEY (id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB
+
+INSERT INTO zona
+	(nome)
+VALUES
+	('Santo Amaro'),
+	('Congonhas/Berrini'),
+	('Ibirapuera'),
+	('Vila Mariana'),
+	('Aclimação/Ipiranga'),
+	('Paulista'),
+	('Pinheiros'),
+	('Butantã'),
+	('Lapa/Pompéia'),
+	('Pacaembu'),
+	('Centro'),
+	('Tatuapé'),
+	('Norte'),
+	('Saúde');
