@@ -17,23 +17,7 @@ const (
 	ZonaSaúde             = "Saúde"
 )
 
-type Zona string
-
-func ListaDeZonas() []Zona {
-	return []Zona{
-		ZonaSantoAmaro,
-		ZonaCongonhasBerrini,
-		ZonaIbirapuera,
-		ZonaVilaMariana,
-		ZonaAclimaçãoIpiranga,
-		ZonaPaulista,
-		ZonaPinheiros,
-		ZonaButantã,
-		ZonaLapaPompéia,
-		ZonaPacaembu,
-		ZonaCentro,
-		ZonaTatuapé,
-		ZonaNorte,
-		ZonaSaúde,
-	}
+type Zona struct {
+	Id   int
+	Nome string
 }
