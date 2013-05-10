@@ -12,7 +12,7 @@ var (
 )
 
 type EsquinaDAO struct {
-	Tx     *sql.Tx
+	*sql.Tx
 	fields string
 }
 
@@ -34,7 +34,7 @@ func (dao *EsquinaDAO) Save(esquina *modelos.Esquina) error {
 func (dao *EsquinaDAO) create(esquina *modelos.Esquina) error {
 	query := fmt.Sprintf("INSERT INTO esquina (%s) VALUES (DEFAULT, ?, ?, ?)",
 		dao.fields)
-	res, err := dao.Tx.Exec(query,
+	res, err := dao.Exec(query,
 		esquina.Zona.Id,
 		esquina.Cruzamento,
 		esquina.Localização)
@@ -54,7 +54,7 @@ func (dao *EsquinaDAO) create(esquina *modelos.Esquina) error {
 
 func (dao *EsquinaDAO) update(esquina *modelos.Esquina) error {
 	query := "UPDATE esquina SET cruzamento = ?, localizacao = ?"
-	row, err := dao.Tx.Exec(query, esquina.Cruzamento, esquina.Localização)
+	row, err := dao.Exec(query, esquina.Cruzamento, esquina.Localização)
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func (dao *EsquinaDAO) update(esquina *modelos.Esquina) error {
 
 func (dao *EsquinaDAO) findById(id int) (*modelos.Esquina, error) {
 	query := fmt.Sprintf("SELECT %s FROM esquina WHERE id = ?", dao.fields)
-	row := dao.Tx.QueryRow(query, id)
+	row := dao.QueryRow(query, id)
 
 	esquina := new(modelos.Esquina)
 	esquina.Zona = modelos.Zona{}
@@ -92,7 +92,7 @@ func (dao *EsquinaDAO) findById(id int) (*modelos.Esquina, error) {
 
 func (dao *EsquinaDAO) Delete(id int) error {
 	query := "DELETE FROM esquina WHERE id = ?"
-	res, err := dao.Tx.Exec(query, id)
+	res, err := dao.Exec(query, id)
 	if err != nil {
 		return err
 	}
