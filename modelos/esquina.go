@@ -6,6 +6,7 @@ import (
 )
 
 type Esquina struct {
+	Id          int
 	Cruzamento  string
 	Localização string
 	Zona        Zona
@@ -13,7 +14,7 @@ type Esquina struct {
 
 func (e *Esquina) Preencher(req *http.Request) *EsquinaValidada {
 	e.Cruzamento = req.FormValue("cruzamento")
-	e.Zona = Zona(req.FormValue("zona"))
+	e.Zona = Zona{Nome: req.FormValue("zona")}
 	e.Localização = req.FormValue("url")
 
 	return e.Validar()
@@ -37,7 +38,7 @@ func (e *Esquina) validarCamposObrigatórios(comErros *EsquinaValidada) *Esquina
 		comErros.MsgLocalização = "Este campo não pode estar vazio"
 	}
 
-	if e.Zona == "" {
+	if e.Zona.Nome == "" {
 		comErros = e.preencherEsquinaValidada(comErros)
 		comErros.MsgZona = "Este campo não pode estar vazio"
 	}
