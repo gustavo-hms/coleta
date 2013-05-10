@@ -5,11 +5,20 @@ import (
 	"time"
 )
 
+const (
+	OperadoraClaro = "CLARO"
+	OperadoraOi    = "OI"
+	OperadoraOutra = "OUTRA"
+	OperadoraTim   = "TIM"
+	OperadoraVivo  = "VIVO"
+)
+
 type Líder struct {
+	Id                  int
 	Nome                string
 	TelefoneResidencial string
 	TelefoneCelular     string
-	Operadora           int
+	Operadora           string
 	Email               mail.Address
 	Turnos              []Turno
 	Zona                Zona

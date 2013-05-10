@@ -16,7 +16,7 @@ CREATE TABLE lider (
 	id INT(11) NOT NULL AUTO_INCREMENT,
 	zona_id INT(11) NOT NULL,
 	esquina_id INT(11) NOT NULL,
-	criado_em DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	cadastrado_em DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
 	nome_completo VARCHAR(255),
 	telefone_residencial VARCHAR(20),
 	telefone_celular VARCHAR(20),
