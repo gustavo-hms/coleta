@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"coleta/dao"
+	"coleta/db"
 	"coleta/modelos"
 	"html/template"
 	"log"
@@ -34,13 +36,29 @@ func esquinasGet(
 	esquina *modelos.EsquinaValidada,
 ) {
 	gopath := os.Getenv("GOPATH") // NOTA Solução temporária. Apenas para testes
+	// TODO create connection transaction outside
+	db, err := db.Conn()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	tx, err := db.Begin()
+	if err != nil {
+		log.Println(err)
+	}
+	zonaDAO := dao.NewZonaDAO(tx)
 
 	funcMap := template.FuncMap{"zonas": func() []zonaComSeleção {
-		zonas := modelos.ListaDeZonas()
+		zonas, err := zonaDAO.FindAll()
+		if err != nil {
+			log.Println(err)
+			return nil
+		}
+
 		seleção := make([]zonaComSeleção, 0, len(zonas))
 		for _, zona := range zonas {
-			s := zonaComSeleção{Zona: zona}
-			if esquina != nil && esquina.Zona == zona {
+			s := zonaComSeleção{Zona: *zona}
+			if esquina != nil && esquina.Zona.Id == zona.Id {
 				s.Selecionado = true
 			}
 			seleção = append(seleção, s)
