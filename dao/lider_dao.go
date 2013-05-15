@@ -3,7 +3,6 @@ package dao
 import (
 	"coleta/modelos"
 	"database/sql"
-	"errors"
 	"fmt"
 )
 
@@ -12,7 +11,7 @@ type LiderDAO struct {
 	fields string
 }
 
-func NewEsquinaDAO(tx *sql.Tx) *EsquinaDAO {
+func NewLiderDAO(tx *sql.Tx) *LiderDAO {
 	return &LiderDAO{
 		Tx: tx,
 		fields: "id, zona_id, esquina_id, cadastrado_em, nome_completo, " +
@@ -23,9 +22,9 @@ func NewEsquinaDAO(tx *sql.Tx) *EsquinaDAO {
 
 func (dao *LiderDAO) Save(lider *modelos.Líder) error {
 	if lider.Id == 0 {
-		dao.create(lider)
+		return dao.create(lider)
 	} else {
-		dao.update(lider)
+		return dao.update(lider)
 	}
 }
 
@@ -85,7 +84,7 @@ func (dao *LiderDAO) update(lider *modelos.Líder) error {
 	return nil
 }
 
-func (dao *LiderDAO) FindById(id int) (*modelos.Zona, error) {
+func (dao *LiderDAO) FindById(id int) (*modelos.Líder, error) {
 	query := fmt.Sprintf("SELECT %s FROM lider WHERE id = ?", dao.fields)
 	row := dao.QueryRow(query, id)
 

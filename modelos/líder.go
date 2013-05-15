@@ -21,7 +21,7 @@ type Líder struct {
 	Operadora           string
 	Email               mail.Address
 	Turnos              []Turno
-	Zona                Zona
+	Zona                *Zona
 	CadastradoEm        time.Time
-	Esquina             Esquina
+	Esquina             *Esquina
 }

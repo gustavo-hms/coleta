@@ -3,7 +3,6 @@ package dao
 import (
 	"coleta/modelos"
 	"database/sql"
-	"errors"
 	"fmt"
 )
 
@@ -23,9 +22,9 @@ func NewVoluntarioDAO(tx *sql.Tx) *VoluntarioDAO {
 
 func (dao *VoluntarioDAO) Save(voluntario *modelos.Voluntario) error {
 	if voluntario.Id == 0 {
-		dao.create(voluntario)
+		return dao.create(voluntario)
 	} else {
-		dao.update(voluntario)
+		return dao.update(voluntario)
 	}
 }
 

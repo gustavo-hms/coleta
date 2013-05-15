@@ -26,7 +26,7 @@ func (dao *ZonaDAO) Save(zona *modelos.Zona) error {
 	}
 }
 
-func (dao *ZonaDAO) create(zona *modelos.Zona) {
+func (dao *ZonaDAO) create(zona *modelos.Zona) error {
 	query := fmt.Sprintf("INSERT INTO zona (%s) VALUES (DEFAULT, ?)", dao.fields)
 	res, err := dao.Exec(query, zona.Nome)
 	if err != nil {
@@ -38,11 +38,11 @@ func (dao *ZonaDAO) create(zona *modelos.Zona) {
 		return err
 	}
 
-	zona.Id = id
+	zona.Id = int(id)
 	return nil
 }
 
-func (dao *ZonaDAO) update(zona *modelos.Zona) {
+func (dao *ZonaDAO) update(zona *modelos.Zona) error {
 	query := "UPDATE zona SET nome = ?"
 	row, err := dao.Exec(query, zona.Nome)
 	if err != nil {
