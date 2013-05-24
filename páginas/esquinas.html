@@ -7,7 +7,7 @@
 			Zona:
 			<select name="zona">
 				{{range zonas}}
-				<option value="{{.Zona}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona}}</option>
+				<option value="{{.Zona.Nome}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona.Nome}}</option>
 				{{end}}
 			</select>
 			<br/>
