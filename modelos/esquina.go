@@ -1,8 +1,10 @@
 package modelos
 
 import (
+	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 type Esquina struct {
@@ -14,7 +16,13 @@ type Esquina struct {
 
 func (e *Esquina) Preencher(req *http.Request) *EsquinaValidada {
 	e.Cruzamento = req.FormValue("cruzamento")
-	e.Zona = Zona{Nome: req.FormValue("zona")}
+
+	id, err := strconv.Atoi(req.FormValue("zona"))
+	if err != nil {
+		log.Printf("Erro ao converter %s para um inteiro: %s", req.FormValue("zona"), err)
+	}
+
+	e.Zona = Zona{Id: id}
 	e.Localização = req.FormValue("url")
 
 	return e.Validar()
@@ -38,9 +46,9 @@ func (e *Esquina) validarCamposObrigatórios(comErros *EsquinaValidada) *Esquina
 		comErros.MsgLocalização = "Este campo não pode estar vazio"
 	}
 
-	if e.Zona.Nome == "" {
+	if e.Zona.Id < 0 {
 		comErros = e.preencherEsquinaValidada(comErros)
-		comErros.MsgZona = "Este campo não pode estar vazio"
+		comErros.MsgZona = "Este campo está com um valor inválido"
 	}
 
 	return comErros

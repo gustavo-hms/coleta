@@ -88,10 +88,31 @@ func esquinasPost(w http.ResponseWriter, r *http.Request) {
 	validada := esquina.Preencher(r)
 
 	if validada != nil {
+		log.Printf("Validada: %+v", validada)
 		w.WriteHeader(http.StatusBadRequest)
 		esquinasGet(w, r, validada)
 		return
 	}
+
+	db, err := db.Conn()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	tx, err := db.Begin()
+	if err != nil {
+		log.Println(err)
+	}
+
+	esquinaDAO := dao.NewEsquinaDAO(tx)
+	if err := esquinaDAO.Save(&esquina); err != nil {
+		log.Println("Erro ao gravar esquina:", err)
+	}
+	if err := esquinaDAO.Commit(); err != nil {
+		esquinaDAO.Rollback()
+		log.Println("Erro no commit:", err)
+	}
+	db.Close()
 
 	log.Printf("Esquina: %+v\n", esquina)
 }
