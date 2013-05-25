@@ -90,6 +90,29 @@ func (dao *EsquinaDAO) findById(id int) (*modelos.Esquina, error) {
 	return esquina, nil
 }
 
+func (dao *EsquinaDAO) BuscarPorZona(idDaZona string) ([]*modelos.Esquina, error) {
+	query := fmt.Sprintf("SELECT %s FROM esquina WHERE zona_id = ?", dao.fields)
+	rows, err := dao.Query(query, idDaZona)
+	if err != nil {
+		return nil, err
+	}
+
+	esquinas := make([]*modelos.Esquina, 0)
+	for rows.Next() {
+		esquina := new(modelos.Esquina)
+		rows.Scan(
+			&esquina.Id,
+			&esquina.Zona.Id,
+			&esquina.Cruzamento,
+			&esquina.Localização,
+		)
+
+		esquinas = append(esquinas, esquina)
+	}
+
+	return esquinas, nil
+}
+
 func (dao *EsquinaDAO) Delete(id int) error {
 	query := "DELETE FROM esquina WHERE id = ?"
 	res, err := dao.Exec(query, id)
