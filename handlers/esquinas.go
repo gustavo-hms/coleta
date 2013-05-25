@@ -4,11 +4,15 @@ import (
 	"coleta/dao"
 	"coleta/db"
 	"coleta/modelos"
+	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 )
+
+var gopath = os.Getenv("GOPATH") // NOTA Solução temporária. Apenas para testes
 
 func init() {
 	http.HandleFunc("/esquinas", Esquinas)
@@ -35,7 +39,6 @@ func esquinasGet(
 	r *http.Request,
 	esquina *modelos.EsquinaValidada,
 ) {
-	gopath := os.Getenv("GOPATH") // NOTA Solução temporária. Apenas para testes
 	// TODO create connection transaction outside
 	db, err := db.Conn()
 	if err != nil {
@@ -88,7 +91,6 @@ func esquinasPost(w http.ResponseWriter, r *http.Request) {
 	validada := esquina.Preencher(r)
 
 	if validada != nil {
-		log.Printf("Validada: %+v", validada)
 		w.WriteHeader(http.StatusBadRequest)
 		esquinasGet(w, r, validada)
 		return
@@ -114,5 +116,10 @@ func esquinasPost(w http.ResponseWriter, r *http.Request) {
 	}
 	db.Close()
 
-	log.Printf("Esquina: %+v\n", esquina)
+	página, err := ioutil.ReadFile(gopath + "/src/coleta/páginas/esquinas-sucesso.html")
+	if err != nil {
+		log.Println("Erro ao abrir o arquivo esquinas-sucesso.html:", err)
+	}
+
+	fmt.Fprintf(w, "%s", página)
 }
