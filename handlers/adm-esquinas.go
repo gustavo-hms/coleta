@@ -88,7 +88,7 @@ func esquinasPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var esquina modelos.Esquina
-	validada := esquina.Preencher(r)
+	validada := esquina.Preencher(r.FormValue)
 
 	if validada != nil {
 		w.WriteHeader(http.StatusBadRequest)

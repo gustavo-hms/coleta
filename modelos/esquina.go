@@ -2,7 +2,6 @@ package modelos
 
 import (
 	"log"
-	"net/http"
 	"net/url"
 	"strconv"
 )
@@ -14,16 +13,24 @@ type Esquina struct {
 	Zona        Zona
 }
 
-func (e *Esquina) Preencher(req *http.Request) *EsquinaValidada {
-	e.Cruzamento = req.FormValue("cruzamento")
+type EsquinaValidada struct {
+	Esquina
 
-	id, err := strconv.Atoi(req.FormValue("zona"))
+	MsgCruzamento  string
+	MsgLocalização string
+	MsgZona        string
+}
+
+func (e *Esquina) Preencher(campos func(string) string) *EsquinaValidada {
+	e.Cruzamento = campos("cruzamento")
+
+	id, err := strconv.Atoi(campos("zona"))
 	if err != nil {
-		log.Printf("Erro ao converter %s para um inteiro: %s", req.FormValue("zona"), err)
+		log.Printf("Erro ao converter %s para um inteiro: %s", campos("zona"), err)
 	}
 
 	e.Zona = Zona{Id: id}
-	e.Localização = req.FormValue("url")
+	e.Localização = campos("url")
 
 	return e.Validar()
 }
@@ -75,12 +82,4 @@ func (e *Esquina) preencherEsquinaValidada(validada *EsquinaValidada) *EsquinaVa
 	}
 
 	return validada
-}
-
-type EsquinaValidada struct {
-	Esquina
-
-	MsgCruzamento  string
-	MsgLocalização string
-	MsgZona        string
 }
