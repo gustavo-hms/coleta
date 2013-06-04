@@ -18,6 +18,16 @@
 
 			<br/>
 
+			Zona:
+			<select name="zona">
+				{{range zonas}}
+				<option value="{{.Zona.Id}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona.Nome}}</option>
+				{{end}}
+			</select> {{.MsgZona}}
+			
+			<br/>
+			<br/>
+
 			<input type="submit" value="Enviar"/>
 		</form> 
 	</body>

@@ -1,6 +1,8 @@
 package modelos
 
 import (
+	"log"
+	"strconv"
 	"time"
 )
 
@@ -25,6 +27,14 @@ type Líder struct {
 	Esquina             *Esquina
 }
 
+func NovoLíder() *Líder {
+	l := new(Líder)
+	l.Zona = new(Zona)
+	l.Esquina = new(Esquina)
+
+	return l
+}
+
 type LíderValidado struct {
 	Líder
 
@@ -39,6 +49,13 @@ type LíderValidado struct {
 	MsgEsquina             string
 }
 
+func NovoLíderValidado() *LíderValidado {
+	l := new(LíderValidado)
+	l.Líder = *NovoLíder()
+
+	return l
+}
+
 func (l *Líder) Preencher(campos map[string][]string) *LíderValidado {
 	l.Nome = campos["nome"][0]
 	l.TelefoneResidencial = campos["telefone-residencial"][0]
@@ -46,7 +63,14 @@ func (l *Líder) Preencher(campos map[string][]string) *LíderValidado {
 	l.Operadora = campos["operadora"][0]
 	l.Email = campos["e-mail"][0]
 	l.Turnos = obterTurnos(campos["turnos"])
-	//	l.Zona = obterZona("zona")
+
+	id, err := strconv.Atoi(campos["zona"][0])
+	if err != nil {
+		log.Printf("Erro ao converter %s para um inteiro: %s", campos["zona"][0], err)
+	}
+
+	l.Zona = &Zona{Id: id}
+
 	l.CadastradoEm = time.Now()
 
 	return nil

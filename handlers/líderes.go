@@ -20,7 +20,7 @@ func Líderes(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.WriteHeader(http.StatusNotImplemented)
 	case "GET":
-		líderesGet(w, r, new(modelos.LíderValidado))
+		líderesGet(w, r, modelos.NovoLíderValidado())
 	case "POST":
 		líderesPost(w, r)
 	}
@@ -107,36 +107,32 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	/*
-		db, err := db.Conn()
-		if err != nil {
-			log.Println(err)
-			erroInterno(w, r)
-			return
-		}
-		tx, err := db.Begin()
-		if err != nil {
-			log.Println(err)
-			erroInterno(w, r)
-			return
-		}
+	db, err := db.Conn()
+	if err != nil {
+		log.Println(err)
+		erroInterno(w, r)
+		return
+	}
+	tx, err := db.Begin()
+	if err != nil {
+		log.Println(err)
+		erroInterno(w, r)
+		return
+	}
 
-		líderDAO := dao.NewLiderDAO(tx)
-		if err := líderDAO.Save(&líder); err != nil {
-			log.Println("Erro ao gravar líder:", err)
-			erroInterno(w, r)
-			return
-		}
-		if err := líderDAO.Commit(); err != nil {
-			líderDAO.Rollback()
-			log.Println("Erro no commit:", err)
-			erroInterno(w, r)
-			return
-		}
-		db.Close()
-	*/
-
-	fmt.Printf("Líder: %+v\n", líder)
+	líderDAO := dao.NewLiderDAO(tx)
+	if err := líderDAO.Save(&líder); err != nil {
+		log.Println("Erro ao gravar líder:", err)
+		erroInterno(w, r)
+		return
+	}
+	if err := líderDAO.Commit(); err != nil {
+		líderDAO.Rollback()
+		log.Println("Erro no commit:", err)
+		erroInterno(w, r)
+		return
+	}
+	db.Close()
 
 	página, err := ioutil.ReadFile(gopath + "/src/coleta/páginas/líderes-sucesso.html")
 	if err != nil {

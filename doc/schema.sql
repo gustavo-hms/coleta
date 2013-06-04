@@ -22,8 +22,12 @@ CREATE TABLE lider (
 	telefone_celular VARCHAR(20),
 	operadora_celular ENUM('CLARO', 'OI', 'OUTRA', 'TIM', 'VIVO'),
 	email VARCHAR(255),
-	turno VARCHAR(255),
 	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE turnos_do_lider (
+	lider_id INT(11) NOT NULL,
+	turno VARCHAR(20)
 ) ENGINE=InnoDB;
 
 CREATE TABLE voluntario (
