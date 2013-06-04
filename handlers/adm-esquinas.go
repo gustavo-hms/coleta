@@ -29,11 +29,6 @@ func Esquinas(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type zonaComSeleção struct {
-	Zona        modelos.Zona
-	Selecionado bool
-}
-
 func esquinasGet(
 	w http.ResponseWriter,
 	r *http.Request,

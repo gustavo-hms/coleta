@@ -39,15 +39,24 @@ type LíderValidado struct {
 	MsgEsquina             string
 }
 
-func (l *Líder) Preencher(campos func(string) string) *LíderValidado {
-	l.Nome = campos("nome")
-	l.TelefoneResidencial = campos("telefone-residencial")
-	l.TelefoneCelular = campos("telefone-celular")
-	l.Operadora = campos("operadora")
-	l.Email = campos("e-mail")
-	l.Turnos = obterTurnos(campos("turnos"))
-	l.Zona = obterZona("zona")
+func (l *Líder) Preencher(campos map[string][]string) *LíderValidado {
+	l.Nome = campos["nome"][0]
+	l.TelefoneResidencial = campos["telefone-residencial"][0]
+	l.TelefoneCelular = campos["telefone-celular"][0]
+	l.Operadora = campos["operadora"][0]
+	l.Email = campos["e-mail"][0]
+	l.Turnos = obterTurnos(campos["turnos"])
+	//	l.Zona = obterZona("zona")
 	l.CadastradoEm = time.Now()
 
 	return nil
+}
+
+func obterTurnos(ids []string) []Turno {
+	turnos := make([]Turno, len(ids))
+	for i, id := range ids {
+		turnos[i] = TurnoComId(id)
+	}
+
+	return turnos
 }
