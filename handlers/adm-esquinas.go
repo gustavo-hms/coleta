@@ -37,12 +37,13 @@ func esquinasGet(
 	// TODO create connection transaction outside
 	db, err := db.Conn()
 	if err != nil {
-		log.Println(err)
+		log.Println("Erro na conexão:", err)
 		return
 	}
 	tx, err := db.Begin()
 	if err != nil {
-		log.Println(err)
+		log.Println("Início da transação:", err)
+		return
 	}
 	zonaDAO := dao.NewZonaDAO(tx)
 
@@ -68,6 +69,7 @@ func esquinasGet(
 		ParseFiles(gopath + "/src/coleta/páginas/adm-esquinas.html")
 	if err != nil {
 		log.Println("Ali:", err)
+		return
 	}
 
 	err = t.ExecuteTemplate(w, "adm-esquinas.html", esquina)
