@@ -9,10 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 )
-
-var gopath = os.Getenv("GOPATH") // NOTA Solução temporária. Apenas para testes
 
 func init() {
 	http.HandleFunc("/adm/esquinas", Esquinas)
