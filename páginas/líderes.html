@@ -4,17 +4,18 @@
 		<form action="líderes" method="POST">
 			Nome: <input type="text" name="nome" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> {{.MsgNome}}<br/>
 
-			Telefone residencial: <input type="text" name="telefone-residencial" value="{{.TelefoneResidencial}}" class="{{if .MsgTelefoneResidencial}}erro{{end}}"/> {{.MsgTelefoneResidencial}}<br/>
+			Telefone residencial: <input type="text" name="telefone-residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/> {{.MsgTelefoneResidencial}}<br/>
 
-			Telefone Celular: <input type="text" name="telefone-celular" value="{{.TelefoneCelular}}" class="{{if .MsgTelefoneCelular}}erro{{end}}"/> {{.MsgTelefoneCelular}}<br/>
+			Telefone celular: <input type="text" name="telefone-celular" value="{{.TelefoneCelular}}" class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/> {{.MsgTelefoneCelular}}
 
 			Operadora: <input type="text" name="operadora" value="{{.Operadora}}" class="{{if .MsgOperadora}}erro{{end}}"/> {{.MsgOperadora}}<br/>
 
-			E-mail: <input type="text" name="e-mail" value="{{.Email}}" class="{{if .MsgEmail}}erro{{end}}"/> {{.MsgEmail}}<br/>
+			E-mail: <input type="text" name="e-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/> {{.MsgEmail}}<br/>
+			<div>{{.MsgContato}}</div>
 
-			Turnos: {{range turnos}}
+			Turnos: <divi class="{{if .MsgTurnos}}erro{{end}}">{{range turnos}}
 			<br/><input type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}}> {{.Turno.String}}
-			{{end}}
+			{{end}}</div>{{if .MsgTurnos}}<div>{{.MsgTurnos}}</div>{{end}}
 
 			<br/>
 

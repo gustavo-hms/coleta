@@ -43,6 +43,7 @@ type LíderValidado struct {
 	MsgTelefoneCelular     string
 	MsgOperadora           string
 	MsgEmail               string
+	MsgContato             string
 	MsgTurnos              string
 	MsgZona                string
 	MsgCadastradoEm        string
@@ -73,7 +74,7 @@ func (l *Líder) Preencher(campos map[string][]string) *LíderValidado {
 
 	l.CadastradoEm = time.Now()
 
-	return nil
+	return l.validar()
 }
 
 func obterTurnos(ids []string) []Turno {
@@ -83,4 +84,43 @@ func obterTurnos(ids []string) []Turno {
 	}
 
 	return turnos
+}
+
+func (l *Líder) validar() (comErros *LíderValidado) {
+	comErros = l.validarCamposObrigatórios(comErros)
+	comErros = l.validarSintaxe(comErros)
+
+	return comErros
+}
+
+func (l *Líder) validarCamposObrigatórios(comErros *LíderValidado) *LíderValidado {
+	if l.Nome == "" {
+		comErros = l.preencherLíderValidado(comErros)
+		comErros.MsgNome = "Este campo não pode estar vazio"
+	}
+
+	if l.TelefoneResidencial == "" && l.TelefoneCelular == "" && l.Email == "" {
+		comErros = l.preencherLíderValidado(comErros)
+		comErros.MsgContato = "Ao menos um destes campos não pode estar vazio"
+	}
+
+	if len(l.Turnos) == 0 {
+		comErros = l.preencherLíderValidado(comErros)
+		comErros.MsgTurnos = "Ao menos um turno tem de estar selecionado"
+	}
+
+	return comErros
+}
+
+func (l *Líder) preencherLíderValidado(validado *LíderValidado) *LíderValidado {
+	if validado == nil {
+		validado = new(LíderValidado)
+		validado.Líder = *l
+	}
+
+	return validado
+}
+
+func (l *Líder) validarSintaxe(comErros *LíderValidado) *LíderValidado {
+	return comErros
 }
