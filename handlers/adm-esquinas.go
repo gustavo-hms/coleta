@@ -20,7 +20,7 @@ func Esquinas(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.WriteHeader(http.StatusNotImplemented)
 	case "GET":
-		esquinasGet(w, r, new(modelos.EsquinaValidada))
+		esquinasGet(w, r, new(modelos.EsquinaComErros))
 	case "POST":
 		esquinasPost(w, r)
 	}
@@ -29,7 +29,7 @@ func Esquinas(w http.ResponseWriter, r *http.Request) {
 func esquinasGet(
 	w http.ResponseWriter,
 	r *http.Request,
-	esquina *modelos.EsquinaValidada,
+	esquina *modelos.EsquinaComErros,
 ) {
 	// TODO create connection transaction outside
 	db, err := db.Conn()

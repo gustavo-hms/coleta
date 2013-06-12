@@ -20,7 +20,7 @@ func Líderes(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.WriteHeader(http.StatusNotImplemented)
 	case "GET":
-		líderesGet(w, r, modelos.NovoLíderValidado())
+		líderesGet(w, r, modelos.NovoLíderComErros())
 	case "POST":
 		líderesPost(w, r)
 	}
@@ -29,7 +29,7 @@ func Líderes(w http.ResponseWriter, r *http.Request) {
 func líderesGet(
 	w http.ResponseWriter,
 	r *http.Request,
-	líder *modelos.LíderValidado,
+	líder *modelos.LíderComErros,
 ) {
 	// TODO create connection transaction outside
 	db, err := db.Conn()

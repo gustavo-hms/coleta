@@ -16,14 +16,7 @@ func init() {
 }
 
 func Zona(w http.ResponseWriter, r *http.Request) {
-	// TODO create connection transaction outside
-	banco, err := db.Conn()
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	tx, err := banco.Begin()
+	tx, err := db.Begin()
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)

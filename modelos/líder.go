@@ -35,7 +35,7 @@ func NovoLíder() *Líder {
 	return l
 }
 
-type LíderValidado struct {
+type LíderComErros struct {
 	Líder
 
 	MsgNome                string
@@ -50,14 +50,14 @@ type LíderValidado struct {
 	MsgEsquina             string
 }
 
-func NovoLíderValidado() *LíderValidado {
-	l := new(LíderValidado)
+func NovoLíderComErros() *LíderComErros {
+	l := new(LíderComErros)
 	l.Líder = *NovoLíder()
 
 	return l
 }
 
-func (l *Líder) Preencher(campos map[string][]string) *LíderValidado {
+func (l *Líder) Preencher(campos map[string][]string) *LíderComErros {
 	l.Nome = campos["nome"][0]
 	l.TelefoneResidencial = campos["telefone-residencial"][0]
 	l.TelefoneCelular = campos["telefone-celular"][0]
@@ -86,41 +86,41 @@ func obterTurnos(ids []string) []Turno {
 	return turnos
 }
 
-func (l *Líder) validar() (comErros *LíderValidado) {
+func (l *Líder) validar() (comErros *LíderComErros) {
 	comErros = l.validarCamposObrigatórios(comErros)
 	comErros = l.validarSintaxe(comErros)
 
 	return comErros
 }
 
-func (l *Líder) validarCamposObrigatórios(comErros *LíderValidado) *LíderValidado {
+func (l *Líder) validarCamposObrigatórios(comErros *LíderComErros) *LíderComErros {
 	if l.Nome == "" {
-		comErros = l.preencherLíderValidado(comErros)
+		comErros = l.preencherLíderComErros(comErros)
 		comErros.MsgNome = "Este campo não pode estar vazio"
 	}
 
 	if l.TelefoneResidencial == "" && l.TelefoneCelular == "" && l.Email == "" {
-		comErros = l.preencherLíderValidado(comErros)
+		comErros = l.preencherLíderComErros(comErros)
 		comErros.MsgContato = "Ao menos um destes campos não pode estar vazio"
 	}
 
 	if len(l.Turnos) == 0 {
-		comErros = l.preencherLíderValidado(comErros)
+		comErros = l.preencherLíderComErros(comErros)
 		comErros.MsgTurnos = "Ao menos um turno tem de estar selecionado"
 	}
 
 	return comErros
 }
 
-func (l *Líder) preencherLíderValidado(validado *LíderValidado) *LíderValidado {
+func (l *Líder) preencherLíderComErros(validado *LíderComErros) *LíderComErros {
 	if validado == nil {
-		validado = new(LíderValidado)
+		validado = new(LíderComErros)
 		validado.Líder = *l
 	}
 
 	return validado
 }
 
-func (l *Líder) validarSintaxe(comErros *LíderValidado) *LíderValidado {
+func (l *Líder) validarSintaxe(comErros *LíderComErros) *LíderComErros {
 	return comErros
 }

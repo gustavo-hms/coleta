@@ -13,7 +13,7 @@ type Esquina struct {
 	Zona        Zona
 }
 
-type EsquinaValidada struct {
+type EsquinaComErros struct {
 	Esquina
 
 	MsgCruzamento  string
@@ -21,7 +21,7 @@ type EsquinaValidada struct {
 	MsgZona        string
 }
 
-func (e *Esquina) Preencher(campos func(string) string) *EsquinaValidada {
+func (e *Esquina) Preencher(campos func(string) string) *EsquinaComErros {
 	e.Cruzamento = campos("cruzamento")
 
 	id, err := strconv.Atoi(campos("zona"))
@@ -35,37 +35,37 @@ func (e *Esquina) Preencher(campos func(string) string) *EsquinaValidada {
 	return e.Validar()
 }
 
-func (e *Esquina) Validar() (comErros *EsquinaValidada) {
+func (e *Esquina) Validar() (comErros *EsquinaComErros) {
 	comErros = e.validarCamposObrigatórios(comErros)
 	comErros = e.validarSintaxe(comErros)
 
 	return comErros
 }
 
-func (e *Esquina) validarCamposObrigatórios(comErros *EsquinaValidada) *EsquinaValidada {
+func (e *Esquina) validarCamposObrigatórios(comErros *EsquinaComErros) *EsquinaComErros {
 	if e.Cruzamento == "" {
-		comErros = e.preencherEsquinaValidada(comErros)
+		comErros = e.preencherEsquinaComErros(comErros)
 		comErros.MsgCruzamento = "Este campo não pode estar vazio"
 	}
 
 	if e.Localização == "" {
-		comErros = e.preencherEsquinaValidada(comErros)
+		comErros = e.preencherEsquinaComErros(comErros)
 		comErros.MsgLocalização = "Este campo não pode estar vazio"
 	}
 
 	if e.Zona.Id < 0 {
-		comErros = e.preencherEsquinaValidada(comErros)
+		comErros = e.preencherEsquinaComErros(comErros)
 		comErros.MsgZona = "Este campo está com um valor inválido"
 	}
 
 	return comErros
 }
 
-func (e *Esquina) validarSintaxe(comErros *EsquinaValidada) *EsquinaValidada {
+func (e *Esquina) validarSintaxe(comErros *EsquinaComErros) *EsquinaComErros {
 	if comErros == nil || comErros.MsgLocalização == "" {
 		u, err := url.ParseRequestURI(e.Localização)
 		if err != nil {
-			comErros = e.preencherEsquinaValidada(comErros)
+			comErros = e.preencherEsquinaComErros(comErros)
 			comErros.MsgLocalização = "Endereço inválido"
 		} else {
 			e.Localização = u.String()
@@ -75,9 +75,9 @@ func (e *Esquina) validarSintaxe(comErros *EsquinaValidada) *EsquinaValidada {
 	return comErros
 }
 
-func (e *Esquina) preencherEsquinaValidada(validada *EsquinaValidada) *EsquinaValidada {
+func (e *Esquina) preencherEsquinaComErros(validada *EsquinaComErros) *EsquinaComErros {
 	if validada == nil {
-		validada = new(EsquinaValidada)
+		validada = new(EsquinaComErros)
 		validada.Esquina = *e
 	}
 
