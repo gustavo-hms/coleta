@@ -64,6 +64,14 @@ func líderesGet(
 			seleção := make([]turnoComSeleção, 0, len(turnos))
 			for _, turno := range turnos {
 				s := turnoComSeleção{Turno: turno}
+				if líder != nil {
+					for _, t := range líder.Turnos {
+						if s.Turno.Id == t.Id {
+							s.Selecionado = true
+						}
+					}
+				}
+
 				seleção = append(seleção, s)
 			}
 
@@ -94,11 +102,11 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var líder modelos.Líder
-	validado := líder.Preencher(r.Form)
+	erros := líder.Preencher(r.Form)
 
-	if validado != nil {
+	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		líderesGet(w, r, validado)
+		líderesGet(w, r, erros)
 		return
 	}
 

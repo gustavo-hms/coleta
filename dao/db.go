@@ -16,8 +16,6 @@ func Conn() (err error) {
 	base := config.Dados.Banco.Base
 	parâmetros := fmt.Sprintf("%s@tcp(%s:3306)/%s", usuário, host, base)
 
-	fmt.Println(parâmetros)
-
 	DB, err = sql.Open("mysql", parâmetros)
 	if err != nil {
 		log.Println("Erro ao conectar-se ao banco:", err)
