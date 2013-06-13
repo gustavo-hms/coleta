@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"coleta/dao"
-	"coleta/db"
 	"coleta/modelos"
 	"fmt"
 	"log"
@@ -16,7 +15,7 @@ func init() {
 }
 
 func Zona(w http.ResponseWriter, r *http.Request) {
-	tx, err := db.Begin()
+	tx, err := dao.DB.Begin()
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -26,10 +25,13 @@ func Zona(w http.ResponseWriter, r *http.Request) {
 	esquinaDAO := dao.NewEsquinaDAO(tx)
 	esquinas, err := esquinaDAO.BuscarPorZona(idDaZona(r.URL))
 	if err != nil {
+		esquinaDAO.Rollback()
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	esquinaDAO.Commit()
 
 	json := jsonDasEsquinas(esquinas)
 	fmt.Fprint(w, json)

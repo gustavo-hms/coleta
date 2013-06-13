@@ -2,7 +2,7 @@ package main
 
 import (
 	"coleta/config"
-	"coleta/db"
+	"coleta/dao"
 	_ "coleta/handlers"
 	"fmt"
 	"net/http"
@@ -12,6 +12,7 @@ import (
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Println(uso())
+		os.Exit(1)
 	}
 
 	if err := config.Ler(os.Args[1]); err != nil {
@@ -19,7 +20,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := db.Conn(); err != nil {
+	if err := dao.Conn(); err != nil {
 		fmt.Println("Não foi possível conectar-se ao banco. Erro:", err)
 		os.Exit(1)
 	}

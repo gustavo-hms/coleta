@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"coleta/dao"
-	"coleta/db"
 	"coleta/modelos"
 	"fmt"
 	"html/template"
@@ -31,26 +30,23 @@ func esquinasGet(
 	r *http.Request,
 	esquina *modelos.EsquinaComErros,
 ) {
-	// TODO create connection transaction outside
-	db, err := db.Conn()
-	if err != nil {
-		log.Println("Erro na conexão:", err)
-		return
-	}
-	tx, err := db.Begin()
+	tx, err := dao.DB.Begin()
 	if err != nil {
 		log.Println("Início da transação:", err)
 		return
 	}
+
 	zonaDAO := dao.NewZonaDAO(tx)
+	zonas, err := zonaDAO.FindAll()
+	if err != nil {
+		zonaDAO.Rollback()
+		log.Println(err)
+		return
+	}
+
+	zonaDAO.Commit()
 
 	funcMap := template.FuncMap{"zonas": func() []zonaComSeleção {
-		zonas, err := zonaDAO.FindAll()
-		if err != nil {
-			log.Println(err)
-			return nil
-		}
-
 		seleção := make([]zonaComSeleção, 0, len(zonas))
 		for _, zona := range zonas {
 			s := zonaComSeleção{Zona: *zona}
@@ -90,25 +86,23 @@ func esquinasPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := db.Conn()
+	tx, err := dao.DB.Begin()
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	tx, err := db.Begin()
-	if err != nil {
-		log.Println(err)
-	}
 
 	esquinaDAO := dao.NewEsquinaDAO(tx)
 	if err := esquinaDAO.Save(&esquina); err != nil {
+		esquinaDAO.Rollback()
 		log.Println("Erro ao gravar esquina:", err)
+		return
 	}
+
 	if err := esquinaDAO.Commit(); err != nil {
 		esquinaDAO.Rollback()
 		log.Println("Erro no commit:", err)
 	}
-	db.Close()
 
 	página, err := ioutil.ReadFile(gopath + "/src/coleta/páginas/adm-esquinas-sucesso.html")
 	if err != nil {

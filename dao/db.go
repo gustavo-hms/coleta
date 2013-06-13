@@ -12,16 +12,15 @@ var DB *sql.DB
 
 func Conn() (err error) {
 	usuário := config.Dados.Banco.Usuário
-	senha := config.Dados.Banco.Senha
 	host := config.Dados.Banco.Host
 	base := config.Dados.Banco.Base
+	parâmetros := fmt.Sprintf("%s@tcp(%s:3306)/%s", usuário, host, base)
 
-	parâmetros := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=require host=%s",
-		usuário, senha, base, host)
+	fmt.Println(parâmetros)
 
 	DB, err = sql.Open("mysql", parâmetros)
 	if err != nil {
-		log.Println(err)
+		log.Println("Erro ao conectar-se ao banco:", err)
 		return
 	}
 

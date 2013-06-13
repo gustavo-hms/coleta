@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"coleta/dao"
-	"coleta/db"
 	"coleta/modelos"
 	"fmt"
 	"html/template"
@@ -31,28 +30,24 @@ func líderesGet(
 	r *http.Request,
 	líder *modelos.LíderComErros,
 ) {
-	// TODO create connection transaction outside
-	db, err := db.Conn()
+	tx, err := dao.DB.Begin()
 	if err != nil {
-		log.Println(err)
-		return
-	}
-	tx, err := db.Begin()
-	if err != nil {
-		log.Println(err)
+		log.Println("Erro ao iniciar transação:", err)
 		return
 	}
 
 	zonaDAO := dao.NewZonaDAO(tx)
+	zonas, err := zonaDAO.FindAll()
+	if err != nil {
+		zonaDAO.Rollback()
+		log.Println("Erro ao buscar zonas:", err)
+		return
+	}
+
+	zonaDAO.Commit()
 
 	funcMap := template.FuncMap{
 		"zonas": func() []zonaComSeleção {
-			zonas, err := zonaDAO.FindAll()
-			if err != nil {
-				log.Println(err)
-				return nil
-			}
-
 			seleção := make([]zonaComSeleção, 0, len(zonas))
 			for _, zona := range zonas {
 				s := zonaComSeleção{Zona: *zona}
@@ -107,13 +102,7 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := db.Conn()
-	if err != nil {
-		log.Println(err)
-		erroInterno(w, r)
-		return
-	}
-	tx, err := db.Begin()
+	tx, err := dao.DB.Begin()
 	if err != nil {
 		log.Println(err)
 		erroInterno(w, r)
@@ -122,6 +111,7 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 
 	líderDAO := dao.NewLiderDAO(tx)
 	if err := líderDAO.Save(&líder); err != nil {
+		líderDAO.Rollback()
 		log.Println("Erro ao gravar líder:", err)
 		erroInterno(w, r)
 		return
@@ -132,7 +122,6 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 		erroInterno(w, r)
 		return
 	}
-	db.Close()
 
 	página, err := ioutil.ReadFile(gopath + "/src/coleta/páginas/líderes-sucesso.html")
 	if err != nil {
