@@ -30,66 +30,12 @@ func líderesGet(
 	r *http.Request,
 	líder *modelos.LíderComErros,
 ) {
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println("Erro ao iniciar transação:", err)
-		return
-	}
-
-	zonaDAO := dao.NewZonaDAO(tx)
-	zonas, err := zonaDAO.FindAll()
-	if err != nil {
-		zonaDAO.Rollback()
-		log.Println("Erro ao buscar zonas:", err)
-		return
-	}
-
-	zonaDAO.Commit()
-
-	funcMap := template.FuncMap{
-		"zonas": func() []zonaComSeleção {
-			seleção := make([]zonaComSeleção, 0, len(zonas))
-			for _, zona := range zonas {
-				s := zonaComSeleção{Zona: *zona}
-				if líder != nil && líder.Zona.Id == zona.Id {
-					s.Selecionado = true
-				}
-				seleção = append(seleção, s)
-			}
-			return seleção
-		},
-
-		"turnos": func() []turnoComSeleção {
-			turnos := modelos.Turnos()
-			seleção := make([]turnoComSeleção, 0, len(turnos))
-			for _, turno := range turnos {
-				s := turnoComSeleção{Turno: turno}
-				if líder != nil {
-					for _, t := range líder.Turnos {
-						if s.Turno.Id == t.Id {
-							s.Selecionado = true
-						}
-					}
-				}
-
-				seleção = append(seleção, s)
-			}
-
-			return seleção
-		},
-	}
-
-	t, err := template.New("esquinas").Funcs(funcMap).
-		ParseFiles(gopath + "/src/coleta/páginas/líderes.html")
-	if err != nil {
-		log.Println("Ali:", err)
-		return
-	}
-
-	err = t.ExecuteTemplate(w, "líderes.html", líder)
-	if err != nil {
-		log.Println("Aqui:", err)
-		return
+	t := exibiçãoDoLíder(líder, "líderes.html")
+	if t != nil {
+		err := t.ExecuteTemplate(w, "líderes.html", líder)
+		if err != nil {
+			log.Println("Aqui:", err)
+		}
 	}
 }
 
@@ -139,4 +85,64 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, "%s", página)
+}
+
+func exibiçãoDoLíder(líder *modelos.LíderComErros, página string) *template.Template {
+	tx, err := dao.DB.Begin()
+	if err != nil {
+		log.Println("Erro ao iniciar transação:", err)
+		return nil
+	}
+
+	zonaDAO := dao.NewZonaDAO(tx)
+	zonas, err := zonaDAO.FindAll()
+	if err != nil {
+		zonaDAO.Rollback()
+		log.Println("Erro ao buscar zonas:", err)
+		return nil
+	}
+
+	zonaDAO.Commit()
+
+	funcMap := template.FuncMap{
+		"zonas": func() []zonaComSeleção {
+			seleção := make([]zonaComSeleção, 0, len(zonas))
+			for _, zona := range zonas {
+				s := zonaComSeleção{Zona: *zona}
+				if líder != nil && líder.Zona.Id == zona.Id {
+					s.Selecionado = true
+				}
+				seleção = append(seleção, s)
+			}
+			return seleção
+		},
+
+		"turnos": func() []turnoComSeleção {
+			turnos := modelos.Turnos()
+			seleção := make([]turnoComSeleção, 0, len(turnos))
+			for _, turno := range turnos {
+				s := turnoComSeleção{Turno: turno}
+				if líder != nil {
+					for _, t := range líder.Turnos {
+						if s.Turno.Id == t.Id {
+							s.Selecionado = true
+						}
+					}
+				}
+
+				seleção = append(seleção, s)
+			}
+
+			return seleção
+		},
+	}
+
+	t, err := template.New("esquinas").Funcs(funcMap).
+		ParseFiles(gopath + "/src/coleta/páginas/" + página)
+	if err != nil {
+		log.Println("Ali:", err)
+		return nil
+	}
+
+	return t
 }
