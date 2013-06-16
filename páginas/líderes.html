@@ -8,7 +8,16 @@
 
 			Telefone celular: <input type="text" name="telefone-celular" value="{{.TelefoneCelular}}" class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/> {{.MsgTelefoneCelular}}
 
-			Operadora: <input type="text" name="operadora" value="{{.Operadora}}" class="{{if .MsgOperadora}}erro{{end}}"/> {{.MsgOperadora}}<br/>
+			Operadora:
+			<select name="operadora">
+				<option value="Claro" {{if iguais .Operadora "Claro"}}selected="selected"{{end}}>Claro</option>
+				<option value="Oi" {{if iguais .Operadora "Oi"}}selected="selected"{{end}}>Oi</option>
+				<option value="TIM" {{if iguais .Operadora "TIM"}}selected="selected"{{end}}>TIM</option>
+				<option value="Vivo" {{if iguais .Operadora "Vivo"}}selected="selected"{{end}}>Vivo</option>
+				<option value="Outra" {{if iguais .Operadora "Outra"}}selected="selected"{{end}}>Outra</option>
+			</select>
+
+			<br/>
 
 			E-mail: <input type="text" name="e-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/> {{.MsgEmail}}<br/>
 			<div>{{.MsgContato}}</div>

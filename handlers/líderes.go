@@ -135,6 +135,10 @@ func exibiçãoDoLíder(líder *modelos.LíderComErros, página string) *templat
 
 			return seleção
 		},
+
+		"iguais": func(x, y string) bool {
+			return x == y
+		},
 	}
 
 	t, err := template.New("esquinas").Funcs(funcMap).
