@@ -35,29 +35,7 @@ func NovoLíder() *Líder {
 	return l
 }
 
-type LíderComErros struct {
-	Líder
-
-	MsgNome                string
-	MsgTelefoneResidencial string
-	MsgTelefoneCelular     string
-	MsgOperadora           string
-	MsgEmail               string
-	MsgContato             string
-	MsgTurnos              string
-	MsgZona                string
-	MsgCadastradoEm        string
-	MsgEsquina             string
-}
-
-func NovoLíderComErros() *LíderComErros {
-	l := new(LíderComErros)
-	l.Líder = *NovoLíder()
-
-	return l
-}
-
-func (l *Líder) Preencher(campos map[string][]string) *LíderComErros {
+func (l *Líder) Preencher(campos map[string][]string) {
 	l.Nome = campos["nome"][0]
 	l.TelefoneResidencial = campos["telefone-residencial"][0]
 	l.TelefoneCelular = campos["telefone-celular"][0]
@@ -72,9 +50,7 @@ func (l *Líder) Preencher(campos map[string][]string) *LíderComErros {
 
 	l.Zona = &Zona{Id: id}
 
-	l.CadastradoEm = time.Now()
-
-	return l.validar()
+	l.CadastradoEm = time.Now().UTC()
 }
 
 func obterTurnos(ids []string) []Turno {
@@ -84,43 +60,4 @@ func obterTurnos(ids []string) []Turno {
 	}
 
 	return turnos
-}
-
-func (l *Líder) validar() (comErros *LíderComErros) {
-	comErros = l.validarCamposObrigatórios(comErros)
-	comErros = l.validarSintaxe(comErros)
-
-	return comErros
-}
-
-func (l *Líder) validarCamposObrigatórios(comErros *LíderComErros) *LíderComErros {
-	if l.Nome == "" {
-		comErros = l.preencherLíderComErros(comErros)
-		comErros.MsgNome = "Este campo não pode estar vazio"
-	}
-
-	if l.TelefoneResidencial == "" && l.TelefoneCelular == "" && l.Email == "" {
-		comErros = l.preencherLíderComErros(comErros)
-		comErros.MsgContato = "Ao menos um destes campos não pode estar vazio"
-	}
-
-	if len(l.Turnos) == 0 {
-		comErros = l.preencherLíderComErros(comErros)
-		comErros.MsgTurnos = "Ao menos um turno tem de estar selecionado"
-	}
-
-	return comErros
-}
-
-func (l *Líder) preencherLíderComErros(validado *LíderComErros) *LíderComErros {
-	if validado == nil {
-		validado = new(LíderComErros)
-		validado.Líder = *l
-	}
-
-	return validado
-}
-
-func (l *Líder) validarSintaxe(comErros *LíderComErros) *LíderComErros {
-	return comErros
 }

@@ -3,6 +3,7 @@ package handlers
 import (
 	"coleta/dao"
 	"coleta/modelos"
+	"coleta/modelos/validação"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -58,13 +59,13 @@ func tratarAdmLíder(w http.ResponseWriter, r *http.Request) {
 
 	líderDAO.Commit()
 
-	admLíderGet(w, r, &modelos.LíderComErros{Líder: *líder})
+	admLíderGet(w, r, &validação.LíderComErros{Líder: *líder})
 }
 
 func admLíderGet(
 	w http.ResponseWriter,
 	r *http.Request,
-	líder *modelos.LíderComErros,
+	líder *validação.LíderComErros,
 ) {
 	t := exibiçãoDoLíder(líder, "adm-líder.html")
 	if t != nil {
@@ -85,8 +86,9 @@ func admLíderPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var líder modelos.Líder
-	erros := líder.Preencher(r.Form)
+	líder := modelos.NovoLíder()
+	líder.Preencher(r.Form)
+	erros := validação.ValidarLíder(líder)
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -112,7 +114,7 @@ func admLíderPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	líderDAO := dao.NewLiderDAO(tx)
-	if err := líderDAO.Save(&líder); err != nil {
+	if err := líderDAO.Save(líder); err != nil {
 		líderDAO.Rollback()
 		log.Println("Erro ao gravar líder:", err)
 		erroInterno(w, r)

@@ -2,7 +2,7 @@
 <html>
 	<body>
 		<form action="líderes" method="POST">
-			Nome: <input type="text" name="nome" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> {{.MsgNome}}<br/>
+			Nome completo: <input type="text" name="nome" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> {{.MsgNome}}<br/>
 
 			Telefone residencial: <input type="text" name="telefone-residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/> {{.MsgTelefoneResidencial}}<br/>
 
@@ -10,6 +10,7 @@
 
 			Operadora:
 			<select name="operadora">
+				<option value="" {{if iguais .Operadora ""}}selected="selected"{{end}}></option>
 				<option value="Claro" {{if iguais .Operadora "Claro"}}selected="selected"{{end}}>Claro</option>
 				<option value="Oi" {{if iguais .Operadora "Oi"}}selected="selected"{{end}}>Oi</option>
 				<option value="TIM" {{if iguais .Operadora "TIM"}}selected="selected"{{end}}>TIM</option>

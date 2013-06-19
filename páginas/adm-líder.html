@@ -10,6 +10,7 @@
 
 			Operadora:
 			<select name="operadora">
+				<option value="" {{if iguais .Operadora ""}}selected="selected"{{end}}></option>
 				<option value="Claro" {{if iguais .Operadora "Claro"}}selected="selected"{{end}}>Claro</option>
 				<option value="Oi" {{if iguais .Operadora "Oi"}}selected="selected"{{end}}>Oi</option>
 				<option value="TIM" {{if iguais .Operadora "TIM"}}selected="selected"{{end}}>TIM</option>
@@ -37,7 +38,7 @@
 			
 			<br/>
 
-			Esquina: <div id="esquina">{{.Esquina.Cruzamento}}</div><button type="button">Alterar</button>
+			Esquina: <div id="esquina">{{.Esquina.Cruzamento}}</div><div><button type="button">Alterar</button></div>
 
 			<br/>
 			<br/>

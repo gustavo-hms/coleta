@@ -3,6 +3,7 @@ package handlers
 import (
 	"coleta/dao"
 	"coleta/modelos"
+	"coleta/modelos/validação"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -19,7 +20,8 @@ func Líderes(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.WriteHeader(http.StatusNotImplemented)
 	case "GET":
-		líderesGet(w, r, modelos.NovoLíderComErros())
+		líder := modelos.NovoLíder()
+		líderesGet(w, r, validação.NovoLíderComErros(líder))
 	case "POST":
 		líderesPost(w, r)
 	}
@@ -28,7 +30,7 @@ func Líderes(w http.ResponseWriter, r *http.Request) {
 func líderesGet(
 	w http.ResponseWriter,
 	r *http.Request,
-	líder *modelos.LíderComErros,
+	líder *validação.LíderComErros,
 ) {
 	t := exibiçãoDoLíder(líder, "líderes.html")
 	if t != nil {
@@ -47,8 +49,9 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var líder modelos.Líder
-	erros := líder.Preencher(r.Form)
+	líder := modelos.NovoLíder()
+	líder.Preencher(r.Form)
+	erros := validação.ValidarLíder(líder)
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -64,7 +67,7 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	líderDAO := dao.NewLiderDAO(tx)
-	if err := líderDAO.Save(&líder); err != nil {
+	if err := líderDAO.Save(líder); err != nil {
 		líderDAO.Rollback()
 		log.Println("Erro ao gravar líder:", err)
 		erroInterno(w, r)
@@ -77,9 +80,9 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	página, err := ioutil.ReadFile(gopath + "/src/coleta/páginas/líderes-sucesso.html")
+	página, err := ioutil.ReadFile(gopath + "/src/coleta/páginas/cadastro-sucesso.html")
 	if err != nil {
-		log.Println("Erro ao abrir o arquivo esquinas-sucesso.html:", err)
+		log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
 		erroInterno(w, r)
 		return
 	}
@@ -87,7 +90,7 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", página)
 }
 
-func exibiçãoDoLíder(líder *modelos.LíderComErros, página string) *template.Template {
+func exibiçãoDoLíder(líder *validação.LíderComErros, página string) *template.Template {
 	tx, err := dao.DB.Begin()
 	if err != nil {
 		log.Println("Erro ao iniciar transação:", err)

@@ -1,7 +1,6 @@
 package modelos
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -19,26 +18,26 @@ func init() {
 
 	turno1Sexta = Turno{
 		Id:     "1",
-		Início: time.Date(2013, 8, 23, 8, 0, 0, 0, fusoHorárioDeSãoPaulo),
-		Fim:    time.Date(2013, 8, 23, 12, 0, 0, 0, fusoHorárioDeSãoPaulo),
+		Início: time.Date(2013, 8, 23, 7, 0, 0, 0, fusoHorárioDeSãoPaulo),
+		Fim:    time.Date(2013, 8, 23, 13, 0, 0, 0, fusoHorárioDeSãoPaulo),
 	}
 
 	turno2Sexta = Turno{
 		Id:     "2",
 		Início: time.Date(2013, 8, 23, 13, 0, 0, 0, fusoHorárioDeSãoPaulo),
-		Fim:    time.Date(2013, 8, 23, 18, 0, 0, 0, fusoHorárioDeSãoPaulo),
+		Fim:    time.Date(2013, 8, 23, 20, 0, 0, 0, fusoHorárioDeSãoPaulo),
 	}
 
 	turno1Sábado = Turno{
 		Id:     "3",
-		Início: time.Date(2013, 8, 24, 8, 0, 0, 0, fusoHorárioDeSãoPaulo),
-		Fim:    time.Date(2013, 8, 24, 12, 0, 0, 0, fusoHorárioDeSãoPaulo),
+		Início: time.Date(2013, 8, 24, 9, 0, 0, 0, fusoHorárioDeSãoPaulo),
+		Fim:    time.Date(2013, 8, 24, 14, 0, 0, 0, fusoHorárioDeSãoPaulo),
 	}
 
 	turno2Sábado = Turno{
 		Id:     "4",
-		Início: time.Date(2013, 8, 24, 13, 0, 0, 0, fusoHorárioDeSãoPaulo),
-		Fim:    time.Date(2013, 8, 24, 18, 0, 0, 0, fusoHorárioDeSãoPaulo),
+		Início: time.Date(2013, 8, 24, 14, 0, 0, 0, fusoHorárioDeSãoPaulo),
+		Fim:    time.Date(2013, 8, 24, 20, 0, 0, 0, fusoHorárioDeSãoPaulo),
 	}
 
 	turnos = map[string]Turno{
@@ -56,8 +55,7 @@ type Turno struct {
 }
 
 func (t Turno) String() string {
-	h, m, _ := t.Fim.Clock()
-	return t.Início.Format("2/1/2006, das 15h04 às ") + fmt.Sprintf("%02dh%02d", h, m)
+	return t.Início.Format("2/1/2006, das 15h04 às ") + t.Fim.Format("15h04")
 }
 
 func Turnos() []Turno {

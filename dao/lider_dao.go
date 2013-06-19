@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 )
 
 type LiderDAO struct {
@@ -142,10 +143,12 @@ func (dao *LiderDAO) FindById(id int) (*modelos.Líder, error) {
 	lider.Zona = new(modelos.Zona)
 	lider.Esquina = new(modelos.Esquina)
 
+	var cadastradoEm string
+
 	err := row.Scan(&lider.Id,
 		&lider.Zona.Id,
 		&lider.Esquina.Id,
-		&lider.CadastradoEm,
+		&cadastradoEm,
 		&lider.Nome,
 		&lider.TelefoneResidencial,
 		&lider.TelefoneCelular,
@@ -153,6 +156,10 @@ func (dao *LiderDAO) FindById(id int) (*modelos.Líder, error) {
 		&lider.Email)
 
 	if err != nil {
+		return nil, err
+	}
+
+	if lider.CadastradoEm, err = time.Parse("2006-01-02 15:04:05", cadastradoEm); err != nil {
 		return nil, err
 	}
 
@@ -164,9 +171,47 @@ func (dao *LiderDAO) FindById(id int) (*modelos.Líder, error) {
 	return lider, nil
 }
 
+func (dao *LiderDAO) FindByEmail(email string) (*modelos.Líder, error) {
+	query := fmt.Sprintf("SELECT %s FROM lider WHERE email = ?", dao.fields)
+	row := dao.QueryRow(query, email)
+
+	lider := new(modelos.Líder)
+	lider.Zona = new(modelos.Zona)
+	lider.Esquina = new(modelos.Esquina)
+
+	var cadastradoEm string
+
+	err := row.Scan(
+		&lider.Id,
+		&lider.Zona.Id,
+		&lider.Esquina.Id,
+		&cadastradoEm,
+		&lider.Nome,
+		&lider.TelefoneResidencial,
+		&lider.TelefoneCelular,
+		&lider.Operadora,
+		&lider.Email,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if lider.CadastradoEm, err = time.Parse("2006-01-02 15:04:05", cadastradoEm); err != nil {
+		return nil, err
+	}
+
+	lider.Turnos, err = dao.loadTurnos(lider.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return lider, nil
+}
+
 func (dao *LiderDAO) loadTurnos(liderId int) ([]modelos.Turno, error) {
 	query := "SELECT turno FROM turnos_do_lider WHERE lider_id = ?"
-	rows, err := dao.Query(query)
+	rows, err := dao.Query(query, liderId)
 	if err != nil {
 		return nil, err
 	}
