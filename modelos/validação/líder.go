@@ -53,9 +53,14 @@ func (l *LíderComErros) validarCamposObrigatórios() *LíderComErros {
 		l.MsgNome = "Este campo não pode estar vazio"
 	}
 
-	if l.TelefoneResidencial == "" && l.TelefoneCelular == "" && l.Email == "" {
+	if l.TelefoneResidencial == "" && l.TelefoneCelular == "" {
 		l.errosEncontrados = true
 		l.MsgContato = "Ao menos um destes campos não pode estar vazio"
+	}
+
+	if l.Email == "" {
+		l.errosEncontrados = true
+		l.MsgEmail = "Este campo não pode estar vazio"
 	}
 
 	if len(l.Turnos) == 0 {
