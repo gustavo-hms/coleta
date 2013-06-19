@@ -3,6 +3,7 @@ package handlers
 import (
 	"coleta/dao"
 	"coleta/modelos"
+	"coleta/modelos/validação"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -19,7 +20,8 @@ func Esquinas(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.WriteHeader(http.StatusNotImplemented)
 	case "GET":
-		esquinasGet(w, r, new(modelos.EsquinaComErros))
+		esquina := new(modelos.Esquina)
+		esquinasGet(w, r, validação.NovaEsquinaComErros(esquina))
 	case "POST":
 		esquinasPost(w, r)
 	}
@@ -28,7 +30,7 @@ func Esquinas(w http.ResponseWriter, r *http.Request) {
 func esquinasGet(
 	w http.ResponseWriter,
 	r *http.Request,
-	esquina *modelos.EsquinaComErros,
+	esquina *validação.EsquinaComErros,
 ) {
 	tx, err := dao.DB.Begin()
 	if err != nil {
@@ -77,8 +79,9 @@ func esquinasPost(w http.ResponseWriter, r *http.Request) {
 		log.Println("Erro ao analisar formulário:", err)
 	}
 
-	var esquina modelos.Esquina
-	erros := esquina.Preencher(r.FormValue)
+	esquina := new(modelos.Esquina)
+	esquina.Preencher(r.FormValue)
+	erros := validação.ValidarEsquina(esquina)
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -93,7 +96,7 @@ func esquinasPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	esquinaDAO := dao.NewEsquinaDAO(tx)
-	if err := esquinaDAO.Save(&esquina); err != nil {
+	if err := esquinaDAO.Save(esquina); err != nil {
 		esquinaDAO.Rollback()
 		log.Println("Erro ao gravar esquina:", err)
 		return
