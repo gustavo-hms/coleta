@@ -12,22 +12,17 @@ import (
 )
 
 func init() {
-	http.HandleFunc("/adm/esquinas", Esquinas)
+	registrar("/adm/esquinas", Esquinas{})
 }
 
-func Esquinas(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	default:
-		w.WriteHeader(http.StatusNotImplemented)
-	case "GET":
-		esquina := new(modelos.Esquina)
-		esquinasGet(w, r, validação.NovaEsquinaComErros(esquina))
-	case "POST":
-		esquinasPost(w, r)
-	}
+type Esquinas struct{}
+
+func (e Esquinas) Get(w http.ResponseWriter, r *http.Request) {
+	esquina := new(modelos.Esquina)
+	e.get(w, r, validação.NovaEsquinaComErros(esquina))
 }
 
-func esquinasGet(
+func (e Esquinas) get(
 	w http.ResponseWriter,
 	r *http.Request,
 	esquina *validação.EsquinaComErros,
@@ -73,7 +68,7 @@ func esquinasGet(
 	}
 }
 
-func esquinasPost(w http.ResponseWriter, r *http.Request) {
+func (e Esquinas) Post(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
@@ -85,7 +80,7 @@ func esquinasPost(w http.ResponseWriter, r *http.Request) {
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		esquinasGet(w, r, erros)
+		e.get(w, r, erros)
 		return
 	}
 

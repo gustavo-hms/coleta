@@ -1,4 +1,4 @@
-package handlers
+package serviços
 
 import (
 	"coleta/modelos"

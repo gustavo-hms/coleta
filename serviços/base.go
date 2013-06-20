@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func registrarServiço(uri string, provedor interface{}) {
+func registrar(uri string, provedor interface{}) {
 	s := &serviço{provedor}
 	http.Handle(uri, s)
 }

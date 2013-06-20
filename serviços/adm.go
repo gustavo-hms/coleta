@@ -8,15 +8,16 @@ import (
 )
 
 func init() {
-	http.HandleFunc("/adm", Adm)
+	registrar("/adm", Adm{})
 }
 
-func Adm(w http.ResponseWriter, r *http.Request) {
+type Adm struct{}
+
+func (a Adm) Get(w http.ResponseWriter, r *http.Request) {
 	página, err := ioutil.ReadFile(gopath + "/src/coleta/páginas/adm.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo adm.html:", err)
 	}
 
 	fmt.Fprintf(w, "%s", página)
-
 }

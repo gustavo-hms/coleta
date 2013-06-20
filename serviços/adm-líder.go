@@ -14,25 +14,16 @@ import (
 )
 
 func init() {
-	http.HandleFunc("/adm/líder/", AdmLíder)
+	registrar("/adm/líder/", AdmLíder{})
 }
 
-func AdmLíder(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	default:
-		w.WriteHeader(http.StatusNotImplemented)
-	case "GET":
-		tratarAdmLíder(w, r)
-	case "POST":
-		admLíderPost(w, r)
-	}
-}
+type AdmLíder struct{}
 
 func idDoLíder(endereço *url.URL) string {
 	return strings.SplitN(endereço.Path[12:], "/", 2)[0]
 }
 
-func tratarAdmLíder(w http.ResponseWriter, r *http.Request) {
+func (l AdmLíder) Get(w http.ResponseWriter, r *http.Request) {
 	stringDoId := idDoLíder(r.URL)
 	id, err := strconv.Atoi(stringDoId)
 	if err != nil {
@@ -59,10 +50,10 @@ func tratarAdmLíder(w http.ResponseWriter, r *http.Request) {
 
 	líderDAO.Commit()
 
-	admLíderGet(w, r, &validação.LíderComErros{Líder: *líder})
+	l.get(w, r, &validação.LíderComErros{Líder: *líder})
 }
 
-func admLíderGet(
+func (l AdmLíder) get(
 	w http.ResponseWriter,
 	r *http.Request,
 	líder *validação.LíderComErros,
@@ -78,7 +69,7 @@ func admLíderGet(
 	}
 }
 
-func admLíderPost(w http.ResponseWriter, r *http.Request) {
+func (l AdmLíder) Post(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
@@ -92,7 +83,7 @@ func admLíderPost(w http.ResponseWriter, r *http.Request) {
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		admLíderGet(w, r, erros)
+		l.get(w, r, erros)
 		return
 	}
 

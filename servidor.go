@@ -3,7 +3,7 @@ package main
 import (
 	"coleta/config"
 	"coleta/dao"
-	_ "coleta/handlers"
+	_ "coleta/serviços"
 	"fmt"
 	"net/http"
 	"os"
