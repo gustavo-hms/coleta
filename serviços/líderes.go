@@ -1,4 +1,4 @@
-package handlers
+package serviços
 
 import (
 	"coleta/dao"
@@ -12,22 +12,17 @@ import (
 )
 
 func init() {
-	http.HandleFunc("/líderes", Líderes)
+	registrarServiço("/líderes", Líderes)
 }
 
-func Líderes(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	default:
-		w.WriteHeader(http.StatusNotImplemented)
-	case "GET":
-		líder := modelos.NovoLíder()
-		líderesGet(w, r, validação.NovoLíderComErros(líder))
-	case "POST":
-		líderesPost(w, r)
-	}
+type Líderes struct{}
+
+func (l Líderes) Get(w http.ResponseWriter, r *http.Request) {
+	líder := modelos.NovoLíder()
+	l.get(w, r, validação.NovoLíderComErros(líder))
 }
 
-func líderesGet(
+func (l Líderes) get(
 	w http.ResponseWriter,
 	r *http.Request,
 	líder *validação.LíderComErros,
@@ -41,7 +36,7 @@ func líderesGet(
 	}
 }
 
-func líderesPost(w http.ResponseWriter, r *http.Request) {
+func (l Líderes) Post(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
@@ -55,7 +50,7 @@ func líderesPost(w http.ResponseWriter, r *http.Request) {
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		líderesGet(w, r, erros)
+		l.get(w, r, erros)
 		return
 	}
 
