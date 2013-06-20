@@ -35,10 +35,10 @@ func (s serviço) nãoImplementado(w http.ResponseWriter) {
 }
 
 func (s *serviço) chamarMétodoSePossível(name string, w http.ResponseWriter, r *http.Request) {
-	method := reflect.ValueOf(s.provedor).MethodByName(name)
-	if method.IsValid() {
+	método := reflect.ValueOf(s.provedor).MethodByName(name)
+	if método.IsValid() {
 		args := []reflect.Value{reflect.ValueOf(w), reflect.ValueOf(r)}
-		method.Call(args)
+		método.Call(args)
 	} else {
 		s.nãoImplementado(w)
 	}
