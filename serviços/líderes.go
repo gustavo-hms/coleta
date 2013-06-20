@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	registrar("/líderes", Líderes{})
+	registrar("/lideres", Líderes{})
 }
 
 type Líderes struct{}

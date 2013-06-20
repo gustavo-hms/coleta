@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	registrar("/adm/líder/", AdmLíder{})
+	registrar("/adm/lider/", AdmLíder{})
 }
 
 type AdmLíder struct{}

@@ -2,7 +2,14 @@ package serviços
 
 import (
 	"coleta/modelos"
+	"github.com/gorilla/securecookie"
+	"github.com/gorilla/sessions"
 	"net/http"
+)
+
+var sessões = sessions.NewCookieStore(
+	securecookie.GenerateRandomKey(32),
+	securecookie.GenerateRandomKey(32),
 )
 
 type zonaComSeleção struct {
