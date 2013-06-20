@@ -1,6 +1,7 @@
 package serviços
 
 import (
+	"coleta/config"
 	"coleta/dao"
 	"coleta/modelos"
 	"coleta/modelos/validação"
@@ -56,7 +57,7 @@ func (e Esquinas) get(
 	}}
 
 	t, err := template.New("esquinas").Funcs(funcMap).
-		ParseFiles(gopath + "/src/coleta/páginas/adm-esquinas.html")
+		ParseFiles(config.Dados.DiretórioDasPáginas + "/adm-esquinas.html")
 	if err != nil {
 		log.Println("Ali:", err)
 		return
@@ -102,7 +103,7 @@ func (e Esquinas) Post(w http.ResponseWriter, r *http.Request) {
 		log.Println("Erro no commit:", err)
 	}
 
-	página, err := ioutil.ReadFile(gopath + "/src/coleta/páginas/cadastro-sucesso.html")
+	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
 	}

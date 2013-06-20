@@ -1,6 +1,7 @@
 package serviços
 
 import (
+	"coleta/config"
 	"coleta/dao"
 	"coleta/modelos"
 	"coleta/modelos/validação"
@@ -118,7 +119,7 @@ func (l AdmLíder) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	página, err := ioutil.ReadFile(gopath + "/src/coleta/páginas/líderes-sucesso.html")
+	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/líderes-sucesso.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo líderes-sucesso.html:", err)
 		erroInterno(w, r)

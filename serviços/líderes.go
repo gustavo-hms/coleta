@@ -1,6 +1,7 @@
 package serviços
 
 import (
+	"coleta/config"
 	"coleta/dao"
 	"coleta/modelos"
 	"coleta/modelos/validação"
@@ -75,7 +76,7 @@ func (l Líderes) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	página, err := ioutil.ReadFile(gopath + "/src/coleta/páginas/cadastro-sucesso.html")
+	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
 		erroInterno(w, r)
@@ -140,7 +141,7 @@ func exibiçãoDoLíder(líder *validação.LíderComErros, página string) *tem
 	}
 
 	t, err := template.New("esquinas").Funcs(funcMap).
-		ParseFiles(gopath + "/src/coleta/páginas/" + página)
+		ParseFiles(config.Dados.DiretórioDasPáginas + "/" + página)
 	if err != nil {
 		log.Println("Ali:", err)
 		return nil
