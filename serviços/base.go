@@ -3,6 +3,7 @@ package serviços
 import (
 	"net/http"
 	"reflect"
+	"strings"
 )
 
 func registrar(uri string, provedor interface{}) {
@@ -15,27 +16,15 @@ type serviço struct {
 }
 
 func (s *serviço) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	default:
-		s.nãoImplementado(w)
-	case "GET":
-		s.chamarMétodoSePossível("Get", w, r)
-	case "PUT":
-		s.chamarMétodoSePossível("Put", w, r)
-	case "POST":
-		s.chamarMétodoSePossível("Post", w, r)
-	case "DELETE":
-		s.chamarMétodoSePossível("Delete", w, r)
-	case "PATCH":
-		s.chamarMétodoSePossível("Patch", w, r)
-	}
+	nome := r.Method[0:1] + strings.ToLower(r.Method[1:])
+	s.chamarMétodoSePossível(nome, w, r)
 }
 func (s serviço) nãoImplementado(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func (s *serviço) chamarMétodoSePossível(name string, w http.ResponseWriter, r *http.Request) {
-	método := reflect.ValueOf(s.provedor).MethodByName(name)
+func (s *serviço) chamarMétodoSePossível(nome string, w http.ResponseWriter, r *http.Request) {
+	método := reflect.ValueOf(s.provedor).MethodByName(nome)
 	if método.IsValid() {
 		args := []reflect.Value{reflect.ValueOf(w), reflect.ValueOf(r)}
 		método.Call(args)
