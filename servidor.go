@@ -30,8 +30,6 @@ func main() {
 
 	go http.ListenAndServe(":"+config.Dados.Porta, nil)
 
-	fmt.Println("Cert:", config.Dados.ArquivoDeCertificado, "\nKey:", config.Dados.ArquivoDeChave)
-
 	err := http.ListenAndServeTLS(
 		":"+config.Dados.PortaTLS,
 		config.Dados.ArquivoDeCertificado,
