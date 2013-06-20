@@ -17,11 +17,11 @@
 				<option value="Vivo" {{if iguais .Operadora "Vivo"}}selected="selected"{{end}}>Vivo</option>
 				<option value="Outra" {{if iguais .Operadora "Outra"}}selected="selected"{{end}}>Outra</option>
 			</select>
+			<div>{{.MsgContato}}</div>
 
 			<br/>
 
 			E-mail: <input type="text" name="e-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/> {{.MsgEmail}}<br/>
-			<div>{{.MsgContato}}</div>
 
 			Turnos: <divi class="{{if .MsgTurnos}}erro{{end}}">{{range turnos}}
 			<br/><input type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}}> {{.Turno.String}}

@@ -7,9 +7,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"runtime"
 )
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	if len(os.Args) != 2 {
 		fmt.Println(uso())
 		os.Exit(1)
@@ -25,7 +28,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+config.Dados.Porta, nil)
 }
 
 func uso() string {

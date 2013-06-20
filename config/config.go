@@ -24,6 +24,7 @@ func Ler(caminho string) error {
 type Config struct {
 	Banco               Banco
 	DiretórioDasPáginas string
+	Porta               string
 }
 
 type Banco struct {
