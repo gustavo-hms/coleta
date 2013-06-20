@@ -88,9 +88,10 @@ func (dao *LiderDAO) createTurnos(lider *modelos.Líder) error {
 
 func (dao *LiderDAO) update(lider *modelos.Líder) error {
 	query := "UPDATE lider SET zona_id = ?, esquina_id = ?, cadastrado_em = ?, " +
-		"nome_completo,  = ?, telefone_residencial = ?, telefone_celular = ?, " +
-		"operadora_celular = ?, email = ?"
-	row, err := dao.Exec(query,
+		"nome_completo = ?, telefone_residencial = ?, telefone_celular = ?, " +
+		"operadora_celular = ?, email = ? WHERE id = ?"
+	row, err := dao.Exec(
+		query,
 		lider.Zona.Id,
 		lider.Esquina.Id,
 		lider.CadastradoEm,
@@ -98,7 +99,9 @@ func (dao *LiderDAO) update(lider *modelos.Líder) error {
 		lider.TelefoneResidencial,
 		lider.TelefoneCelular,
 		lider.Operadora,
-		lider.Email)
+		lider.Email,
+		lider.Id,
+	)
 	if err != nil {
 		return err
 	}

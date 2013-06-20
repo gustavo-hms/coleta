@@ -119,7 +119,7 @@ func (l AdmLíder) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/líderes-sucesso.html")
+	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/atualização-sucesso.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo líderes-sucesso.html:", err)
 		erroInterno(w, r)

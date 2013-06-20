@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<body>
-		<form action="adm/líder/{{.Id}}" method="POST">
+		<form action="{{.Id}}" method="post">
 			Nome: <input type="text" name="nome" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> {{.MsgNome}}<br/>
 
 			Telefone residencial: <input type="text" name="telefone-residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/> {{.MsgTelefoneResidencial}}<br/>
