@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script src='/materiais/lideres.js'></script>
+
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/flick/jquery-ui.css">
+	</head>
 	<body>
-		<form action="lideres" method="POST">
+		<form action="lideres" method="POST" id="formulario">
 			Nome completo: <input type="text" name="nome" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> {{.MsgNome}}<br/>
 
 			Telefone residencial: <input type="text" name="telefone-residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/> {{.MsgTelefoneResidencial}}<br/>
@@ -23,14 +30,16 @@
 
 			E-mail: <input type="text" name="e-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/> {{.MsgEmail}}<br/>
 
-			Turnos: <divi class="{{if .MsgTurnos}}erro{{end}}">{{range turnos}}
-			<br/><input type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}}> {{.Turno.String}}
-			{{end}}</div>{{if .MsgTurnos}}<div>{{.MsgTurnos}}</div>{{end}}
+			Turnos: <div id="turnos" class="{{if .MsgTurnos}}erro{{end}}">
+				{{range turnos}}
+				<br/><input id="turno-{{.Turno.Id}}" type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}}> <label for="turno-{{.Turno.Id}}">{{.Turno.String}}</label>
+				{{end}}
+			</div>{{if .MsgTurnos}}<div>{{.MsgTurnos}}</div>{{end}}
 
 			<br/>
 
 			Zona:
-			<select name="zona">
+			<select id="zona" name="zona">
 				{{range zonas}}
 				<option value="{{.Zona.Id}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona.Nome}}</option>
 				{{end}}
@@ -39,7 +48,17 @@
 			<br/>
 			<br/>
 
-			<input type="submit" value="Enviar"/>
+			<div id="confirmacao" style="display: none">
+				Você escolheu participar dos seguintes turnos:
+				<div id="confirmacao-turnos"></div>
+				<br/>
+				E selecionou <span id="confirmacao-zona"></span> como zona de atuação.
+				<br/>
+				<br/>
+				Estes dados estão corretos?
+			</div>
+
+			<input type="submit" value="Enviar" id="enviar"/>
 		</form> 
 	</body>
 </html>
