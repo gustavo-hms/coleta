@@ -35,6 +35,7 @@ type serviço struct {
 func (s *serviço) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if s.restrito {
 		sessão, _ := sessões.Get(r, "coleta")
+
 		if autenticado, ok := sessão.Values["autenticado"]; !ok || !autenticado.(bool) {
 			sessão.AddFlash(r.URL.String())
 			sessão.Save(r, w)
@@ -43,7 +44,6 @@ func (s *serviço) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	print("Método: ", r.Method, "\n")
 	nome := r.Method[0:1] + strings.ToLower(r.Method[1:])
 	s.chamarMétodoSePossível(nome, w, r)
 }

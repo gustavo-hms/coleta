@@ -41,9 +41,9 @@ func (e Entrar) Post(w http.ResponseWriter, r *http.Request) {
 	sessão.Save(r, w)
 
 	if len(mensagens) == 0 {
-		http.Redirect(w, r, "/adm", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/adm", http.StatusSeeOther)
 
 	} else {
-		http.Redirect(w, r, mensagens[0].(string), http.StatusTemporaryRedirect)
+		http.Redirect(w, r, mensagens[0].(string), http.StatusSeeOther)
 	}
 }

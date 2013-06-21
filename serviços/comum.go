@@ -12,6 +12,10 @@ var sessões = sessions.NewCookieStore(
 	securecookie.GenerateRandomKey(32),
 )
 
+func init() {
+	sessões.Options.MaxAge = 60 * 5
+}
+
 type zonaComSeleção struct {
 	Zona        modelos.Zona
 	Selecionado bool
