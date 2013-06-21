@@ -13,8 +13,8 @@ func init() {
 }
 
 const (
-	usuário = "gustavo"
-	senha   = "henrique"
+	usuário = "nome-de-usuário"
+	senha   = "senha-do-usuário"
 )
 
 type Entrar struct{}
