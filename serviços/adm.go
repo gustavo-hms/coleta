@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	registrar("/adm", Adm{})
+	registrarSeguro("/adm", Adm{})
 }
 
 type Adm struct{}

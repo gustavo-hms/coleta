@@ -3,7 +3,7 @@ package main
 import (
 	"coleta/config"
 	"coleta/dao"
-	_ "coleta/serviços"
+	"coleta/serviços"
 	"fmt"
 	"net/http"
 	"os"
@@ -28,13 +28,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	go http.ListenAndServe(":"+config.Dados.Porta, nil)
+	go http.ListenAndServe(":"+config.Dados.Porta, serviços.MuxSimples)
 
 	err := http.ListenAndServeTLS(
 		":"+config.Dados.PortaTLS,
 		config.Dados.ArquivoDeCertificado,
 		config.Dados.ArquivoDeChave,
-		nil,
+		serviços.MuxSeguro,
 	)
 
 	if err != nil {

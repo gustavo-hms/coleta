@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	registrar("/adm/zona/", AdmZona{})
+	registrarSeguro("/adm/zona/", AdmZona{})
 }
 
 type AdmZona struct{}

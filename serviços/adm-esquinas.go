@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	registrar("/adm/esquinas", Esquinas{})
+	registrarSeguro("/adm/esquinas", Esquinas{})
 }
 
 type Esquinas struct{}
