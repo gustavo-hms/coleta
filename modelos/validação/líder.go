@@ -5,6 +5,7 @@ import (
 	"coleta/modelos"
 	"log"
 	"net/mail"
+	"strings"
 )
 
 type LíderComErros struct {
@@ -85,6 +86,11 @@ func (l *LíderComErros) validarSintaxe() *LíderComErros {
 }
 
 func (l *LíderComErros) validarPolíticas() *LíderComErros {
+	if l.Nome != "" && len(strings.Fields(l.Nome)) < 2 {
+		l.errosEncontrados = true
+		l.MsgNome = "Por favor, informe seu nome completo"
+	}
+
 	if l.Email == "" {
 		return l
 	}
