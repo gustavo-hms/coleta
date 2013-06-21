@@ -23,7 +23,7 @@ func (s *serviço) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if s.restrito {
 		sessão, _ := sessões.Get(r, "coleta")
 		if autenticado, ok := sessão.Values["autenticado"]; !ok || !autenticado.(bool) {
-			sessão.Values["origem"] = r.URL.String()
+			sessão.AddFlash(r.URL.String())
 			sessão.Save(r, w)
 			http.Redirect(w, r, "entrar", http.StatusTemporaryRedirect)
 			return
