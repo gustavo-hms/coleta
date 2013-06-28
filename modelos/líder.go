@@ -39,7 +39,13 @@ func (l *Líder) Preencher(campos map[string][]string) {
 	l.Nome = campos["nome"][0]
 	l.TelefoneResidencial = campos["telefone-residencial"][0]
 	l.TelefoneCelular = campos["telefone-celular"][0]
-	l.Operadora = campos["operadora"][0]
+
+	if operadora, ok := campos["operadora"]; ok {
+		l.Operadora = operadora[0]
+	} else {
+		l.Operadora = OperadoraOutra
+	}
+
 	l.Email = campos["e-mail"][0]
 	l.Turnos = obterTurnos(campos["turnos"])
 

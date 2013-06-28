@@ -1,64 +1,104 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-		<script src='/materiais/lideres.js'></script>
+		<meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <meta name="description" content="Custom Login Form Styling with CSS3" />
+        <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
 
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/flick/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="/materiais/css/style.css" />
+
+
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script src="/materiais/js/modernizr.custom.63321.js"></script>
+		<script src='/materiais/js/lideres.js'></script>
+		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
 	</head>
-	<body>
-		<form action="lideres" method="POST" id="formulario">
-			Nome completo: <input type="text" name="nome" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> {{.MsgNome}}<br/>
 
-			Telefone residencial: <input type="text" name="telefone-residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/> {{.MsgTelefoneResidencial}}<br/>
+	<body style="background: #FFF url(../images/bg2.jpg) repeat top left;">
+		<div class="container">
+			<header>
+				<h1>Inscrição de <strong>líder</strong></h1>
+				<h2>Caso haja dúvidas, favor entrar em contato com coleta.brasil@teto.org.br</h2>
+				<nav class="codrops-demos">
+					<a class="current-demo" href="lideres.html">Inscrição de líderes</a>
+					<a href="/materiais/voluntarios.html">Inscrição de voluntários</a>
+				</nav>
+			</header>
 
-			Telefone celular: <input type="text" name="telefone-celular" value="{{.TelefoneCelular}}" class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/> {{.MsgTelefoneCelular}}
+			<section class="main">
+				<form action="lideres" method="POST" id="formulario" class="form-1">
+					<p class="field">
+						<input type="text" name="nome" placeholder="Nome completo" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> 
+						<i class="icon-lock icon-large"></i>
+					</p> <div class="erro">{{.MsgNome}}</div>
 
-			Operadora:
-			<select name="operadora">
-				<option value="" {{if iguais .Operadora ""}}selected="selected"{{end}}></option>
-				<option value="Claro" {{if iguais .Operadora "Claro"}}selected="selected"{{end}}>Claro</option>
-				<option value="Oi" {{if iguais .Operadora "Oi"}}selected="selected"{{end}}>Oi</option>
-				<option value="TIM" {{if iguais .Operadora "TIM"}}selected="selected"{{end}}>TIM</option>
-				<option value="Vivo" {{if iguais .Operadora "Vivo"}}selected="selected"{{end}}>Vivo</option>
-				<option value="Outra" {{if iguais .Operadora "Outra"}}selected="selected"{{end}}>Outra</option>
-			</select>
-			<div>{{.MsgContato}}</div>
+					<p class="field">
+						<input type="text" name="telefone-residencial" placeholder="Telefone residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/>
+						<i class="icon-lock icon-large"></i>
+					</p> <div class="erro">{{.MsgTelefoneResidencial}}</div>
 
-			<br/>
+					<p class="field">
+						<input type="text" name="telefone-celular" placeholder="Telefone celular" value="{{.TelefoneCelular}}" class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/>
+						<i class="icon-lock icon-large"></i>
+					</p> {{.MsgTelefoneCelular}}
+					<div class="erro">{{.MsgContato}}</div>
 
-			E-mail: <input type="text" name="e-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/> {{.MsgEmail}}<br/>
+					Operadora:
+					<label for="Claro"><input type="radio" name="operadora" id="Claro" value="Claro" {{if iguais .Operadora "Claro"}}checked="checked"{{end}}/> Claro </label>
+					<label for="Oi"><input type="radio" name="operadora" id="Oi"  value="Oi" {{if iguais .Operadora "Oi"}}checked="checked"{{end}}/> Oi </label>
+					<label for="TIM"><input type="radio" name="operadora" id="TIM"  value="TIM" {{if iguais .Operadora "TIM"}}checked="checked"{{end}}/> TIM </label>
+					<label for="Vivo"><input type="radio" name="operadora" id="Vivo"  value="Vivo" {{if iguais .Operadora "Vivo"}}checked="checked"{{end}}/> Vivo </label>
+					<label for="Outra"><input type="radio" name="operadora" id="Outra" value="Outra" {{if iguais .Operadora "Outra"}}checked="checked"{{end}}/> Outra </label>
 
-			Turnos: <div id="turnos" class="{{if .MsgTurnos}}erro{{end}}">
-				{{range turnos}}
-				<br/><input id="turno-{{.Turno.Id}}" type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}}> <label for="turno-{{.Turno.Id}}">{{.Turno.String}}</label>
-				{{end}}
-			</div>{{if .MsgTurnos}}<div>{{.MsgTurnos}}</div>{{end}}
+					<br/>
+					<br/>
 
-			<br/>
+					<p class="field">
+						<input type="text" name="e-mail" placeholder="E-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/>
+						<i class="icon-lock icon-large"></i>
+					</p> {{.MsgEmail}}<br/>
 
-			Zona:
-			<select id="zona" name="zona">
-				{{range zonas}}
-				<option value="{{.Zona.Id}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona.Nome}}</option>
-				{{end}}
-			</select> {{.MsgZona}}
-			
-			<br/>
-			<br/>
+					Turnos: <div id="turnos" class="{{if .MsgTurnos}}erro{{end}}">
+						{{range turnos}}
+						<p>
+							<input id="turno-{{.Turno.Id}}" type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}} style="margin-top: 5px; margin-right: 5px;">
+							<label for="turno-{{.Turno.Id}}" style="float: none; padding: 0; background: transparent; border-radius: 0; box-shadow: none; line-height: 26px;"> {{.Turno.String}}</label>
+						</p>
 
-			<div id="confirmacao" style="display: none">
-				Você escolheu participar dos seguintes turnos:
-				<div id="confirmacao-turnos"></div>
-				<br/>
-				E selecionou <span id="confirmacao-zona"></span> como zona de atuação.
-				<br/>
-				<br/>
-				Estes dados estão corretos?
-			</div>
+						{{end}}
+					</div>{{if .MsgTurnos}}<div>{{.MsgTurnos}}</div>{{end}}
 
-			<input type="submit" value="Enviar" id="enviar"/>
-		</form> 
+					<br/>
+
+					Zona:
+					<p class="field">
+						<select id="zona" name="zona">
+							{{range zonas}}
+							<option value="{{.Zona.Id}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona.Nome}}</option>
+							{{end}}
+						</select> {{.MsgZona}}
+					</p>
+
+					<br/>
+					<br/>
+
+					<div id="confirmacao" style="display: none">
+						Você escolheu participar dos seguintes turnos:
+						<div id="confirmacao-turnos"></div>
+						<br/>
+						E selecionou <span id="confirmacao-zona"></span> como zona de atuação.
+						<br/>
+						<br/>
+						Estes dados estão corretos?
+					</div>
+
+					<input type="submit" value="Enviar" id="enviar"/>
+				</form> 
+			</section>
+		</div>
 	</body>
 </html>
