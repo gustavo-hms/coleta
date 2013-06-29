@@ -17,18 +17,20 @@
 		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
 	</head>
 
-	<body style="background: #FFF url(materiais/imagens/bg2.jpg) repeat top left;">
+<!--	<body style="background: #FFF url(materiais/imagens/bg2.jpg) repeat top left;">-->
+	<body>
 		<div class="container">
 			<header>
-				<h1>Inscrição de <strong>líder</strong></h1>
+				<h1>Inscrição de <strong>líder de esquina</strong></h1>
 				<h2>Caso haja dúvidas, favor entrar em contato com coleta.brasil@teto.org.br</h2>
 				<nav class="codrops-demos">
-					<a class="current-demo" href="lideres">Inscrição de líderes</a>
-					<a href="/materiais/voluntarios.html">Inscrição de voluntários</a>
+					<a href="/materiais/voluntarios.html">Inscreva-se como voluntário</a>
+					<a class="current-demo" href="lideres">Inscreva-se como líder</a>
 				</nav>
 			</header>
 
 			<section class="main">
+				Já sabe o que um líder de esquina faz, e qual a diferença entre um líder de esquina e um voluntário? Essas informações você encontra detalhadas na seção <a href='materiais/como.html' title='Informações sobre como participar da coleta'>"Como participar?"</a>
 				<form action="lideres" method="POST" id="formulario" class="form-1">
 					<p class="field">
 						<input type="text" name="nome" placeholder="Nome completo" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> 
@@ -73,7 +75,7 @@
 
 					<br/>
 
-					Zona:
+					Já escolheu sua zona? Dê uma olhada no <a href='materiais/mapa.html' title='Mapa das zonas' target='_blank'>mapa</a> e veja onde é melhor pra você
 					<p class="field">
 						<select id="zona" name="zona">
 							{{range zonas}}
