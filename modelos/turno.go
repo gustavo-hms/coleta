@@ -55,7 +55,14 @@ type Turno struct {
 }
 
 func (t Turno) String() string {
-	return t.Início.Format("2/1/2006, das 15h04 às ") + t.Fim.Format("15h04")
+	var diaDaSemana string
+	switch t.Início.Weekday() {
+	case time.Friday:
+		diaDaSemana = "sexta-feira"
+	default:
+		diaDaSemana = "sábado"
+	}
+	return t.Início.Format("2/1/2006, das 15h04 às ") + t.Fim.Format("15h04, ") + diaDaSemana
 }
 
 func Turnos() []Turno {
