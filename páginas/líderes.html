@@ -13,18 +13,17 @@
 
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-		<script src="/materiais/js/modernizr.custom.63321.js"></script>
 		<script src='/materiais/js/lideres.js'></script>
 		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
 	</head>
 
-	<body style="background: #FFF url(../images/bg2.jpg) repeat top left;">
+	<body style="background: #FFF url(materiais/imagens/bg2.jpg) repeat top left;">
 		<div class="container">
 			<header>
 				<h1>Inscrição de <strong>líder</strong></h1>
 				<h2>Caso haja dúvidas, favor entrar em contato com coleta.brasil@teto.org.br</h2>
 				<nav class="codrops-demos">
-					<a class="current-demo" href="lideres.html">Inscrição de líderes</a>
+					<a class="current-demo" href="lideres">Inscrição de líderes</a>
 					<a href="/materiais/voluntarios.html">Inscrição de voluntários</a>
 				</nav>
 			</header>
@@ -33,17 +32,17 @@
 				<form action="lideres" method="POST" id="formulario" class="form-1">
 					<p class="field">
 						<input type="text" name="nome" placeholder="Nome completo" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> 
-						<i class="icon-lock icon-large"></i>
+						<i class="icon-large"><img src="materiais/imagens/item.png"></i>
 					</p> <div class="erro">{{.MsgNome}}</div>
 
 					<p class="field">
 						<input type="text" name="telefone-residencial" placeholder="Telefone residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/>
-						<i class="icon-lock icon-large"></i>
+						<i class="icon-large"><img src="materiais/imagens/item.png"></i>
 					</p> <div class="erro">{{.MsgTelefoneResidencial}}</div>
 
 					<p class="field">
 						<input type="text" name="telefone-celular" placeholder="Telefone celular" value="{{.TelefoneCelular}}" class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/>
-						<i class="icon-lock icon-large"></i>
+						<i class="icon-large"><img src="materiais/imagens/item.png"></i>
 					</p> {{.MsgTelefoneCelular}}
 					<div class="erro">{{.MsgContato}}</div>
 
@@ -59,7 +58,7 @@
 
 					<p class="field">
 						<input type="text" name="e-mail" placeholder="E-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/>
-						<i class="icon-lock icon-large"></i>
+						<i class="icon-large"><img src="materiais/imagens/item.png"></i>
 					</p> {{.MsgEmail}}<br/>
 
 					Turnos: <div id="turnos" class="{{if .MsgTurnos}}erro{{end}}">
