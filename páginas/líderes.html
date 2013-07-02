@@ -9,6 +9,7 @@
 
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/flick/jquery-ui.css">
 		<link rel="stylesheet" type="text/css" href="/materiais/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="/materiais/css/lideres.css" />
 
 
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -65,10 +66,8 @@
 
 					Turnos: <div id="turnos" class="{{if .MsgTurnos}}erro{{end}}">
 						{{range turnos}}
-						<p>
-							<input id="turno-{{.Turno.Id}}" type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}} style="margin-top: 5px; margin-right: 5px;">
-							<label for="turno-{{.Turno.Id}}" style="float: none; padding: 0; background: transparent; border-radius: 0; box-shadow: none; line-height: 26px;"> {{.Turno.String}}</label>
-						</p>
+						<input id="turno-{{.Turno.Id}}" type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}} style="margin-top: 5px; margin-right: 5px;">
+						<label for="turno-{{.Turno.Id}}" style="float: none; padding: 0; background: transparent; border-radius: 0; box-shadow: none; line-height: 26px;"> {{.Turno.String}}</label> <br/>
 
 						{{end}}
 					</div>{{if .MsgTurnos}}<div>{{.MsgTurnos}}</div>{{end}}
@@ -84,20 +83,19 @@
 						</select> {{.MsgZona}}
 					</p>
 
-					<br/>
-					<br/>
-
 					<div id="confirmacao" style="display: none">
-						Você escolheu participar dos seguintes turnos:
-						<div id="confirmacao-turnos"></div>
+						<span id="texto-turnos">Você escolheu participar dos seguintes turnos:</span>
+						<b><ul id="confirmacao-turnos"></ul></b>
 						<br/>
-						E selecionou <span id="confirmacao-zona"></span> como zona de atuação.
+						E selecionou <b><span id="confirmacao-zona"></span></b> como zona de atuação.
 						<br/>
 						<br/>
 						Estes dados estão corretos?
 					</div>
+				<p class="submit">
+					<button value="Enviar" id="enviar" title="Enviar" type="submit" name="submit"><i class="icon-arrow-right icon-large"><img src="materiais/imagens/tick.png"></i></button>
 
-					<input type="submit" value="Enviar" id="enviar"/>
+<!--					<input type="submit" value="Enviar" id="enviar"/>-->
 				</form> 
 			</section>
 		</div>
