@@ -62,15 +62,15 @@
 					<p class="field">
 						<input type="text" name="e-mail" placeholder="E-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/>
 						<i class="icon-large"><img src="materiais/imagens/item.png"></i>
-					</p> {{.MsgEmail}}<br/>
+					</p> {{if .MsgEmail}}<div class="erro">{{.MsgEmail}}</div>{{end}}<br/>
 
-					Turnos: <div id="turnos" class="{{if .MsgTurnos}}erro{{end}}">
+					Turnos: <div id="turnos">
 						{{range turnos}}
 						<input id="turno-{{.Turno.Id}}" type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}} style="margin-top: 5px; margin-right: 5px;">
 						<label for="turno-{{.Turno.Id}}" style="float: none; padding: 0; background: transparent; border-radius: 0; box-shadow: none; line-height: 26px;"> {{.Turno.String}}</label> <br/>
 
 						{{end}}
-					</div>{{if .MsgTurnos}}<div>{{.MsgTurnos}}</div>{{end}}
+					</div>{{if .MsgTurnos}}<div class="erro">{{.MsgTurnos}}</div>{{end}}
 
 					<br/>
 
@@ -92,10 +92,9 @@
 						<br/>
 						Estes dados estão corretos?
 					</div>
-				<p class="submit">
-					<button value="Enviar" id="enviar" title="Enviar" type="submit" name="submit"><i class="icon-arrow-right icon-large"><img src="materiais/imagens/tick.png"></i></button>
 
-<!--					<input type="submit" value="Enviar" id="enviar"/>-->
+					<br/>
+					<input type="submit" value="Enviar" id="enviar"/>
 				</form> 
 			</section>
 		</div>
