@@ -2,8 +2,7 @@ package serviços
 
 import (
 	"coleta/config"
-	"fmt"
-	"io/ioutil"
+	"html/template"
 	"log"
 	"net/http"
 )
@@ -19,18 +18,36 @@ const (
 
 type Entrar struct{}
 
+type Autenticação struct {
+	Usuário, Senha, Msg string
+}
+
 func (e Entrar) Get(w http.ResponseWriter, r *http.Request) {
-	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/entrar.html")
+	e.get(w, r, new(Autenticação))
+}
+
+func (e Entrar) get(w http.ResponseWriter, r *http.Request, entrar *Autenticação) {
+	t, err := template.New("entrar").
+		ParseFiles(config.Dados.DiretórioDasPáginas + "/entrar.html")
 	if err != nil {
-		log.Println("Erro ao abrir o arquivo entrar.html:", err)
+		log.Println("Ali:", err)
+		return
 	}
 
-	fmt.Fprintf(w, "%s", página)
+	err = t.ExecuteTemplate(w, "entrar.html", entrar)
+	if err != nil {
+		log.Println("Aqui:", err)
+	}
 }
 
 func (e Entrar) Post(w http.ResponseWriter, r *http.Request) {
 	if r.FormValue("usuário") != usuário || r.FormValue("senha") != senha {
-		e.Get(w, r) // TODO escrever mensagem de erro no template
+		autenticação := &Autenticação{
+			Usuário: r.FormValue("usuário"),
+			Senha:   r.FormValue("senha"),
+			Msg:     "Usuário ou senha incorretos",
+		}
+		e.get(w, r, autenticação)
 		return
 	}
 

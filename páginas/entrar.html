@@ -1,11 +1,34 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <meta name="description" content="Custom Login Form Styling with CSS3" />
+        <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
+
+        <link rel="stylesheet" type="text/css" href="adm/materiais/css/style.css" />
+	</head>
 	<body>
-		<form action="entrar" method="post">
-			Usuário: <input type="text" name="usuário"/><br/>
-			Senha: <input type="password" name="senha"/><br/>
-			<br/>
-			<input type="submit" value="Entrar"/>
-		</form>
+		<div class="container">
+			<section class="main">
+				<form action="entrar" method="post" class="form-1">
+					{{if .Msg}}<div class="erro">{{.Msg}}</div><br/>{{end}}
+
+					<p class="field">
+						<input type="text" name="usuário" placeholder="Usuário" value="{{.Usuário}}" />
+						<i class="icon-user icon-large"><img src="adm/materiais/imagens/item.png"></i>
+					</p>
+
+					<p class="field">
+						<input type="password" name="senha" placeholder="Senha" value="{{.Senha}}" />
+						<i class="icon-user icon-large"><img src="adm/materiais/imagens/item.png"></i>
+					</p>
+
+					<br/>
+					<button type="submit"/>Entrar</button>
+				</form>
+			</section>
+		</div>
 	</body>
 </html>
