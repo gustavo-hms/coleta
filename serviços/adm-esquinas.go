@@ -44,17 +44,23 @@ func (e Esquinas) get(
 
 	zonaDAO.Commit()
 
-	funcMap := template.FuncMap{"zonas": func() []zonaComSeleção {
-		seleção := make([]zonaComSeleção, 0, len(zonas))
-		for _, zona := range zonas {
-			s := zonaComSeleção{Zona: *zona}
-			if esquina != nil && esquina.Zona.Id == zona.Id {
-				s.Selecionado = true
+	funcMap := template.FuncMap{
+		"zonas": func() []zonaComSeleção {
+			seleção := make([]zonaComSeleção, 0, len(zonas))
+			for _, zona := range zonas {
+				s := zonaComSeleção{Zona: *zona}
+				if esquina != nil && esquina.Zona.Id == zona.Id {
+					s.Selecionado = true
+				}
+				seleção = append(seleção, s)
 			}
-			seleção = append(seleção, s)
-		}
-		return seleção
-	}}
+			return seleção
+		},
+
+		"iguais": func(x, y string) bool {
+			return x == y
+		},
+	}
 
 	t, err := template.New("esquinas").Funcs(funcMap).
 		ParseFiles(config.Dados.DiretórioDasPáginas + "/adm-esquinas.html")
