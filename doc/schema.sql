@@ -9,6 +9,7 @@ CREATE TABLE esquina (
 	zona_id INT(11) NOT NULL,
 	cruzamento VARCHAR(255),
 	localizacao VARCHAR(255),
+	prioridade ENUM('baixa', 'alta'),
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
