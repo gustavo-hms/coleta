@@ -9,6 +9,7 @@ type Esquina struct {
 	Id          int
 	Cruzamento  string
 	Localização string
+	Prioridade  string
 	Zona        Zona
 }
 
@@ -22,4 +23,5 @@ func (e *Esquina) Preencher(campos func(string) string) {
 
 	e.Zona = Zona{Id: id}
 	e.Localização = campos("url")
+	e.Prioridade = campos("prioridade")
 }

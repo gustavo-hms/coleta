@@ -19,7 +19,7 @@ type EsquinaDAO struct {
 func NewEsquinaDAO(tx *sql.Tx) *EsquinaDAO {
 	return &EsquinaDAO{
 		Tx:     tx,
-		fields: "id, zona_id, cruzamento, localizacao",
+		fields: "id, zona_id, cruzamento, localizacao, prioridade",
 	}
 }
 
@@ -32,12 +32,15 @@ func (dao *EsquinaDAO) Save(esquina *modelos.Esquina) error {
 }
 
 func (dao *EsquinaDAO) create(esquina *modelos.Esquina) error {
-	query := fmt.Sprintf("INSERT INTO esquina (%s) VALUES (DEFAULT, ?, ?, ?)",
+	query := fmt.Sprintf("INSERT INTO esquina (%s) VALUES (DEFAULT, ?, ?, ?, ?)",
 		dao.fields)
-	res, err := dao.Exec(query,
+	res, err := dao.Exec(
+		query,
 		esquina.Zona.Id,
 		esquina.Cruzamento,
-		esquina.Localização)
+		esquina.Localização,
+		esquina.Prioridade,
+	)
 	if err != nil {
 		return err
 	}
@@ -53,8 +56,8 @@ func (dao *EsquinaDAO) create(esquina *modelos.Esquina) error {
 }
 
 func (dao *EsquinaDAO) update(esquina *modelos.Esquina) error {
-	query := "UPDATE esquina SET cruzamento = ?, localizacao = ?"
-	row, err := dao.Exec(query, esquina.Cruzamento, esquina.Localização)
+	query := "UPDATE esquina SET cruzamento = ?, localizacao = ?, prioridade = ?, zona_id = ?"
+	row, err := dao.Exec(query, esquina.Cruzamento, esquina.Localização, esquina.Prioridade, esquina.Zona.Id)
 	if err != nil {
 		return err
 	}
@@ -78,10 +81,13 @@ func (dao *EsquinaDAO) findById(id int) (*modelos.Esquina, error) {
 	esquina := new(modelos.Esquina)
 	esquina.Zona = modelos.Zona{}
 
-	err := row.Scan(&esquina.Id,
+	err := row.Scan(
+		&esquina.Id,
 		&esquina.Zona.Id,
 		&esquina.Cruzamento,
-		&esquina.Localização)
+		&esquina.Localização,
+		&esquina.Prioridade,
+	)
 
 	if err != nil {
 		return nil, err
@@ -105,6 +111,7 @@ func (dao *EsquinaDAO) BuscarPorZona(idDaZona string) ([]*modelos.Esquina, error
 			&esquina.Zona.Id,
 			&esquina.Cruzamento,
 			&esquina.Localização,
+			&esquina.Prioridade,
 		)
 
 		esquinas = append(esquinas, esquina)
