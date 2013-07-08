@@ -13,7 +13,7 @@ var sessões = sessions.NewCookieStore(
 )
 
 func init() {
-	sessões.Options.MaxAge = 60 * 5
+	sessões.Options.MaxAge = 60 * 30
 }
 
 type zonaComSeleção struct {

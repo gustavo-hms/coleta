@@ -79,16 +79,6 @@ func (l AdmLíder) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	líder := modelos.NovoLíder()
-	líder.Preencher(r.Form)
-	erros := validação.ValidarLíder(líder)
-
-	if erros != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		l.get(w, r, erros)
-		return
-	}
-
 	stringDoId := idDoLíder(r.URL)
 	id, err := strconv.Atoi(stringDoId)
 	if err != nil {
@@ -97,7 +87,16 @@ func (l AdmLíder) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	líder := modelos.NovoLíder()
 	líder.Id = id
+	líder.Preencher(r.Form)
+	erros := validação.ValidarLíder(líder)
+
+	if erros != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		l.get(w, r, erros)
+		return
+	}
 
 	tx, err := dao.DB.Begin()
 	if err != nil {

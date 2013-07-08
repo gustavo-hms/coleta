@@ -47,7 +47,7 @@ func (z AdmZona) jsonDasEsquinas(esquinas []*modelos.Esquina) string {
 	objetos := make([]string, len(esquinas))
 	for k, esquina := range esquinas {
 		objetos[k] = `{"cruzamento": "` + esquina.Cruzamento +
-			`", "link": "/adm/esquina/` + fmt.Sprint(esquina.Id) + `"}`
+			`", "id": ` + fmt.Sprint(esquina.Id) + `}`
 	}
 
 	return `[` + strings.Join(objetos, ",") + `]`

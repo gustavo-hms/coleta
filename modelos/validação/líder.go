@@ -95,17 +95,20 @@ func (l *LíderComErros) validarPolíticas() *LíderComErros {
 		return l
 	}
 
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		return l
-	}
+	if l.Id == 0 {
+		tx, err := dao.DB.Begin()
+		defer tx.Commit()
+		if err != nil {
+			log.Println(err)
+			return l
+		}
 
-	líderDAO := dao.NewLiderDAO(tx)
+		líderDAO := dao.NewLiderDAO(tx)
 
-	if mesmoEmail, _ := líderDAO.FindByEmail(l.Email); mesmoEmail != nil {
-		l.errosEncontrados = true
-		l.MsgEmail = "Já existe alguém cadastrado com este mesmo e-mail. Por favor, informe outro endereço. Em caso de dúvidas, contacte seu líder de zona"
+		if mesmoEmail, _ := líderDAO.FindByEmail(l.Email); mesmoEmail != nil {
+			l.errosEncontrados = true
+			l.MsgEmail = "Já existe alguém cadastrado com este mesmo e-mail. Por favor, informe outro endereço. Em caso de dúvidas, contacte seu líder de zona"
+		}
 	}
 
 	return l
