@@ -13,15 +13,26 @@ var (
 
 func registrar(uri string, provedor interface{}) {
 	s := &serviço{
-		restrito: len(uri) > 3 && uri[:4] == "/adm",
+		restrito: false,
 		provedor: provedor,
 	}
 	MuxSimples.Handle(uri, s)
 }
 
 func registrarSeguro(uri string, provedor interface{}) {
+	var restrito bool
+	if len(uri) > 3 {
+		if uri[:4] == "/adm" {
+			if len(uri) >= 14 {
+				restrito = uri[:14] != "/adm/materiais"
+			} else {
+				restrito = true
+			}
+		}
+	}
+
 	s := &serviço{
-		restrito: len(uri) > 3 && uri[:4] == "/adm",
+		restrito: restrito,
 		provedor: provedor,
 	}
 	MuxSeguro.Handle(uri, s)

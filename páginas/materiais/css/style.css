@@ -1002,3 +1002,26 @@
     left: 0;
     color: #fff;
 }
+
+.ui-dialog {
+	box-shadow: 0 0 22px #777;
+	border-radius: 6px;
+}
+
+.container > header {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.form-1 {
+	margin-top: 15px;
+}
+
+div.erro {
+	color: red;
+	margin-bottom: 10px;
+}
+
+.erro input[type="text"] {
+	border-color: red;
+}

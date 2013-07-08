@@ -16,12 +16,12 @@
 				<form action="esquinas" method="POST" class="form-1">
 					<p class="field">
 						<input type="text" name="cruzamento" placeholder="Cruzamento" value="{{.Cruzamento}}" class="{{if .MsgCruzamento}}erro{{end}}"/>
-						<i class="icon-user icon-large"><img src="materiais/imagens/item.png"></i>					
+						<i class="icon-user icon-large"><img src="materiais/imagens/item{{if .MsgCruzamento}}-com-erro{{end}}.png"></i>					
 					</p>
 					{{if .MsgCruzamento}}<div class="erro">{{.MsgCruzamento}}</div>{{end}}
 					<p class="field">
 						<input type="text" name="url" placeholder="Localização" value="{{.Localização}}" class="{{if .MsgLocalização}}erro{{end}}"/>
-						<i class="icon-user icon-large"><img src="materiais/imagens/item.png"></i>					
+						<i class="icon-user icon-large"><img src="materiais/imagens/item{{if .MsgLocalização}}-com-erro{{end}}.png"></i>					
 					</p>
 					{{if .MsgLocalização}}<div class="erro">{{.MsgLocalização}}</div>{{end}}
 

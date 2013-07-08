@@ -1,64 +1,94 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <meta name="description" content="Custom Login Form Styling with CSS3" />
+        <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
+
+		<link rel="stylesheet" type="text/css" href="../materiais/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="../materiais/css/adm-lider.css" />
+	</head>
+
 	<body>
-		<form action="{{.Id}}" method="post">
-			Nome: <input type="text" name="nome" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> {{.MsgNome}}<br/>
+		<div class=container>
+			<section class="main">
+				<form action="{{.Id}}" method="post" class="form-1">
+					<p class="field">
+						<input type="text" name="nome" placeholder="Nome completo" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> 
+						<i class="icon-large"><img src="../materiais/imagens/item{{if .MsgNome}}-com-erro{{end}}.png"></i>
+					</p> <div class="erro">{{.MsgNome}}</div>
 
-			Telefone residencial: <input type="text" name="telefone-residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/> {{.MsgTelefoneResidencial}}<br/>
+					<p class="field">
+						<input type="text" name="telefone-residencial" placeholder="Telefone residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/>
+						<i class="icon-large"><img src="../materiais/imagens/item{{if or .MsgContato .MsgTelefoneResidencial}}-com-erro{{end}}.png"></i>
+					</p> <div class="erro">{{.MsgTelefoneResidencial}}</div>
 
-			Telefone celular: <input type="text" name="telefone-celular" value="{{.TelefoneCelular}}" class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/> {{.MsgTelefoneCelular}}
+					<p class="field">
+						<input type="text" name="telefone-celular" placeholder="Telefone celular" value="{{.TelefoneCelular}}" class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/>
+						<i class="icon-large"><img src="../materiais/imagens/item{{if or .MsgContato .MsgTelefoneCelular}}-com-erro{{end}}.png"></i>
+					</p> {{.MsgTelefoneCelular}}
+					<div class="erro">{{.MsgContato}}</div>
 
-			Operadora:
-			<select name="operadora">
-				<option value="" {{if iguais .Operadora ""}}selected="selected"{{end}}></option>
-				<option value="Claro" {{if iguais .Operadora "Claro"}}selected="selected"{{end}}>Claro</option>
-				<option value="Oi" {{if iguais .Operadora "Oi"}}selected="selected"{{end}}>Oi</option>
-				<option value="TIM" {{if iguais .Operadora "TIM"}}selected="selected"{{end}}>TIM</option>
-				<option value="Vivo" {{if iguais .Operadora "Vivo"}}selected="selected"{{end}}>Vivo</option>
-				<option value="Outra" {{if iguais .Operadora "Outra"}}selected="selected"{{end}}>Outra</option>
-			</select>
-			<div>{{.MsgContato}}</div>
+					Operadora:
+					<label for="Claro"><input type="radio" name="operadora" id="Claro" value="Claro" {{if iguais .Operadora "Claro"}}checked="checked"{{end}}/> Claro </label>
+					<label for="Oi"><input type="radio" name="operadora" id="Oi"  value="Oi" {{if iguais .Operadora "Oi"}}checked="checked"{{end}}/> Oi </label>
+					<label for="TIM"><input type="radio" name="operadora" id="TIM"  value="TIM" {{if iguais .Operadora "TIM"}}checked="checked"{{end}}/> TIM </label>
+					<label for="Vivo"><input type="radio" name="operadora" id="Vivo"  value="Vivo" {{if iguais .Operadora "Vivo"}}checked="checked"{{end}}/> Vivo </label>
+					<label for="Outra"><input type="radio" name="operadora" id="Outra" value="Outra" {{if iguais .Operadora "Outra"}}checked="checked"{{end}}/> Outra </label>
 
-			<br/>
+					<br/>
+					<br/>
 
-			E-mail: <input type="text" name="e-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/> {{.MsgEmail}}<br/>
+					<p class="field">
+						<input type="text" name="e-mail" placeholder="E-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/>
+						<i class="icon-large"><img src="../materiais/imagens/item{{if or .MsgContato .MsgEmail}}-com-erro{{end}}.png"></i>
+					</p> {{if .MsgEmail}}<div class="erro">{{.MsgEmail}}</div>{{end}}<br/>
 
-			Turnos: <div class="{{if .MsgTurnos}}erro{{end}}">{{range turnos}}
-			<br/><input type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}}> {{.Turno.String}}
-			{{end}}</div>{{if .MsgTurnos}}<div>{{.MsgTurnos}}</div>{{end}}
+					Turnos: <div id="turnos">
+						{{range turnos}}
+						<input id="turno-{{.Turno.Id}}" type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}} style="margin-top: 5px; margin-right: 5px;">
+						<label for="turno-{{.Turno.Id}}" style="float: none; padding: 0; background: transparent; border-radius: 0; box-shadow: none; line-height: 26px;"> {{.Turno.String}}</label> <br/>
 
-			<br/>
+						{{end}}
+					</div>{{if .MsgTurnos}}<div class="erro">{{.MsgTurnos}}</div>{{end}}
 
-			Zona:
-			<select name="zona">
-				{{range zonas}}
-				<option value="{{.Zona.Id}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona.Nome}}</option>
-				{{end}}
-			</select> {{.MsgZona}}
-			
-			<br/>
+					<br/>
 
-			Esquina: <div id="esquina">{{.Esquina.Cruzamento}}</div><div><button type="button">Alterar</button></div>
+					<p class="field">
+						<select id="zona" name="zona">
+							{{range zonas}}
+							<option value="{{.Zona.Id}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona.Nome}}</option>
+							{{end}}
+						</select> {{.MsgZona}}
+						<i class="icon-large"><img src="../materiais/imagens/item.png"></i>
+					</p>
 
-			<br/>
-			<br/>
+					<br/>
 
-			<input type="submit" value="Enviar"/>
-		</form> 
+					Esquina: <span id="esquina">{{.Esquina.Cruzamento}}{{if not .Esquina.Cruzamento}}nenhuma esquina selecionada{{end}}</span><input type="button" value="Alterar">
+					<div class="selecionar-esquina" style="display: none">
+						Zona:
+						<select name="zona">
+							{{range zonas}} <option value="{{.Zona.Id}}">{{.Zona.Nome}}</option> {{end}}
+						</select>
 
-		<div class="selecionar-esquina">
-			Zona:
-			<select name="zona">
-				{{range zonas}} <option value="{{.Zona.Id}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona.Nome}}</option> {{end}}
-			</select>
+						<br/>
 
-			<br/>
+						<input type="text" name="filtro" class="filtro"/>
 
-			<input type="text" name="filtro" class="filtro"/>
+						<br/>
 
-			<br/>
+						<div id="esquinas-exibidas"></div>
+					</div>
 
-			<div id="esquinas-exibidas"></div>
+					<br/>
+					<br/>
+
+					<button type="submit" id="atualizar"/>Atualizar</button>
+				</form> 
+			</section>
 		</div>
 	</body>
 </html>

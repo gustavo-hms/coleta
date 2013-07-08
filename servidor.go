@@ -5,6 +5,7 @@ import (
 	"coleta/dao"
 	"coleta/serviços"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"runtime"
@@ -27,6 +28,8 @@ func main() {
 		fmt.Println("Não foi possível conectar-se ao banco. Erro:", err)
 		os.Exit(1)
 	}
+
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	go http.ListenAndServe(":"+config.Dados.Porta, serviços.MuxSimples)
 

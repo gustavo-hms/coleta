@@ -21,7 +21,8 @@ func init() {
 type AdmLíder struct{}
 
 func idDoLíder(endereço *url.URL) string {
-	return strings.SplitN(endereço.Path[12:], "/", 2)[0]
+	idx := strings.LastIndex(endereço.Path, "/")
+	return endereço.Path[idx+1:]
 }
 
 func (l AdmLíder) Get(w http.ResponseWriter, r *http.Request) {
