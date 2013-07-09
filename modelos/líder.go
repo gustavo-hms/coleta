@@ -56,6 +56,15 @@ func (l *Líder) Preencher(campos map[string][]string) {
 
 	l.Zona = &Zona{Id: id}
 
+	if esquina, ok := campos["esquina"]; ok {
+		id, err := strconv.Atoi(esquina[0])
+		if err != nil {
+			log.Printf("Erro ao converter %s para um inteiro: %s", esquina[0], err)
+		}
+
+		l.Esquina = &Esquina{Id: id}
+	}
+
 	l.CadastradoEm = time.Now().UTC()
 }
 

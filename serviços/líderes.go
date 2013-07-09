@@ -93,6 +93,14 @@ func exibiçãoDoLíder(líder *validação.LíderComErros, página string) *tem
 		return nil
 	}
 
+	esquinaDAO := dao.NewEsquinaDAO(tx)
+	esquinas, err := esquinaDAO.BuscarPorZona(fmt.Sprintf("%d", líder.Zona.Id))
+	if err != nil {
+		esquinaDAO.Rollback()
+		log.Println("Erro ao buscar esquinas:", err)
+		return nil
+	}
+
 	zonaDAO := dao.NewZonaDAO(tx)
 	zonas, err := zonaDAO.FindAll()
 	if err != nil {
@@ -104,6 +112,18 @@ func exibiçãoDoLíder(líder *validação.LíderComErros, página string) *tem
 	zonaDAO.Commit()
 
 	funcMap := template.FuncMap{
+		"esquinas": func() []esquinaComSeleção {
+			seleção := make([]esquinaComSeleção, 0, len(esquinas))
+			for _, esquina := range esquinas {
+				s := esquinaComSeleção{Esquina: *esquina}
+				if líder != nil && líder.Esquina.Id == esquina.Id {
+					s.Selecionado = true
+				}
+				seleção = append(seleção, s)
+			}
+			return seleção
+		},
+
 		"zonas": func() []zonaComSeleção {
 			seleção := make([]zonaComSeleção, 0, len(zonas))
 			for _, zona := range zonas {

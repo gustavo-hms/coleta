@@ -72,7 +72,17 @@ func (dao *ZonaDAO) FindAll() (zonas []*modelos.Zona, err error) {
 	for rows.Next() {
 		zona := new(modelos.Zona)
 		rows.Scan(&zona.Id, &zona.Nome)
-		zonas = append(zonas, zona)
+
+		zonaBloqueada := false
+		for _, bloqueada := range modelos.ZonasBloqueadas {
+			if bloqueada == zona.Nome {
+				zonaBloqueada = true
+			}
+		}
+
+		if !zonaBloqueada {
+			zonas = append(zonas, zona)
+		}
 	}
 
 	if err = rows.Err(); err != nil {

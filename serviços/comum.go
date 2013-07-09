@@ -21,6 +21,11 @@ type zonaComSeleção struct {
 	Selecionado bool
 }
 
+type esquinaComSeleção struct {
+	Esquina     modelos.Esquina
+	Selecionado bool
+}
+
 type turnoComSeleção struct {
 	Turno       modelos.Turno
 	Selecionado bool
