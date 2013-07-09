@@ -19,84 +19,88 @@
 
 <!--	<body style="background: #FFF url(materiais/imagens/bg2.jpg) repeat top left;">-->
 	<body>
-		<div class="container">
-			<header>
-				<h1>Inscrição de <strong>líder de esquina</strong></h1>
-				<h2>Caso haja dúvidas, favor entrar em contato com coleta.brasil@teto.org.br</h2>
-				<nav class="codrops-demos">
-					<a href="/materiais/voluntarios.html">Inscreva-se como voluntário</a>
-					<a class="current-demo" href="lideres">Inscreva-se como líder</a>
-				</nav>
-			</header>
+		<section class="conteudo-iframe stream">
+			<div class="content_wrapper">
+				<div class="container">
+					<div class="conteudo">
+						<h1>Inscrição de <strong>líder de esquina</strong></h1>
+						<h2>Caso haja dúvidas, favor entrar em contato com coleta.brasil@teto.org.br</h2>
+						<nav class="codrops-demos">
+							<a href="/materiais/voluntarios.html">Inscreva-se como voluntário</a>
+							<a class="current-demo" href="lideres">Inscreva-se como líder</a>
+						</nav>
 
-			<section class="main">
-				Já sabe o que um líder de esquina faz, e qual a diferença entre um líder de esquina e um voluntário? Essas informações você encontra detalhadas na seção <a href='materiais/como.html' title='Informações sobre como participar da coleta'>"Como participar?"</a>
-				<form action="lideres" method="POST" id="formulario" class="form-1">
-					<p class="field">
-						<input type="text" name="nome" placeholder="Nome completo" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> 
-						<i class="icon-large"><img src="materiais/imagens/item{{if .MsgNome}}-com-erro{{end}}.png"></i>
-					</p> <div class="erro">{{.MsgNome}}</div>
+						<section class="main">
+							Já sabe o que um líder de esquina faz, e qual a diferença entre um líder de esquina e um voluntário? Essas informações você encontra detalhadas na seção <a href='materiais/como.html' title='Informações sobre como participar da coleta'>"Como participar?"</a>
+							<form action="lideres" method="POST" id="formulario" class="form-1">
+								<p class="field">
+									<input type="text" name="nome" placeholder="Nome completo" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> 
+									<i class="icon-large"><img src="materiais/imagens/item{{if .MsgNome}}-com-erro{{end}}.png"></i>
+								</p> <div class="erro">{{.MsgNome}}</div>
 
-					<p class="field">
-						<input type="text" name="telefone-residencial" placeholder="Telefone residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/>
-						<i class="icon-large"><img src="materiais/imagens/item{{if or .MsgContato .MsgTelefoneResidencial}}-com-erro{{end}}.png"></i>
-					</p> <div class="erro">{{.MsgTelefoneResidencial}}</div>
+								<p class="field">
+									<input type="text" name="telefone-residencial" placeholder="Telefone residencial" value="{{.TelefoneResidencial}}" class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/>
+									<i class="icon-large"><img src="materiais/imagens/item{{if or .MsgContato .MsgTelefoneResidencial}}-com-erro{{end}}.png"></i>
+								</p> <div class="erro">{{.MsgTelefoneResidencial}}</div>
 
-					<p class="field">
-						<input type="text" name="telefone-celular" placeholder="Telefone celular" value="{{.TelefoneCelular}}" class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/>
-						<i class="icon-large"><img src="materiais/imagens/item{{if or .MsgContato .MsgTelefoneCelular}}-com-erro{{end}}.png"></i>
-					</p> {{.MsgTelefoneCelular}}
-					<div class="erro">{{.MsgContato}}</div>
+								<p class="field">
+									<input type="text" name="telefone-celular" placeholder="Telefone celular" value="{{.TelefoneCelular}}" class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/>
+									<i class="icon-large"><img src="materiais/imagens/item{{if or .MsgContato .MsgTelefoneCelular}}-com-erro{{end}}.png"></i>
+								</p> {{.MsgTelefoneCelular}}
+								<div class="erro">{{.MsgContato}}</div>
 
-					Operadora:
-					<label for="Claro"><input type="radio" name="operadora" id="Claro" value="Claro" {{if iguais .Operadora "Claro"}}checked="checked"{{end}}/> Claro </label>
-					<label for="Oi"><input type="radio" name="operadora" id="Oi"  value="Oi" {{if iguais .Operadora "Oi"}}checked="checked"{{end}}/> Oi </label>
-					<label for="TIM"><input type="radio" name="operadora" id="TIM"  value="TIM" {{if iguais .Operadora "TIM"}}checked="checked"{{end}}/> TIM </label>
-					<label for="Vivo"><input type="radio" name="operadora" id="Vivo"  value="Vivo" {{if iguais .Operadora "Vivo"}}checked="checked"{{end}}/> Vivo </label>
-					<label for="Outra"><input type="radio" name="operadora" id="Outra" value="Outra" {{if iguais .Operadora "Outra"}}checked="checked"{{end}}/> Outra </label>
+								Operadora:
+								<label for="Claro"><input type="radio" name="operadora" id="Claro" value="Claro" {{if iguais .Operadora "Claro"}}checked="checked"{{end}}/> Claro </label>
+								<label for="Oi"><input type="radio" name="operadora" id="Oi"  value="Oi" {{if iguais .Operadora "Oi"}}checked="checked"{{end}}/> Oi </label>
+								<label for="TIM"><input type="radio" name="operadora" id="TIM"  value="TIM" {{if iguais .Operadora "TIM"}}checked="checked"{{end}}/> TIM </label>
+								<label for="Vivo"><input type="radio" name="operadora" id="Vivo"  value="Vivo" {{if iguais .Operadora "Vivo"}}checked="checked"{{end}}/> Vivo </label>
+								<label for="Outra"><input type="radio" name="operadora" id="Outra" value="Outra" {{if iguais .Operadora "Outra"}}checked="checked"{{end}}/> Outra </label>
 
-					<br/>
-					<br/>
+								<br/>
+								<br/>
 
-					<p class="field">
-						<input type="text" name="e-mail" placeholder="E-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/>
-						<i class="icon-large"><img src="materiais/imagens/item{{if or .MsgContato .MsgEmail}}-com-erro{{end}}.png"></i>
-					</p> {{if .MsgEmail}}<div class="erro">{{.MsgEmail}}</div>{{end}}<br/>
+								<p class="field">
+									<input type="text" name="e-mail" placeholder="E-mail" value="{{.Email}}" class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/>
+									<i class="icon-large"><img src="materiais/imagens/item{{if or .MsgContato .MsgEmail}}-com-erro{{end}}.png"></i>
+								</p> {{if .MsgEmail}}<div class="erro">{{.MsgEmail}}</div>{{end}}<br/>
 
-					Turnos: <div id="turnos">
-						{{range turnos}}
-						<input id="turno-{{.Turno.Id}}" type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}} style="margin-top: 5px; margin-right: 5px;">
-						<label for="turno-{{.Turno.Id}}" style="float: none; padding: 0; background: transparent; border-radius: 0; box-shadow: none; line-height: 26px;"> {{.Turno.String}}</label> <br/>
+								Turnos: <div id="turnos">
+									{{range turnos}}
+									<input id="turno-{{.Turno.Id}}" type="checkbox" name="turnos" value="{{.Turno.Id}}" {{if .Selecionado}}checked="checked"{{end}} style="margin-top: 5px; margin-right: 5px;">
+									<label for="turno-{{.Turno.Id}}" style="float: none; padding: 0; background: transparent; border-radius: 0; box-shadow: none; line-height: 26px;"> {{.Turno.String}}</label> <br/>
 
-						{{end}}
-					</div>{{if .MsgTurnos}}<div class="erro">{{.MsgTurnos}}</div>{{end}}
+									{{end}}
+								</div>{{if .MsgTurnos}}<div class="erro">{{.MsgTurnos}}</div>{{end}}
 
-					<br/>
+								<br/>
 
-					Já escolheu sua zona? Dê uma olhada no <a href='materiais/mapa.html' title='Mapa das zonas' target='_blank'>mapa</a> e veja onde é melhor pra você
-					<p class="field">
-						<select id="zona" name="zona">
-							{{range zonas}}
-							<option value="{{.Zona.Id}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona.Nome}}</option>
-							{{end}}
-						</select> {{.MsgZona}}
-						<i class="icon-large"><img src="materiais/imagens/item.png"></i>
-					</p>
+								Já escolheu sua zona? Dê uma olhada no <a href='materiais/mapa.html' title='Mapa das zonas' target='_blank'>mapa</a> e veja onde é melhor pra você
+								<p class="field">
+									<select id="zona" name="zona">
+										{{range zonas}}
+										<option value="{{.Zona.Id}}" {{if .Selecionado}}selected="selected"{{end}}>{{.Zona.Nome}}</option>
+										{{end}}
+									</select> {{.MsgZona}}
+									<i class="icon-large"><img src="materiais/imagens/item.png"></i>
+								</p>
 
-					<div id="confirmacao" style="display: none">
-						<span id="texto-turnos">Você escolheu participar dos seguintes turnos:</span>
-						<b><ul id="confirmacao-turnos"></ul></b>
-						<br/>
-						E selecionou <b><span id="confirmacao-zona"></span></b> como zona de atuação.
-						<br/>
-						<br/>
-						Estes dados estão corretos?
+								<div id="confirmacao" style="display: none">
+									<span id="texto-turnos">Você escolheu participar dos seguintes turnos:</span>
+									<b><ul id="confirmacao-turnos"></ul></b>
+									<br/>
+									E selecionou <b><span id="confirmacao-zona"></span></b> como zona de atuação.
+									<br/>
+									<br/>
+									Estes dados estão corretos?
+								</div>
+
+								<br/>
+								<button type="submit" id="enviar"/>Enviar</button>
+							</form> 
+						</section>
 					</div>
-
-					<br/>
-					<button type="submit" id="enviar"/>Enviar</button>
-				</form> 
-			</section>
-		</div>
+				</div>
+			</div>
+		</section>
 	</body>
 </html>
