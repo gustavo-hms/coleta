@@ -129,7 +129,7 @@ a {
     text-align:center;
 	display: block;
 	line-height: 30px;
-	padding: 0 30px;
+	padding: 0;
 }
 
 .codrops-demos a {
@@ -178,25 +178,27 @@ text-shadow: none;
 
 .codrops-demos a.current-demo,
 .codrops-demos a.current-demo:hover {
-	background: #0065b3;
-	border-color: #FFF;
-	color: #ddd;
-	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
-	box-shadow: 0 1px 0 rgba(255,255,255,0.2), inset 0 1px 1px rgba(0,0,0,0.5);
-	padding: 30px;
-font-size: 15px;
+background: #0065b3;
+border-color: #FFF;
+color: #FFF;
+text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+box-shadow: 0 1px 0 rgba(255,255,255,0.2), inset 0 1px 1px rgba(0,0,0,0.5);
+padding: 30px;
+font-size: 20px;
+text-align: center;
 -moz-border-radius-topleft: 10px;
--moz-border-radius-topright:10px;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--webkit-border-top-left-radius:10px;
--webkit-border-top-right-radius:10px;
--webkit-border-bottom-left-radius:10px;
--webkit-border-bottom-right-radius:10px;
-border-top-left-radius:10px;
-border-top-right-radius:10px;
-border-bottom-left-radius:10px;
-border-bottom-right-radius:10px;
+-moz-border-radius-topright: 10px;
+-moz-border-radius-bottomleft: 10px;
+-moz-border-radius-bottomright: 10px;
+-webkit-border-top-left-radius: 10px;
+-webkit-border-top-right-radius: 10px;
+-webkit-border-bottom-left-radius: 10px;
+-webkit-border-bottom-right-radius: 10px;
+border-top-left-radius: 10px;
+border-top-right-radius: 10px;
+border-bottom-left-radius: 10px;
+border-bottom-right-radius: 10px;
+display: block;
 }
 
 .support-note span{
