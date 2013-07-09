@@ -64,8 +64,9 @@
 		
 					<br/>
 
-					Esquina: <span id="exibicao-esquina">{{.Esquina.Cruzamento}}{{if not .Esquina.Cruzamento}}nenhuma esquina selecionada{{end}}</span><input type="button" id="alterar" value="Alterar">
+				Esquina: <span id="exibicao-esquina">{{.Esquina.Cruzamento}}{{if not .Esquina.Cruzamento}}nenhuma esquina selecionada{{end}}</span><input type="button" id="alterar" value="Alterar">
 					<input id="esquina" type="hidden" name="esquina" value="{{.Esquina.Id}}"/>
+					<input id="zona-oculta" type="hidden" name="zona" value="{{.Esquina.Id}}"/>
 					<div id="selecionar-esquina" style="display: none">
 						Zona:
 						<p class="field">
@@ -77,7 +78,6 @@
 						</p>
 
 						<br/>
-						<br/>
 
 						<p class="field">
 							<input type="text" name="filtro" class="filtro" placeholder="Filtrar resultados"/>
@@ -85,7 +85,15 @@
 
 						<br/>
 
-						<div id="esquinas-exibidas"></div>
+						<div id="esquinas-exibidas">
+							{{range esquinas}}
+								<label for="{{.Esquina.Id}}">
+									<input type="radio" class="selecao-esquina"
+									value="{{.Esquina.Id}}" name="selecao-esquina"
+									id="{{.Esquina.Id}}" {{if .Selecionado}}checked{{end}}/> {{.Esquina.Cruzamento}}</label>
+								<br/>
+							{{end}}
+						</div>
 					</div>
 
 					<br/>

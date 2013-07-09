@@ -6,17 +6,39 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/url"
 	"strings"
 )
 
 func init() {
-	registrarSeguro("/adm/zona/", AdmZona{})
+	registrarSeguro("/adm/zona/", new(AdmZona))
 }
 
-type AdmZona struct{}
+type AdmZona struct {
+	id string
+}
 
-func (z AdmZona) Get(w http.ResponseWriter, r *http.Request) {
+func (z *AdmZona) Get(w http.ResponseWriter, r *http.Request) {
+	nós := strings.Split(r.URL.Path, "/")
+	fim := len(nós)
+	if fim < 3 {
+		log.Println("URL inesperada:", r.URL.Path)
+		erroInterno(w, r)
+		return
+	}
+
+	z.id = nós[fim-2]
+
+	switch nós[fim-1] {
+	case "esquinas":
+		z.getEsquinas(w, r)
+	case "lideres":
+		//		z.getLíderes(w, r)
+	default:
+		w.WriteHeader(http.StatusNotFound)
+	}
+}
+
+func (z AdmZona) getEsquinas(w http.ResponseWriter, r *http.Request) {
 	tx, err := dao.DB.Begin()
 	if err != nil {
 		log.Println(err)
@@ -25,7 +47,7 @@ func (z AdmZona) Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	esquinaDAO := dao.NewEsquinaDAO(tx)
-	esquinas, err := esquinaDAO.BuscarPorZona(z.idDaZona(r.URL))
+	esquinas, err := esquinaDAO.BuscarPorZona(z.id)
 	if err != nil {
 		esquinaDAO.Rollback()
 		log.Println(err)
@@ -36,11 +58,8 @@ func (z AdmZona) Get(w http.ResponseWriter, r *http.Request) {
 	esquinaDAO.Commit()
 
 	json := z.jsonDasEsquinas(esquinas)
+	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprint(w, json)
-}
-
-func (z AdmZona) idDaZona(endereço *url.URL) string {
-	return strings.SplitN(endereço.Path[10:], "/", 2)[0]
 }
 
 func (z AdmZona) jsonDasEsquinas(esquinas []*modelos.Esquina) string {

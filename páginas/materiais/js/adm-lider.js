@@ -5,7 +5,7 @@ $(function() {
 
 function confirmacao() {
 	$('#alterar').click(function(e) {
-		var idDaZona = $("#zona > :selected").val();
+//		var idDaZona = $("#zona > :selected").val();
 //		obterEsquinas(idDaZona)
 
 		e.preventDefault();
@@ -21,7 +21,10 @@ function confirmacao() {
 					$(this).dialog("close");
 				},
 				"Ok": function() {
-					$("#esquina").val($(".selecao-esquina").val())
+					$("#esquina").val($(".selecao-esquina:checked").val())
+					$("#zona-oculta").val($("#zona").val())
+					$("#exibicao-esquina").html($(".selecao-esquina:checked").
+						parent().text())
 					$(this).dialog("close");
 				}
 			}
@@ -32,22 +35,24 @@ function confirmacao() {
 function obterEsquinas(idDaZona) {
 	$.get("../zona/" + idDaZona + "/esquinas", function(esquinas) {
 		var lista = []
+		var idAtual = $("#esquina").val()
 		for (i in esquinas) {
 			id = esquinas[i].id
+			var checked = id == idAtual? "checked" : "";
 			element = "<label for='" + id + "'>" +
 				"<input type='radio' class='selecao-esquina' name='selecao-esquina' id='" +
-					esquinas[i].id + "' value='" + esquinas[i].id + "'>" +
-				esquinas[i].cruzamento + "</label>"
+					esquinas[i].id + "' value='" + esquinas[i].id + "' " + checked + "/> " +
+				esquinas[i].cruzamento + "</label><br/>"
 
 			lista.push(element)
-
-			$("#esquinas-exibidas").html(lista)
 		}
+
+		$("#esquinas-exibidas").html(lista)
 	})
 }
 
 function atualizarEsquinas() {
-	$("#selecao-zona").change(function() {
+	$("#zona").change(function() {
 		var idDaZona = $("#zona > :selected").val();
 		obterEsquinas(idDaZona)
 	})
