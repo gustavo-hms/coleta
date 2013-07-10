@@ -37,14 +37,14 @@ function obterEsquinas(idDaZona) {
 		var lista = []
 		var idAtual = $("#esquina").val()
 		for (i in esquinas) {
-			id = esquinas[i].id
+			var id = esquinas[i].id
 			var checked = id == idAtual? "checked" : "";
-			element = "<label for='" + id + "'>" +
+			var elemento = "<label for='" + id + "'>" +
 				"<input type='radio' class='selecao-esquina' name='selecao-esquina' id='" +
 					esquinas[i].id + "' value='" + esquinas[i].id + "' " + checked + "/> " +
 				esquinas[i].cruzamento + "</label><br/>"
 
-			lista.push(element)
+			lista.push(elemento)
 		}
 
 		$("#esquinas-exibidas").html(lista)

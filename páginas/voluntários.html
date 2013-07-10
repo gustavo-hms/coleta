@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<meta name="description" content="Custom Login Form Styling with CSS3" />
+		<meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
+
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/flick/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="materiais/css/style.css" />
+
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script src='/materiais/js/voluntarios.js'></script>
+		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
+	</head>
+
+	<body>
+		<section class="conteudo-iframe stream" style="height: 1074px;">
+		<div class="content_wrapper">
+			<div class="container">
+				<div class="conteudo">
+					<h1>Inscrição de <strong>voluntários</strong></h1>
+					<h2 style="padding: 0; margin: 0;">Caso haja dúvidas, favor entrar em contato com coleta.brasil@teto.org.br</h2>
+					<div style="width: 100%">
+						<nav class="codrops-demos">
+							<a class="current-demo"
+								href="inscrevase.html"
+								style="width: 250px; float:left;">Inscreva-se como <br />Voluntário</a>
+
+							<a class="current-demo"
+								style="width: 250px; float:left;"
+								href="../lideres">Inscreva-se como<br/>Líder</a>
+						</nav>
+					</div>
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+
+					<section class="main">
+					Já sabe o que um voluntário faz, e qual a diferença entre um líder de esquina e um voluntário? Essas informações você encontra detalhadas na seção <a href='materiais/como.html' title='Informações sobre como participar da coleta'>"Como participar?"</a>
+					<form action="voluntarios" method="POST" id="formulario" class="form-1">
+						<p class="field">
+							<input type="text"
+								name="nome"
+								placeholder="Nome completo"
+								value="{{.Nome}}"
+								class="{{if .MsgNome}}erro{{end}}"/> 
+							<i class="icon-large"><img src="materiais/imagens/item{{if .MsgNome}}-com-erro{{end}}.png"> </i>
+						</p>
+						<div class="erro"> {{.MsgNome}} </div>
+
+						<p class="field">
+							<input type="text"
+								name="telefone-residencial"
+								placeholder="Telefone residencial"
+								value="{{.TelefoneResidencial}}"
+								class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/>
+							<i class="icon-large"><img src="materiais/imagens/item{{if or .MsgContato .MsgTelefoneResidencial}}-com-erro{{end}}.png"></i>
+						</p>
+						<div class="erro">{{.MsgTelefoneResidencial}}</div>
+
+						<p class="field">
+							<input type="text"
+								name="telefone-celular" 
+								placeholder="Telefone celular"
+								value="{{.TelefoneCelular}}"
+								class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/>
+							<i class="icon-large"><img src="materiais/imagens/item{{if or .MsgContato .MsgTelefoneCelular}}-com-erro{{end}}.png"></i>
+						</p>
+						<div class="erro">{{.MsgTelefoneCelular}}</div>
+						<div class="erro">{{.MsgContato}}</div>
+
+						Operadora:
+						<label for="Claro">
+							<input type="radio"
+								name="operadora"
+								id="Claro"
+								value="Claro"
+								{{if iguais .Operadora "Claro"}}
+								checked="checked"
+								{{end}}/>
+							Claro
+						</label>
+
+						<label for="Oi">
+							<input type="radio"
+								name="operadora"
+								id="Oi"
+								value="Oi"
+								{{if iguais .Operadora "Oi"}}
+								checked="checked"
+								{{end}}/>
+							Oi
+						</label>
+
+						<label for="TIM">
+							<input type="radio"
+								name="operadora" 
+								id="TIM"
+								value="TIM"
+								{{if iguais .Operadora "TIM"}}
+								checked="checked"
+								{{end}}/>
+							TIM
+						</label>
+
+						<label for="Vivo">
+							<input type="radio"
+								name="operadora"
+								id="Vivo"
+								value="Vivo"
+								{{if iguais .Operadora "Vivo"}}
+								checked="checked"
+								{{end}}/>
+							Vivo
+						</label>
+						
+						<label for="Outra">
+							<input type="radio"
+								name="operadora"
+								id="Outra"
+								value="Outra"
+								{{if iguais .Operadora "Outra"}}
+								checked="checked"
+								{{end}}/>
+							Outra
+						</label>
+
+						<br/>
+						<br/>
+
+						<p class="field">
+						<input type="text"
+							name="e-mail"
+							placeholder="E-mail"
+							value="{{.Email}}"
+							class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/>
+							<i class="icon-large"><img src="materiais/imagens/item{{if or .MsgContato .MsgEmail}}-com-erro{{end}}.png"> </i>
+						</p> {{if .MsgEmail}}<div class="erro">{{.MsgEmail}}</div>{{end}}<br/>
+
+						<p class="field">
+						<input type="text"
+							name="rg"
+							placeholder="RG"
+							value="{{.RG}}"
+							class="{{if .MsgRG}}erro{{end}}"/>
+							<i class="icon-large"><img src="materiais/imagens/item{{if .MsgRG}}-com-erro{{end}}.png"> </i>
+						</p> {{if .MsgRG}}<div class="erro">{{.MsgRG}}</div>{{end}}<br/>
+
+						<p class="field">
+						<input type="text"
+							name="cpf"
+							placeholder="CPF"
+							value="{{.CPF}}"
+							class="{{if .MsgCPF}}erro{{end}}"/>
+							<i class="icon-large"><img src="materiais/imagens/item{{if .MsgCPF}}-com-erro{{end}}.png"></i>
+						</p> {{if .MsgCPF}}<div class="erro">{{.MsgCPF}}</div>{{end}}<br/>
+
+						<br/>
+
+						Você prefere atuar junto a um líder de esquina específico ou prefere escolher sua zona de atuação?
+						<br/>
+						<button type="text"
+							id="selecionar-lider"
+							style="width: 49%;">
+							Escolher líder
+						</button>
+						<button type="text"
+							id="selecionar-zona"
+							style="width: 49%;">
+							Escolher zona
+						</button>
+
+						<div id="selecao-lider"
+							style="display: none">
+
+							<input type="text"
+								id="busca-lider"
+								name="busca-lider"
+								class="busca"
+								placeholder="Buscar líder"/>
+
+							<div id="lideres"></div>
+						</div>
+						<input id="input-lider"
+							type="hidden"
+							name="lider"
+							value="{{.Líder.Id}}"/>
+
+						<div id="selecao-zona"
+							style="display: none">
+							Já escolheu sua zona? Dê uma olhada no <a href='materiais/mapa.html' title='Mapa das zonas' target='_blank'>mapa</a> e veja onde é melhor pra você
+							<p class="field">
+							<select id="zona" name="zona">
+								{{range zonas}}
+								<option value="{{.Zona.Id}}"
+								{{if .Selecionado}}selected="selected"{{end}}>
+								{{.Zona.Nome}}
+								</option>
+								{{end}}
+							</select> {{.MsgZona}}
+							<i class="icon-large"><img src="materiais/imagens/item.png"></i>
+							</p>
+						</div>
+						<input id="input-zona"
+							type="hidden"
+							name="zona"
+							value="{{.Zona.Id}}"/>
+
+						<span id="escolha"></span>
+						<br/>
+						<br/>
+
+						Turnos:
+						<div id="turnos">
+							{{range turnos}}
+							<input id="turno-{{.Turno.Id}}"
+								type="checkbox"
+								name="turnos"
+								value="{{.Turno.Id}}"
+								{{if .Selecionado}}
+								checked="checked"
+								{{end}}
+								style="margin-top: 5px; margin-right: 5px;">
+							<label for="turno-{{.Turno.Id}}"
+								style="float: none; padding: 0; background: transparent; border-radius: 0; box-shadow: none; line-height: 26px;">
+								{{.Turno.String}}
+							</label>
+							<br/>
+							{{end}}
+						</div>
+						{{if .MsgTurnos}}
+						<div class="erro">
+							{{.MsgTurnos}}
+						</div>
+						{{end}}
+
+						<div id="confirmacao" style="display: none">
+							<span id="texto-turnos">Você escolheu participar dos seguintes turnos:</span>
+							<b><ul id="confirmacao-turnos"></ul></b>
+							<br/>
+							E selecionou <b><span id="confirmacao-zona"></span></b> como zona de atuação.
+							<br/>
+							<br/>
+							Estes dados estão corretos?
+						</div>
+
+						<br/>
+						<button type="submit" id="enviar"/>Enviar</button>
+					</form> 
+					</section>
+				</div>
+
+				<div class="coluna2">
+					<div class="latest_posts">
+						<img style="border: 0;" src="materiais/imagens/oqueeh.jpg" />
+						<br/>
+						<br/>
+						<h2>A Grande Coleta está chegando!</h2>
+						Contamos com a sua presença! Venha coletar ou doar, nos dias 23 e 24 de agosto nas ruas de São Paulo!<br /><br />
+						<nav class="codrops-demos">
+						<a class="current-demo" href="index.html" style="width: 100%">Voltar para o site</a>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+		</section>
+	</body>
+</html>

@@ -20,7 +20,7 @@ func NewVoluntarioDAO(tx *sql.Tx) *VoluntarioDAO {
 	}
 }
 
-func (dao *VoluntarioDAO) Save(voluntario *modelos.Voluntario) error {
+func (dao *VoluntarioDAO) Save(voluntario *modelos.Voluntário) error {
 	if voluntario.Id == 0 {
 		return dao.create(voluntario)
 	} else {
@@ -28,7 +28,7 @@ func (dao *VoluntarioDAO) Save(voluntario *modelos.Voluntario) error {
 	}
 }
 
-func (dao *VoluntarioDAO) create(voluntario *modelos.Voluntario) error {
+func (dao *VoluntarioDAO) create(voluntario *modelos.Voluntário) error {
 	query := fmt.Sprintf("INSERT INTO voluntario (%s) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		dao.fields)
 	res, err := dao.Exec(query,
@@ -55,7 +55,7 @@ func (dao *VoluntarioDAO) create(voluntario *modelos.Voluntario) error {
 
 }
 
-func (dao *VoluntarioDAO) update(voluntario *modelos.Voluntario) error {
+func (dao *VoluntarioDAO) update(voluntario *modelos.Voluntário) error {
 	query := "UPDATE voluntario SET zona_id = ?, lider_id = ?, " +
 		"nome_completo = ?, telefone_residencial = ?, telefone_celular = ?, " +
 		"operadora_celular = ?, email = ?, turno = ?, como_soube_coleta_2013 = ?"
@@ -86,11 +86,11 @@ func (dao *VoluntarioDAO) update(voluntario *modelos.Voluntario) error {
 	return nil
 }
 
-func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntario, error) {
+func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntário, error) {
 	query := fmt.Sprintf("SELECT %s FROM voluntario WHERE id = ?", dao.fields)
 	row := dao.QueryRow(query, id)
 
-	voluntario := new(modelos.Voluntario)
+	voluntario := new(modelos.Voluntário)
 	voluntario.Zona = new(modelos.Zona)
 	voluntario.Lider = new(modelos.Líder)
 
