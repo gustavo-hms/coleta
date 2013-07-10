@@ -15,16 +15,16 @@ const (
 )
 
 type Líder struct {
-	Id                  int
-	Nome                string
-	TelefoneResidencial string
-	TelefoneCelular     string
-	Operadora           string
-	Email               string
-	Turnos              []Turno
-	Zona                *Zona
-	CadastradoEm        time.Time
-	Esquina             *Esquina
+	Id                  int       `json:"id"`
+	Nome                string    `json:"nome"`
+	TelefoneResidencial string    `json:"-"`
+	TelefoneCelular     string    `json:"-"`
+	Operadora           string    `json:"-"`
+	Email               string    `json:"-"`
+	Turnos              []Turno   `json:"-"`
+	Zona                *Zona     `json:"-"`
+	CadastradoEm        time.Time `json:"-"`
+	Esquina             *Esquina  `json:"-"`
 }
 
 func NovoLíder() *Líder {

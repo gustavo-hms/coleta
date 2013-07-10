@@ -15,7 +15,7 @@ func NewVoluntarioDAO(tx *sql.Tx) *VoluntarioDAO {
 	return &VoluntarioDAO{
 		Tx: tx,
 		fields: "id, zona_id, lider_id, nome_completo, telefone_residencial, " +
-			"telefone_celular, operadora_celular, email, turno, " +
+			"telefone_celular, operadora_celular, email, " +
 			"como_soube_coleta_2013",
 	}
 }
@@ -33,14 +33,13 @@ func (dao *VoluntarioDAO) create(voluntario *modelos.Voluntário) error {
 		dao.fields)
 	res, err := dao.Exec(query,
 		voluntario.Zona.Id,
-		voluntario.Lider.Id,
+		voluntario.Líder.Id,
 		voluntario.Nome,
 		voluntario.TelefoneResidencial,
 		voluntario.TelefoneCelular,
-		voluntario.OperadoraCelular,
+		voluntario.Operadora,
 		voluntario.Email,
-		voluntario.Turno,
-		voluntario.ComoSoubeColeta2013)
+		voluntario.ComoSoube)
 	if err != nil {
 		return err
 	}
@@ -61,14 +60,13 @@ func (dao *VoluntarioDAO) update(voluntario *modelos.Voluntário) error {
 		"operadora_celular = ?, email = ?, turno = ?, como_soube_coleta_2013 = ?"
 	row, err := dao.Exec(query,
 		voluntario.Zona.Id,
-		voluntario.Lider.Id,
+		voluntario.Líder.Id,
 		voluntario.Nome,
 		voluntario.TelefoneResidencial,
 		voluntario.TelefoneCelular,
-		voluntario.OperadoraCelular,
+		voluntario.Operadora,
 		voluntario.Email,
-		voluntario.Turno,
-		voluntario.ComoSoubeColeta2013)
+		voluntario.ComoSoube)
 
 	if err != nil {
 		return err
@@ -92,18 +90,17 @@ func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntário, error) {
 
 	voluntario := new(modelos.Voluntário)
 	voluntario.Zona = new(modelos.Zona)
-	voluntario.Lider = new(modelos.Líder)
+	voluntario.Líder = new(modelos.Líder)
 
 	err := row.Scan(&voluntario.Id,
 		&voluntario.Zona.Id,
-		&voluntario.Lider.Id,
+		&voluntario.Líder.Id,
 		&voluntario.Nome,
 		&voluntario.TelefoneResidencial,
 		&voluntario.TelefoneCelular,
-		&voluntario.OperadoraCelular,
+		&voluntario.Operadora,
 		&voluntario.Email,
-		&voluntario.Turno,
-		&voluntario.ComoSoubeColeta2013)
+		&voluntario.ComoSoube)
 
 	if err != nil {
 		return nil, err

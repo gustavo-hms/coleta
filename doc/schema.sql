@@ -49,7 +49,7 @@ INSERT INTO zona
 	(nome)
 VALUES
 	('Santo Amaro'),
-	('Congonhas/Berrini'),
+	('Moema/Berrini'),
 	('Ibirapuera'),
 	('Vila Mariana'),
 	('Aclimação/Ipiranga'),
@@ -57,8 +57,8 @@ VALUES
 	('Pinheiros'),
 	('Butantã'),
 	('Lapa/Pompéia'),
-	('Pacaembu'),
+	('Pacaembu/Barra Funda'),
 	('Centro'),
 	('Tatuapé'),
-	('Norte'),
+	('Santana/Norte'),
 	('Saúde');

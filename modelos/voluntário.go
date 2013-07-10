@@ -1,13 +1,10 @@
 package modelos
 
-import (
-	"net/mail"
-)
-
 type Voluntário struct {
 	Id                  int
 	Zona                *Zona
 	Líder               *Líder
+	Esquina             *Esquina
 	Nome                string
 	TelefoneResidencial string
 	TelefoneCelular     string
@@ -15,7 +12,15 @@ type Voluntário struct {
 	RG                  string
 	CPF                 string
 	Idade               string
-	Email               mail.Address
+	Email               string
 	Turnos              []Turno
 	ComoSoube           string
+}
+
+func NovoVoluntário() *Voluntário {
+	return &Voluntário{
+		Zona:    new(Zona),
+		Líder:   new(Líder),
+		Esquina: new(Esquina),
+	}
 }

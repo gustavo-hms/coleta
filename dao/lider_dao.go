@@ -174,6 +174,51 @@ func (dao *LiderDAO) FindById(id int) (*modelos.Líder, error) {
 	return lider, nil
 }
 
+func (dao *LiderDAO) FindAllThatMatches(text string) (líderes []*modelos.Líder, err error) {
+	query := fmt.Sprintf("SELECT %s FROM lider WHERE nome_completo LIKE ?", dao.fields)
+	rows, err := dao.Query(query, "%"+text+"%")
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		lider := new(modelos.Líder)
+		lider.Zona = new(modelos.Zona)
+		lider.Esquina = new(modelos.Esquina)
+
+		var cadastradoEm string
+
+		err := rows.Scan(
+			&lider.Id,
+			&lider.Zona.Id,
+			&lider.Esquina.Id,
+			&cadastradoEm,
+			&lider.Nome,
+			&lider.TelefoneResidencial,
+			&lider.TelefoneCelular,
+			&lider.Operadora,
+			&lider.Email,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if lider.CadastradoEm, err = time.Parse("2006-01-02 15:04:05", cadastradoEm); err != nil {
+			return nil, err
+		}
+
+		//		lider.Turnos, err = dao.loadTurnos(lider.Id)
+		//		if err != nil {
+		//			return nil, err
+		//		}
+
+		líderes = append(líderes, lider)
+	}
+
+	return líderes, nil
+}
+
 func (dao *LiderDAO) FindByEmail(email string) (*modelos.Líder, error) {
 	query := fmt.Sprintf("SELECT %s FROM lider WHERE email = ?", dao.fields)
 	row := dao.QueryRow(query, email)

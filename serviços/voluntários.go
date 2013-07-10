@@ -7,7 +7,6 @@ import (
 	"coleta/modelos/validação"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -37,6 +36,7 @@ func (v Voluntários) get(
 	}
 }
 
+/*
 func (v Voluntários) Post(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -85,7 +85,7 @@ func (v Voluntários) Post(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "%s", página)
 }
-
+*/
 func exibiçãoDoVoluntário(voluntário *validação.VoluntárioComErros, página string) *template.Template {
 	tx, err := dao.DB.Begin()
 	if err != nil {

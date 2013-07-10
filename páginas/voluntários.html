@@ -9,6 +9,7 @@
 
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/flick/jquery-ui.css">
 		<link rel="stylesheet" type="text/css" href="materiais/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="materiais/css/voluntarios.css" />
 
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -161,30 +162,31 @@
 							<i class="icon-large"><img src="materiais/imagens/item{{if .MsgCPF}}-com-erro{{end}}.png"></i>
 						</p> {{if .MsgCPF}}<div class="erro">{{.MsgCPF}}</div>{{end}}<br/>
 
-						<br/>
-
 						Você prefere atuar junto a um líder de esquina específico ou prefere escolher sua zona de atuação?
 						<br/>
-						<button type="text"
+						<button type="button"
 							id="selecionar-lider"
 							style="width: 49%;">
 							Escolher líder
 						</button>
-						<button type="text"
+						<button type="button"
 							id="selecionar-zona"
 							style="width: 49%;">
 							Escolher zona
 						</button>
 
 						<div id="selecao-lider"
+							class="selecao"
 							style="display: none">
 
+							<p class="field">
 							<input type="text"
 								id="busca-lider"
 								name="busca-lider"
 								class="busca"
 								placeholder="Buscar líder"/>
-
+							<i class="icon-large"><img src="materiais/imagens/item.png"></i>
+							</p>
 							<div id="lideres"></div>
 						</div>
 						<input id="input-lider"
@@ -193,6 +195,7 @@
 							value="{{.Líder.Id}}"/>
 
 						<div id="selecao-zona"
+							class="selecao"
 							style="display: none">
 							Já escolheu sua zona? Dê uma olhada no <a href='materiais/mapa.html' title='Mapa das zonas' target='_blank'>mapa</a> e veja onde é melhor pra você
 							<p class="field">
