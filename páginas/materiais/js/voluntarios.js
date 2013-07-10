@@ -25,14 +25,14 @@ function configurarBusca() {
 			for (i in lideres) {
 				var id = lideres[i].id
 				var elemento = "<label for='lider" + id + "'>" +
-				"<input type='radio' class='lideres' name='lideres' id='lider" + id + "'/>" +
-				lideres[i].nome + "</label><br/>";
+				"<input type='radio' class='lideres' name='lideres' id='lider" + id + "'/> " +
+				lideres[i].nome + "<br/></label>";
 
 				lista.push(elemento);
 			}
 
 			$("#lideres").html(lista);
-			resultados = $("#lideres");
+			resultados = lista;
 		});
 	}
 
@@ -51,11 +51,12 @@ function configurarBusca() {
 			$("#lideres").html("");
 
 		} else {
-			elemento = novaBusca.length > buscaAnterior.length?
-				$('#lideres') : resultados;
+			if (novaBusca.length < buscaAnterior.length) {
+				$('#lideres').html(resultados);
+			}
 
-			var html = $(elemento).children("label").filter(function() {
-				re = new RegExp(novaBusca);
+			var html = $("#lideres").children("label").filter(function() {
+				re = new RegExp(novaBusca, "i");
 				return $(this).text().search(re) != -1;
 			})
 
