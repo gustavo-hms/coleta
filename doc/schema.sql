@@ -40,9 +40,13 @@ CREATE TABLE voluntario (
 	telefone_celular VARCHAR(20),
 	operadora_celular ENUM('Claro', 'Oi', 'Outra', 'TIM', 'Vivo'),
 	email VARCHAR(255),
-	turno VARCHAR(255),
 	como_soube_coleta_2013 VARCHAR(255),
 	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE turnos_do_lider (
+	lider_id INT(11) NOT NULL,
+	turno VARCHAR(20)
 ) ENGINE=InnoDB;
 
 INSERT INTO zona
