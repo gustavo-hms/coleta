@@ -9,6 +9,7 @@ alter table voluntario add column esquina_id INT(11) NOT NULL;
 alter table voluntario add column rg varchar(20);
 alter table voluntario add column cpf varchar(20);
 alter table voluntario add column idade varchar(20);
+alter table voluntario add column cadastrado_em DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00';
 
 create table turnos_do_voluntario (
 	voluntario_id int(11) not null,

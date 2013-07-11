@@ -45,6 +45,7 @@ CREATE TABLE voluntario (
 	cpf VARCHAR(20),
 	idade VARCHAR(20),
 	como_soube_coleta_2013 VARCHAR(255),
+	cadastrado_em DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
