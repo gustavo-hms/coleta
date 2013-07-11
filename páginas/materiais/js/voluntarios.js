@@ -25,7 +25,7 @@ function configurarBusca() {
 			for (i in lideres) {
 				var id = lideres[i].id
 				var elemento = "<label for='lider" + id + "'>" +
-				"<input type='radio' class='lideres' name='lideres' id='lider" + id + "'/> " +
+				"<input type='radio' class='lideres' name='lider' id='lider" + id + "' value='" + id + "'/> " +
 				lideres[i].nome + "<br/></label>";
 
 				lista.push(elemento);
@@ -39,7 +39,7 @@ function configurarBusca() {
 	$("#busca-lider").keyup(function() {
 		var novaBusca = $("#busca-lider").val();
 
-		if (novaBusca.length == comprimento) {
+		if (novaBusca.length == comprimento || $("#lideres").html().length == 0) {
 			if (novaBusca != buscaNoServidor) {
 				buscaNoServidor = novaBusca;
 				obterLideres(buscaNoServidor);
@@ -71,6 +71,7 @@ function selecaoDeZona() {
 	$('#selecionar-zona').click(function(e) {
 		$('#selecao-zona').slideDown(400);
 		$('#selecao-lider').slideUp(400);
+		$('#lideres').html("");
 	});
 }
 
