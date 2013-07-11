@@ -136,7 +136,7 @@ func exibiçãoDoVoluntário(voluntário *validação.VoluntárioComErros, pági
 		"esquinas": func() []esquinaComSeleção {
 			seleção := make([]esquinaComSeleção, 0, len(esquinas))
 			for _, esquina := range esquinas {
-				s := esquinaComSeleção{Esquina: *esquina}
+				s := esquinaComSeleção{Esquina: esquina}
 				if voluntário != nil && voluntário.Esquina.Id == esquina.Id {
 					s.Selecionado = true
 				}

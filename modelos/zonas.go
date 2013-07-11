@@ -22,6 +22,7 @@ var ZonasBloqueadas = []string{
 }
 
 type Zona struct {
-	Id   int
-	Nome string
+	Id       int
+	Nome     string
+	Esquinas []Esquina
 }

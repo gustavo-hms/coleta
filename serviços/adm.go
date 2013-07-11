@@ -2,8 +2,8 @@ package serviços
 
 import (
 	"coleta/config"
-	"fmt"
-	"io/ioutil"
+	"coleta/dao"
+	"html/template"
 	"log"
 	"net/http"
 )
@@ -22,10 +22,31 @@ func (_ Redirecionamento) Get(w http.ResponseWriter, r *http.Request) {
 type Adm struct{}
 
 func (a Adm) Get(w http.ResponseWriter, r *http.Request) {
-	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/adm.html")
+	tx, err := dao.DB.Begin()
 	if err != nil {
-		log.Println("Erro ao abrir o arquivo adm.html:", err)
+		log.Println("Início da transação:", err)
+		return
 	}
 
-	fmt.Fprintf(w, "%s", página)
+	zonaDAO := dao.NewZonaDAO(tx)
+	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
+	if err != nil {
+		zonaDAO.Rollback()
+		log.Println(err)
+		return
+	}
+
+	zonaDAO.Commit()
+
+	t, err := template.New("adm").
+		ParseFiles(config.Dados.DiretórioDasPáginas + "/adm.html")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	err = t.ExecuteTemplate(w, "adm.html", zonas)
+	if err != nil {
+		log.Println(err)
+	}
 }

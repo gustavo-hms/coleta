@@ -115,7 +115,7 @@ func exibiçãoDoLíder(líder *validação.LíderComErros, página string) *tem
 		"esquinas": func() []esquinaComSeleção {
 			seleção := make([]esquinaComSeleção, 0, len(esquinas))
 			for _, esquina := range esquinas {
-				s := esquinaComSeleção{Esquina: *esquina}
+				s := esquinaComSeleção{Esquina: esquina}
 				if líder != nil && líder.Esquina.Id == esquina.Id {
 					s.Selecionado = true
 				}

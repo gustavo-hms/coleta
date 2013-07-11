@@ -7,7 +7,7 @@
         <meta name="description" content="Custom Login Form Styling with CSS3" />
         <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
 
-        <link rel="stylesheet" type="text/css" href="adm/materiais/css/style.css" />
+        <link rel="stylesheet" type="text/css" href="../materiais/css/style.css" />
     </head>
 
 	<body>
@@ -17,12 +17,14 @@
 			<div class="content_wrapper">
 				<div class="container">
 					<div class="conteudo">
-						<h1>Administração</h1>
+						<h1>{{.Nome}}</h1>
 
 						<section class="main">
-							{{range .}}
-							<a href="adm/zona/{{.Id}}">{{.Nome}}</a>
-							<br/>
+							{{range .Esquinas}}
+							<div id=esquina{{.Id}}>
+								<h3><a href="../esquina/{{.Id}}">{{.Cruzamento}}</a></h3>
+								<br/>
+							</div>
 							{{end}}
 						</section>
 					</div>

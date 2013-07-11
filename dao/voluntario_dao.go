@@ -45,8 +45,6 @@ func (dao *VoluntarioDAO) create(voluntario *modelos.Voluntário) error {
 		idDaEsquina = voluntario.Esquina.Id
 	}
 
-	fmt.Println(voluntario.CadastradoEm)
-
 	query := fmt.Sprintf("INSERT INTO voluntario (%s) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		dao.fields)
 	res, err := dao.Exec(

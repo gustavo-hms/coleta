@@ -96,16 +96,16 @@ func (dao *EsquinaDAO) findById(id int) (*modelos.Esquina, error) {
 	return esquina, nil
 }
 
-func (dao *EsquinaDAO) BuscarPorZona(idDaZona string) ([]*modelos.Esquina, error) {
+func (dao *EsquinaDAO) BuscarPorZona(idDaZona string) ([]modelos.Esquina, error) {
 	query := fmt.Sprintf("SELECT %s FROM esquina WHERE zona_id = ?", dao.fields)
 	rows, err := dao.Query(query, idDaZona)
 	if err != nil {
 		return nil, err
 	}
 
-	esquinas := make([]*modelos.Esquina, 0)
+	esquinas := make([]modelos.Esquina, 0)
 	for rows.Next() {
-		esquina := new(modelos.Esquina)
+		var esquina modelos.Esquina
 		rows.Scan(
 			&esquina.Id,
 			&esquina.Zona.Id,

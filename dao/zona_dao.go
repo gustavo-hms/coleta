@@ -4,6 +4,12 @@ import (
 	"coleta/modelos"
 	"database/sql"
 	"fmt"
+	"log"
+)
+
+const (
+	OpçãoNenhuma              = 0
+	OpçãoNãoFiltrarBloqueadas = 1 << iota
 )
 
 type ZonaDAO struct {
@@ -62,11 +68,46 @@ func (dao *ZonaDAO) update(zona *modelos.Zona) error {
 
 }
 
+func (dao *ZonaDAO) BuscaCompleta(id string) (*modelos.Zona, error) {
+	query := fmt.Sprintf("SELECT %s FROM zona WHERE id = ?", dao.fields)
+	row := dao.QueryRow(query, id)
+
+	zona := new(modelos.Zona)
+
+	err := row.Scan(
+		&zona.Id,
+		&zona.Nome,
+	)
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	esquinaDAO := NewEsquinaDAO(dao.Tx)
+	zona.Esquinas, err = esquinaDAO.BuscarPorZona(id)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return zona, nil
+}
+
 func (dao *ZonaDAO) FindAll() (zonas []*modelos.Zona, err error) {
+	return dao.FindAllWithOptions(OpçãoNenhuma)
+}
+
+func (dao *ZonaDAO) FindAllWithOptions(opções int) (zonas []*modelos.Zona, err error) {
 	query := fmt.Sprintf("SELECT %s FROM zona", dao.fields)
 	rows, err := dao.Query(query)
 	if err != nil {
 		return nil, err
+	}
+
+	var filtrarBloqueadas = true
+	if opções&OpçãoNãoFiltrarBloqueadas != 0 {
+		filtrarBloqueadas = false
 	}
 
 	for rows.Next() {
@@ -74,9 +115,12 @@ func (dao *ZonaDAO) FindAll() (zonas []*modelos.Zona, err error) {
 		rows.Scan(&zona.Id, &zona.Nome)
 
 		zonaBloqueada := false
-		for _, bloqueada := range modelos.ZonasBloqueadas {
-			if bloqueada == zona.Nome {
-				zonaBloqueada = true
+
+		if filtrarBloqueadas {
+			for _, bloqueada := range modelos.ZonasBloqueadas {
+				if bloqueada == zona.Nome {
+					zonaBloqueada = true
+				}
 			}
 		}
 

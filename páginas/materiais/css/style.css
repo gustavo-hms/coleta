@@ -1111,3 +1111,8 @@ div.erro {
 .erro input[type="text"] {
 	border-color: red;
 }
+
+a {
+	color: #0092dd;
+	text-decoration: none;
+}

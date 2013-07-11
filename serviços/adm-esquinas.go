@@ -5,9 +5,7 @@ import (
 	"coleta/dao"
 	"coleta/modelos"
 	"coleta/modelos/validação"
-	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -35,7 +33,7 @@ func (e Esquinas) get(
 	}
 
 	zonaDAO := dao.NewZonaDAO(tx)
-	zonas, err := zonaDAO.FindAll()
+	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
 	if err != nil {
 		zonaDAO.Rollback()
 		log.Println(err)
@@ -109,10 +107,5 @@ func (e Esquinas) Post(w http.ResponseWriter, r *http.Request) {
 		log.Println("Erro no commit:", err)
 	}
 
-	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
-	if err != nil {
-		log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
-	}
-
-	fmt.Fprintf(w, "%s", página)
+	e.Get(w, r)
 }
