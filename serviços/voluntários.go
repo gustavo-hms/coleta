@@ -7,6 +7,7 @@ import (
 	"coleta/modelos/validação"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -49,61 +50,61 @@ func (v Voluntários) Post(w http.ResponseWriter, r *http.Request) {
 	erros := validação.ValidarVoluntário(voluntário)
 
 	if erros != nil {
-		tx, err := dao.DB.Begin()
-		if err != nil {
-			log.Println(err)
-			erroInterno(w, r)
-			return
-		}
+		if erros.Líder.Id != 0 {
+			tx, err := dao.DB.Begin()
+			if err != nil {
+				log.Println(err)
+				erroInterno(w, r)
+				return
+			}
 
-		líderDAO := dao.NewLiderDAO(tx)
-		l, err := líderDAO.FindById(voluntário.Líder.Id)
-		if err != nil {
-			líderDAO.Rollback()
-			log.Println(err)
-			erroInterno(w, r)
-			return
-		}
+			líderDAO := dao.NewLiderDAO(tx)
+			l, err := líderDAO.FindById(voluntário.Líder.Id)
+			if err != nil {
+				líderDAO.Rollback()
+				log.Println(err)
+				erroInterno(w, r)
+				return
+			}
 
-		erros.Líder = l
-		líderDAO.Commit()
+			erros.Líder = l
+			líderDAO.Commit()
+		}
 
 		w.WriteHeader(http.StatusBadRequest)
 		v.get(w, r, erros)
 		return
 	}
 
-	/*
-		tx, err := dao.DB.Begin()
-		if err != nil {
-			log.Println(err)
-			erroInterno(w, r)
-			return
-		}
+	tx, err := dao.DB.Begin()
+	if err != nil {
+		log.Println(err)
+		erroInterno(w, r)
+		return
+	}
 
-		líderDAO := dao.NewLiderDAO(tx)
-		if err := líderDAO.Save(voluntário); err != nil {
-			líderDAO.Rollback()
-			log.Println("Erro ao gravar voluntário:", err)
-			erroInterno(w, r)
-			return
-		}
-		if err := líderDAO.Commit(); err != nil {
-			líderDAO.Rollback()
-			log.Println("Erro no commit:", err)
-			erroInterno(w, r)
-			return
-		}
+	voluntárioDAO := dao.NewVoluntarioDAO(tx)
+	if err := voluntárioDAO.Save(voluntário); err != nil {
+		voluntárioDAO.Rollback()
+		log.Println("Erro ao gravar voluntário:", err)
+		erroInterno(w, r)
+		return
+	}
+	if err := voluntárioDAO.Commit(); err != nil {
+		voluntárioDAO.Rollback()
+		log.Println("Erro no commit:", err)
+		erroInterno(w, r)
+		return
+	}
 
-		página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
-		if err != nil {
-			log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
-			erroInterno(w, r)
-			return
-		}
+	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
+	if err != nil {
+		log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
+		erroInterno(w, r)
+		return
+	}
 
-		fmt.Fprintf(w, "%s", página)
-	*/
+	fmt.Fprintf(w, "%s", página)
 }
 
 func exibiçãoDoVoluntário(voluntário *validação.VoluntárioComErros, página string) *template.Template {

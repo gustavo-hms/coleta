@@ -14,8 +14,8 @@ type VoluntarioDAO struct {
 func NewVoluntarioDAO(tx *sql.Tx) *VoluntarioDAO {
 	return &VoluntarioDAO{
 		Tx: tx,
-		fields: "id, zona_id, lider_id, nome_completo, telefone_residencial, " +
-			"telefone_celular, operadora_celular, email, " +
+		fields: "id, zona_id, lider_id, esquina_id, nome_completo, telefone_residencial, " +
+			"telefone_celular, operadora_celular, email, rg, cpf, idade, " +
 			"como_soube_coleta_2013",
 	}
 }
@@ -29,17 +29,38 @@ func (dao *VoluntarioDAO) Save(voluntario *modelos.Voluntário) error {
 }
 
 func (dao *VoluntarioDAO) create(voluntario *modelos.Voluntário) error {
-	query := fmt.Sprintf("INSERT INTO voluntario (%s) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	var idDaZona int
+	if voluntario.Zona != nil {
+		idDaZona = voluntario.Zona.Id
+	}
+
+	var idDoLíder int
+	if voluntario.Líder != nil {
+		idDoLíder = voluntario.Líder.Id
+	}
+
+	var idDaEsquina int
+	if voluntario.Esquina != nil {
+		idDaEsquina = voluntario.Esquina.Id
+	}
+
+	query := fmt.Sprintf("INSERT INTO voluntario (%s) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		dao.fields)
-	res, err := dao.Exec(query,
-		voluntario.Zona.Id,
-		voluntario.Líder.Id,
+	res, err := dao.Exec(
+		query,
+		idDaZona,
+		idDoLíder,
+		idDaEsquina,
 		voluntario.Nome,
 		voluntario.TelefoneResidencial,
 		voluntario.TelefoneCelular,
 		voluntario.Operadora,
 		voluntario.Email,
-		voluntario.ComoSoube)
+		voluntario.RG,
+		voluntario.CPF,
+		voluntario.Idade,
+		voluntario.ComoSoube,
+	)
 	if err != nil {
 		return err
 	}
@@ -55,18 +76,25 @@ func (dao *VoluntarioDAO) create(voluntario *modelos.Voluntário) error {
 }
 
 func (dao *VoluntarioDAO) update(voluntario *modelos.Voluntário) error {
-	query := "UPDATE voluntario SET zona_id = ?, lider_id = ?, " +
+	query := "UPDATE voluntario SET zona_id = ?, lider_id = ?, esquina_id = ? " +
 		"nome_completo = ?, telefone_residencial = ?, telefone_celular = ?, " +
-		"operadora_celular = ?, email = ?, turno = ?, como_soube_coleta_2013 = ?"
-	row, err := dao.Exec(query,
+		"operadora_celular = ?, email = ?, rg = ?, cpf = ?, idade = ? " +
+		"como_soube_coleta_2013 = ?"
+	row, err := dao.Exec(
+		query,
 		voluntario.Zona.Id,
 		voluntario.Líder.Id,
+		voluntario.Esquina.Id,
 		voluntario.Nome,
 		voluntario.TelefoneResidencial,
 		voluntario.TelefoneCelular,
 		voluntario.Operadora,
 		voluntario.Email,
-		voluntario.ComoSoube)
+		voluntario.RG,
+		voluntario.CPF,
+		voluntario.Idade,
+		voluntario.ComoSoube,
+	)
 
 	if err != nil {
 		return err
@@ -91,16 +119,23 @@ func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntário, error) {
 	voluntario := new(modelos.Voluntário)
 	voluntario.Zona = new(modelos.Zona)
 	voluntario.Líder = new(modelos.Líder)
+	voluntario.Esquina = new(modelos.Esquina)
 
-	err := row.Scan(&voluntario.Id,
+	err := row.Scan(
+		&voluntario.Id,
 		&voluntario.Zona.Id,
 		&voluntario.Líder.Id,
+		&voluntario.Esquina.Id,
 		&voluntario.Nome,
 		&voluntario.TelefoneResidencial,
 		&voluntario.TelefoneCelular,
 		&voluntario.Operadora,
 		&voluntario.Email,
-		&voluntario.ComoSoube)
+		&voluntario.RG,
+		&voluntario.CPF,
+		&voluntario.Idade,
+		&voluntario.ComoSoube,
+	)
 
 	if err != nil {
 		return nil, err

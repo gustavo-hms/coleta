@@ -35,11 +35,15 @@ CREATE TABLE voluntario (
 	id INT(11) NOT NULL AUTO_INCREMENT,
 	zona_id INT(11) NOT NULL,
 	lider_id INT(11) NOT NULL,
+	esquina_id INT(11) NOT NULL,
 	nome_completo VARCHAR(255),
 	telefone_residencial VARCHAR(20),
 	telefone_celular VARCHAR(20),
 	operadora_celular ENUM('Claro', 'Oi', 'Outra', 'TIM', 'Vivo'),
 	email VARCHAR(255),
+	rg VARCHAR(20),
+	cpf VARCHAR(20),
+	idade VARCHAR(20),
 	como_soube_coleta_2013 VARCHAR(255),
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
