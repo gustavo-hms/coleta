@@ -36,7 +36,6 @@ func (v Voluntários) get(
 	}
 }
 
-/*
 func (v Voluntários) Post(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -47,45 +46,48 @@ func (v Voluntários) Post(w http.ResponseWriter, r *http.Request) {
 
 	voluntário := modelos.NovoVoluntário()
 	voluntário.Preencher(r.Form)
-	erros := validação.ValidarVoluntário(voluntário)
+	fmt.Printf("%+v\n", voluntário)
+	/*
+		erros := validação.ValidarVoluntário(voluntário)
 
-	if erros != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		v.get(w, r, erros)
-		return
-	}
+		if erros != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			v.get(w, r, erros)
+			return
+		}
 
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		erroInterno(w, r)
-		return
-	}
+		tx, err := dao.DB.Begin()
+		if err != nil {
+			log.Println(err)
+			erroInterno(w, r)
+			return
+		}
 
-	líderDAO := dao.NewLiderDAO(tx)
-	if err := líderDAO.Save(voluntário); err != nil {
-		líderDAO.Rollback()
-		log.Println("Erro ao gravar voluntário:", err)
-		erroInterno(w, r)
-		return
-	}
-	if err := líderDAO.Commit(); err != nil {
-		líderDAO.Rollback()
-		log.Println("Erro no commit:", err)
-		erroInterno(w, r)
-		return
-	}
+		líderDAO := dao.NewLiderDAO(tx)
+		if err := líderDAO.Save(voluntário); err != nil {
+			líderDAO.Rollback()
+			log.Println("Erro ao gravar voluntário:", err)
+			erroInterno(w, r)
+			return
+		}
+		if err := líderDAO.Commit(); err != nil {
+			líderDAO.Rollback()
+			log.Println("Erro no commit:", err)
+			erroInterno(w, r)
+			return
+		}
 
-	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
-	if err != nil {
-		log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
-		erroInterno(w, r)
-		return
-	}
+		página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
+		if err != nil {
+			log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
+			erroInterno(w, r)
+			return
+		}
 
-	fmt.Fprintf(w, "%s", página)
+		fmt.Fprintf(w, "%s", página)
+	*/
 }
-*/
+
 func exibiçãoDoVoluntário(voluntário *validação.VoluntárioComErros, página string) *template.Template {
 	tx, err := dao.DB.Begin()
 	if err != nil {

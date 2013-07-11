@@ -142,7 +142,7 @@
 							value="{{.Email}}"
 							class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/>
 							<i class="icon-large"><img src="materiais/imagens/item{{if or .MsgContato .MsgEmail}}-com-erro{{end}}.png"> </i>
-						</p> {{if .MsgEmail}}<div class="erro">{{.MsgEmail}}</div>{{end}}<br/>
+						</p> {{if .MsgEmail}}<div class="erro">{{.MsgEmail}}</div>{{end}}
 
 						<p class="field">
 						<input type="text"
@@ -151,7 +151,7 @@
 							value="{{.RG}}"
 							class="{{if .MsgRG}}erro{{end}}"/>
 							<i class="icon-large"><img src="materiais/imagens/item{{if .MsgRG}}-com-erro{{end}}.png"> </i>
-						</p> {{if .MsgRG}}<div class="erro">{{.MsgRG}}</div>{{end}}<br/>
+						</p> {{if .MsgRG}}<div class="erro">{{.MsgRG}}</div>{{end}}
 
 						<p class="field">
 						<input type="text"
@@ -160,7 +160,7 @@
 							value="{{.CPF}}"
 							class="{{if .MsgCPF}}erro{{end}}"/>
 							<i class="icon-large"><img src="materiais/imagens/item{{if .MsgCPF}}-com-erro{{end}}.png"></i>
-						</p> {{if .MsgCPF}}<div class="erro">{{.MsgCPF}}</div>{{end}}<br/>
+						</p> {{if .MsgCPF}}<div class="erro">{{.MsgCPF}}</div>{{end}}
 
 						Você prefere atuar junto a um líder de esquina específico ou prefere escolher sua zona de atuação?
 						<br/>
@@ -234,11 +234,75 @@
 						</div>
 						{{end}}
 
+						<br/>
+						Idade:
+						<p class="field">
+						<select id="idade" name="idade">
+							<option value="Menos de 18 anos"
+								{{if iguais .Idade "Menos de 18 anos"}}selected{{end}}>
+								Menos de 18 anos
+							</option>
+							<option value="De 18 a 25 anos"
+								{{if iguais .Idade "De 18 a 25 anos"}}selected{{end}}>
+								De 18 a 25 anos
+							</option>
+							<option value="Mais de 25 anos"
+								{{if iguais .Idade "Mais de 25 anos"}}selected{{end}}>
+								Mais de 25 anos
+							</option>
+						</select> {{.MsgZona}}
+						<i class="icon-large"><img src="materiais/imagens/item.png"></i>
+						</p>
+
+						<br/>
+						Como soube da coleta?
+						<p class="field">
+						<select id="como-soube" name="como-soube">
+							<option value="Amigos"
+								{{if iguais .Idade "Amigos"}}selected{{end}}>
+								Amigos
+							</option>
+							<option value="E-mail"
+								{{if iguais .Idade "E-mail"}}selected{{end}}>
+								E-mail
+							</option>
+							<option value="Facebook do TETO"
+								{{if iguais .Idade "Facebook do TETO"}}selected{{end}}>
+								Facebook do TETO
+							</option>
+							<option value="Twitter do TETO"
+								{{if iguais .Idade "Twitter do TETO"}}selected{{end}}>
+								Twitter do TETO
+							</option>
+							<option value="Jornais de bairro"
+								{{if iguais .Idade "Jornais de bairro"}}selected{{end}}>
+								Jornais de bairro
+							</option>
+							<option value="Propaganda no metrô"
+								{{if iguais .Idade "Propaganda no metrô"}}selected{{end}}>
+								Propaganda no metrô
+							</option>
+							<option value="Telefonema do TETO"
+								{{if iguais .Idade "Telefonema do TETO"}}selected{{end}}>
+								Telefonema do TETO
+							</option>
+							<option value="Universidade"
+								{{if iguais .Idade "Universidade"}}selected{{end}}>
+								Universidade
+							</option>
+							<option value="Outra fonte"
+								{{if iguais .Idade "Outra fonte"}}selected{{end}}>
+								Outra fonte
+							</option>
+						</select> {{.MsgZona}}
+						<i class="icon-large"><img src="materiais/imagens/item.png"></i>
+						</p>
+
 						<div id="confirmacao" style="display: none">
 							<span id="texto-turnos">Você escolheu participar dos seguintes turnos:</span>
 							<b><ul id="confirmacao-turnos"></ul></b>
 							<br/>
-							E selecionou <b><span id="confirmacao-zona"></span></b> como zona de atuação.
+							E selecionou atuar <span id="confirmacao-atuacao"></span>.
 							<br/>
 							<br/>
 							Estes dados estão corretos?
@@ -258,7 +322,7 @@
 						<h2>A Grande Coleta está chegando!</h2>
 						Contamos com a sua presença! Venha coletar ou doar, nos dias 23 e 24 de agosto nas ruas de São Paulo!<br /><br />
 						<nav class="codrops-demos">
-						<a class="current-demo" href="index.html" style="width: 100%">Voltar para o site</a>
+						<a class="current-demo" href="../" style="width: 100%">Voltar para o site</a>
 						</nav>
 					</div>
 				</div>

@@ -89,7 +89,15 @@ function confirmacao() {
 			$("#texto-turnos").text(textoOriginal)
 		}
 		$("#confirmacao-turnos").html(turnos.map(function(turno) {return "<li>" + turno + "</li>"}));
-		$("#confirmacao-zona").html($("#zona > :selected").html());
+		
+		var lider = $(".lideres:checked").parent().text();
+		if (lider.length > 0) {
+			$("#confirmacao-atuacao").html("junto com <b>" + lider + "</b>");
+
+		} else {
+			$("#confirmacao-atuacao").html("na zona <b>" + $("#zona > :selected").html() + "</b>");
+		}
+
 
 		e.preventDefault();
 		$('#confirmacao').dialog({
