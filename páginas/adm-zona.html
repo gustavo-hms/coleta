@@ -8,6 +8,7 @@
         <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
 
         <link rel="stylesheet" type="text/css" href="../materiais/css/style.css" />
+        <link rel="stylesheet" type="text/css" href="../materiais/css/adm-zona.css" />
     </head>
 
 	<body>
@@ -23,7 +24,18 @@
 							{{range .Esquinas}}
 							<div id=esquina{{.Id}}>
 								<h3><a href="../esquina/{{.Id}}">{{.Cruzamento}}</a></h3>
-								<br/>
+								<div class="informacoes">
+									<table>
+										<tr>
+											<td>Prioridade: {{.Prioridade}}</td>
+											<td>Líderes: {{.QtdDeLíderes}}</td>
+											<td>Voluntários: {{.QtdDeVoluntários}}</td>
+											<td><a href="{{.Localização}}"
+													target="__blank">Mapa</a>
+											</td>
+										</tr>
+									<table>
+								</div>
 							</div>
 							{{end}}
 						</section>

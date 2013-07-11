@@ -85,7 +85,7 @@ func (dao *ZonaDAO) BuscaCompleta(id string) (*modelos.Zona, error) {
 	}
 
 	esquinaDAO := NewEsquinaDAO(dao.Tx)
-	zona.Esquinas, err = esquinaDAO.BuscarPorZona(id)
+	zona.Esquinas, err = esquinaDAO.BuscaCompletaPorZona(id)
 	if err != nil {
 		log.Println(err)
 		return nil, err

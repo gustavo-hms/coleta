@@ -6,11 +6,13 @@ import (
 )
 
 type Esquina struct {
-	Id          int
-	Cruzamento  string
-	Localização string
-	Prioridade  string
-	Zona        Zona
+	Id               int
+	Cruzamento       string
+	Localização      string
+	Prioridade       string
+	QtdDeLíderes     int
+	QtdDeVoluntários int
+	Zona             Zona
 }
 
 func (e *Esquina) Preencher(campos func(string) string) {

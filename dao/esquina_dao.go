@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 )
 
 var (
@@ -115,6 +116,47 @@ func (dao *EsquinaDAO) BuscarPorZona(idDaZona string) ([]modelos.Esquina, error)
 		)
 
 		esquinas = append(esquinas, esquina)
+	}
+
+	return esquinas, nil
+}
+
+func (dao *EsquinaDAO) BuscaCompletaPorZona(idDaZona string) ([]modelos.Esquina, error) {
+	query := fmt.Sprintf("SELECT %s FROM esquina WHERE zona_id = ?", dao.fields)
+	rows, err := dao.Query(query, idDaZona)
+	if err != nil {
+		return nil, err
+	}
+
+	esquinas := make([]modelos.Esquina, 0)
+	for rows.Next() {
+		var esquina modelos.Esquina
+		rows.Scan(
+			&esquina.Id,
+			&esquina.Zona.Id,
+			&esquina.Cruzamento,
+			&esquina.Localização,
+			&esquina.Prioridade,
+		)
+
+		esquinas = append(esquinas, esquina)
+	}
+
+	líderDAO := NewLiderDAO(dao.Tx)
+	voluntárioDAO := NewVoluntarioDAO(dao.Tx)
+	for i, _ := range esquinas {
+		esquinas[i].QtdDeLíderes, err = líderDAO.QtdPorEsquina(esquinas[i].Id)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+
+		esquinas[i].QtdDeVoluntários, err =
+			voluntárioDAO.QtdPorEsquina(esquinas[i].Id)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
 	}
 
 	return esquinas, nil

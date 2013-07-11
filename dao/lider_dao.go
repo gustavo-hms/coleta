@@ -219,6 +219,15 @@ func (dao *LiderDAO) FindAllThatMatches(text string) (líderes []*modelos.Líder
 	return líderes, nil
 }
 
+func (dao *LiderDAO) QtdPorEsquina(id int) (qtd int, err error) {
+	query := "SELECT count(*) FROM lider WHERE esquina_id = ?"
+
+	row := dao.QueryRow(query, id)
+
+	err = row.Scan(&qtd)
+	return
+}
+
 func (dao *LiderDAO) FindByEmail(email string) (*modelos.Líder, error) {
 	query := fmt.Sprintf("SELECT %s FROM lider WHERE email = ?", dao.fields)
 	row := dao.QueryRow(query, email)

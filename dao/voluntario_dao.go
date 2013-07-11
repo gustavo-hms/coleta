@@ -206,6 +206,14 @@ func (dao *VoluntarioDAO) loadTurnos(idDoVoluntario int) ([]modelos.Turno, error
 	return turnos, nil
 }
 
+func (dao *VoluntarioDAO) QtdPorEsquina(id int) (qtd int, err error) {
+	query := "SELECT count(*) FROM voluntario WHERE esquina_id = ?"
+	row := dao.QueryRow(query, id)
+
+	err = row.Scan(&qtd)
+	return
+}
+
 func (dao *VoluntarioDAO) Delete(id int) error {
 	query := "DELETE FROM voluntario WHERE id = ?"
 	res, err := dao.Exec(query, id)
