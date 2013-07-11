@@ -25,6 +25,7 @@ type VoluntárioComErros struct {
 	MsgEsquina             string
 	MsgRG                  string
 	MsgCPF                 string
+	MsgLíder               string
 }
 
 func NovoVoluntárioComErros(líder *modelos.Voluntário) *VoluntárioComErros {
@@ -64,6 +65,16 @@ func (v *VoluntárioComErros) validarCamposObrigatórios() *VoluntárioComErros 
 	if v.Email == "" {
 		v.errosEncontrados = true
 		v.MsgEmail = "Este campo não pode estar vazio"
+	}
+
+	if v.CPF == "" {
+		v.errosEncontrados = true
+		v.MsgCPF = "Este campo não pode estar vazio"
+	}
+
+	if v.Líder.Id == 0 && v.Zona.Id == 0 {
+		v.errosEncontrados = true
+		v.MsgLíder = "É necessário escolher entre um líder de esquina e uma zona"
 	}
 
 	if len(v.Turnos) == 0 {

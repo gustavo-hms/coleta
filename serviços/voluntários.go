@@ -46,16 +46,34 @@ func (v Voluntários) Post(w http.ResponseWriter, r *http.Request) {
 
 	voluntário := modelos.NovoVoluntário()
 	voluntário.Preencher(r.Form)
-	fmt.Printf("%+v\n", voluntário)
-	/*
-		erros := validação.ValidarVoluntário(voluntário)
+	erros := validação.ValidarVoluntário(voluntário)
 
-		if erros != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			v.get(w, r, erros)
+	if erros != nil {
+		tx, err := dao.DB.Begin()
+		if err != nil {
+			log.Println(err)
+			erroInterno(w, r)
 			return
 		}
 
+		líderDAO := dao.NewLiderDAO(tx)
+		l, err := líderDAO.FindById(voluntário.Líder.Id)
+		if err != nil {
+			líderDAO.Rollback()
+			log.Println(err)
+			erroInterno(w, r)
+			return
+		}
+
+		erros.Líder = l
+		líderDAO.Commit()
+
+		w.WriteHeader(http.StatusBadRequest)
+		v.get(w, r, erros)
+		return
+	}
+
+	/*
 		tx, err := dao.DB.Begin()
 		if err != nil {
 			log.Println(err)

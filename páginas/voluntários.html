@@ -177,7 +177,7 @@
 
 						<div id="selecao-lider"
 							class="selecao"
-							style="display: none">
+							{{if not .Líder.Id}}style="display: none"{{end}}>
 
 							<p class="field">
 							<input type="text"
@@ -186,7 +186,7 @@
 								placeholder="Buscar líder"/>
 							<i class="icon-large"><img src="materiais/imagens/item.png"></i>
 							</p>
-							<div id="lideres"></div>
+							<div id="lideres">{{if .Líder.Id}}<label for=lider1><input type="radio" id=lider1 name="lider" checked value="{{.Líder.Id}}"> {{.Líder.Nome}}</label>{{end}}</div>
 						</div>
 	
 						<div id="selecao-zona"
@@ -250,7 +250,7 @@
 								{{if iguais .Idade "Mais de 25 anos"}}selected{{end}}>
 								Mais de 25 anos
 							</option>
-						</select> {{.MsgZona}}
+						</select>
 						<i class="icon-large"><img src="materiais/imagens/item.png"></i>
 						</p>
 
@@ -294,7 +294,7 @@
 								{{if iguais .Idade "Outra fonte"}}selected{{end}}>
 								Outra fonte
 							</option>
-						</select> {{.MsgZona}}
+						</select>
 						<i class="icon-large"><img src="materiais/imagens/item.png"></i>
 						</p>
 
