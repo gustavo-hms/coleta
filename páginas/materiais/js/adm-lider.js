@@ -1,13 +1,11 @@
 $(function() {
-	confirmacao();
+	dialogo();
 	atualizarEsquinas();
+	registrarFiltro();
 });
 
-function confirmacao() {
+function dialogo() {
 	$('#alterar').click(function(e) {
-//		var idDaZona = $("#zona > :selected").val();
-//		obterEsquinas(idDaZona)
-
 		e.preventDefault();
 		$('#selecionar-esquina').dialog({
 			resizable: false,
@@ -32,6 +30,7 @@ function confirmacao() {
 	});
 }
 
+var resultados = []
 function obterEsquinas(idDaZona) {
 	$.get("../zona/" + idDaZona + "/esquinas", function(esquinas) {
 		var lista = []
@@ -42,11 +41,12 @@ function obterEsquinas(idDaZona) {
 			var elemento = "<label for='" + id + "'>" +
 				"<input type='radio' class='selecao-esquina' name='selecao-esquina' id='" +
 					esquinas[i].id + "' value='" + esquinas[i].id + "' " + checked + "/> " +
-				esquinas[i].cruzamento + "</label><br/>"
+				esquinas[i].cruzamento + "<br/></label>"
 
 			lista.push(elemento)
 		}
 
+		resultados = lista
 		$("#esquinas-exibidas").html(lista)
 	})
 }
@@ -56,4 +56,26 @@ function atualizarEsquinas() {
 		var idDaZona = $("#zona > :selected").val();
 		obterEsquinas(idDaZona)
 	})
+}
+
+function registrarFiltro() {
+	var buscaAnterior = ""
+	resultados = $("#esquinas-exibidas").html()
+
+	$('#filtro').keyup(function() {
+		var busca = $("#filtro").val()
+		var re = new RegExp(busca, "i");
+
+		if (busca.length < buscaAnterior.length) {
+			$("#esquinas-exibidas").html(resultados)
+		}
+
+		var html = $("#esquinas-exibidas").children("label").filter(function() {
+			return $(this).text().search(re) != -1;
+		})
+
+		$('#esquinas-exibidas').html(html);
+
+		buscaAnterior = busca;
+	});
 }

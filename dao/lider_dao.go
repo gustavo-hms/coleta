@@ -166,6 +166,12 @@ func (dao *LiderDAO) FindById(id int) (*modelos.Líder, error) {
 		return nil, err
 	}
 
+	esquinaDAO := NewEsquinaDAO(dao.Tx)
+	lider.Esquina, err = esquinaDAO.FindById(lider.Esquina.Id)
+	if err != nil {
+		return nil, err
+	}
+
 	lider.Turnos, err = dao.loadTurnos(id)
 	if err != nil {
 		return nil, err

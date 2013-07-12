@@ -75,7 +75,7 @@ func (dao *EsquinaDAO) update(esquina *modelos.Esquina) error {
 	return nil
 }
 
-func (dao *EsquinaDAO) findById(id int) (*modelos.Esquina, error) {
+func (dao *EsquinaDAO) FindById(id int) (*modelos.Esquina, error) {
 	query := fmt.Sprintf("SELECT %s FROM esquina WHERE id = ?", dao.fields)
 	row := dao.QueryRow(query, id)
 
@@ -91,6 +91,7 @@ func (dao *EsquinaDAO) findById(id int) (*modelos.Esquina, error) {
 	)
 
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
