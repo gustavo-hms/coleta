@@ -37,7 +37,10 @@ func (v *Voluntário) Preencher(campos map[string][]string) {
 	v.TelefoneResidencial = campos["telefone-residencial"][0]
 	v.TelefoneCelular = campos["telefone-celular"][0]
 	v.Idade = campos["idade"][0]
-	v.ComoSoube = campos["como-soube"][0]
+
+	if comoSoube, ok := campos["como-soube"]; ok {
+		v.ComoSoube = comoSoube[0]
+	}
 
 	if operadora, ok := campos["operadora"]; ok {
 		v.Operadora = operadora[0]

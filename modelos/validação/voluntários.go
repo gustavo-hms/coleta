@@ -25,18 +25,18 @@ type VoluntárioComErros struct {
 	MsgEsquina             string
 	MsgRG                  string
 	MsgCPF                 string
-	MsgLíder               string
+	Msgvoluntário          string
 }
 
-func NovoVoluntárioComErros(líder *modelos.Voluntário) *VoluntárioComErros {
+func NovoVoluntárioComErros(voluntário *modelos.Voluntário) *VoluntárioComErros {
 	v := new(VoluntárioComErros)
-	v.Voluntário = *líder
+	v.Voluntário = *voluntário
 
 	return v
 }
 
-func ValidarVoluntário(líder *modelos.Voluntário) *VoluntárioComErros {
-	return NovoVoluntárioComErros(líder).
+func ValidarVoluntário(voluntário *modelos.Voluntário) *VoluntárioComErros {
+	return NovoVoluntárioComErros(voluntário).
 		validarCamposObrigatórios().
 		validarSintaxe().
 		validarPolíticas().
@@ -72,9 +72,9 @@ func (v *VoluntárioComErros) validarCamposObrigatórios() *VoluntárioComErros 
 		v.MsgCPF = "Este campo não pode estar vazio"
 	}
 
-	if v.Líder.Id == 0 && v.Zona.Id == 0 {
+	if v.Voluntário.Id == 0 && v.Zona.Id == 0 {
 		v.errosEncontrados = true
-		v.MsgLíder = "É necessário escolher entre um líder de esquina e uma zona"
+		v.Msgvoluntário = "É necessário escolher entre um voluntário de esquina e uma zona"
 	}
 
 	if len(v.Turnos) == 0 {
@@ -116,11 +116,11 @@ func (v *VoluntárioComErros) validarPolíticas() *VoluntárioComErros {
 			return v
 		}
 
-		líderDAO := dao.NewLiderDAO(tx)
+		voluntárioDAO := dao.NewVoluntarioDAO(tx)
 
-		if mesmoEmail, _ := líderDAO.FindByEmail(v.Email); mesmoEmail != nil {
+		if mesmoEmail, _ := voluntárioDAO.FindByEmail(v.Email); mesmoEmail != nil {
 			v.errosEncontrados = true
-			v.MsgEmail = "Já existe alguém cadastrado com este mesmo e-mail. Por favor, informe outro endereço. Em caso de dúvidas, contacte seu líder de zona"
+			v.MsgEmail = "Já existe alguém cadastrado com este mesmo e-mail. Por favor, informe outro endereço. Em caso de dúvidas, contacte seu voluntário de zona"
 		}
 	}
 

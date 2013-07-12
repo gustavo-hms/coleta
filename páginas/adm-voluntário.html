@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible"
+			content="IE=edge,chrome=1"> 
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0"> 
+		<meta name="description"
+			content="Custom Login Form Styling with CSS3" />
+		<meta name="keywords"
+			content="css3, login, form, custom, input, submit, button, html5, placeholder" />
+
+		<link rel="stylesheet"
+			href="http://code.jquery.com/ui/1.10.3/themes/flick/jquery-ui.css">
+		<link rel="stylesheet"
+			type="text/css"
+			href="../materiais/css/style.css" />
+		<link rel="stylesheet"
+			type="text/css"
+			href="../materiais/css/adm-lider.css" />
+
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script src='../materiais/js/adm-lider.js'></script>
+	</head>
+
+	<body>
+		<div class=container>
+			<section class="main">
+				<form action="{{.Id}}"
+					method="post"
+					class="form-1">
+
+					<p class="field">
+						<input type="text"
+							name="nome"
+							placeholder="Nome completo"
+							value="{{.Nome}}"
+							class="{{if .MsgNome}}erro{{end}}"/> 
+						<i class="icon-large"><img src="../materiais/imagens/item{{if .MsgNome}}-com-erro{{end}}.png"></i>
+					</p>
+					<div class="erro">
+						{{.MsgNome}}
+					</div>
+
+					Telefone residencial:
+					<p class="field">
+						<input type="text"
+							name="telefone-residencial"
+							placeholder="Telefone residencial"
+							value="{{.TelefoneResidencial}}"
+							class="{{if or .MsgContato .MsgTelefoneResidencial}}erro{{end}}"/>
+						<i class="icon-large"><img src="../materiais/imagens/item{{if or .MsgContato .MsgTelefoneResidencial}}-com-erro{{end}}.png"></i>
+					</p>
+					<div class="erro">{{.MsgTelefoneResidencial}}</div>
+
+					Telefone celular:
+					<p class="field">
+						<input type="text"
+							name="telefone-celular"
+							placeholder="Telefone celular"
+							value="{{.TelefoneCelular}}"
+							class="{{if or .MsgContato .MsgTelefoneCelular}}erro{{end}}"/>
+						<i class="icon-large"><img src="../materiais/imagens/item{{if or .MsgContato .MsgTelefoneCelular}}-com-erro{{end}}.png"></i>
+					</p> {{.MsgTelefoneCelular}}
+					<div class="erro">
+						{{.MsgContato}}
+					</div>
+
+					Operadora:
+					<label for="Claro">
+						<input type="radio"
+							name="operadora"
+							id="Claro"
+							value="Claro"
+							{{if iguais .Operadora "Claro"}}
+							checked="checked"
+							{{end}}/>
+						Claro 
+					</label>
+					<label for="Oi">
+						<input type="radio"
+							name="operadora"
+							id="Oi"
+							value="Oi"
+							{{if iguais .Operadora "Oi"}}
+							checked="checked"
+							{{end}}/>
+						Oi 
+					</label>
+					<label for="TIM">
+						<input type="radio"
+							name="operadora"
+							id="TIM"
+							value="TIM"
+							{{if iguais .Operadora "TIM"}}
+							checked="checked"
+							{{end}}/>
+						TIM 
+					</label>
+					<label for="Vivo">
+						<input type="radio"
+							name="operadora"
+							id="Vivo"
+							value="Vivo"
+							{{if iguais .Operadora "Vivo"}}
+							checked="checked"
+							{{end}}/>
+						Vivo 
+					</label>
+					<label for="Outra">
+						<input type="radio"
+							name="operadora"
+							id="Outra"
+							value="Outra"
+							{{if iguais .Operadora "Outra"}}
+							checked="checked"
+							{{end}}/>
+						Outra 
+					</label>
+
+					<br/>
+					<br/>
+
+					<p class="field">
+					<input type="text"
+						name="e-mail"
+						placeholder="E-mail"
+						value="{{.Email}}"
+						class="{{if or .MsgContato .MsgEmail}}erro{{end}}"/>
+						<i class="icon-large"><img src="../materiais/imagens/item{{if or .MsgContato .MsgEmail}}-com-erro{{end}}.png"></i>
+					</p>
+					{{if .MsgEmail}}
+					<div class="erro">
+						{{.MsgEmail}}
+					</div>
+					{{end}}
+					<br/>
+
+					RG:
+					<p class="field">
+					<input type="text"
+						name="rg"
+						placeholder="RG"
+						value="{{.RG}}"
+						class="{{if .MsgRG}}erro{{end}}"/>
+						<i class="icon-large"><img src="../materiais/imagens/item{{if .MsgRG}}-com-erro{{end}}.png"></i>
+					</p>
+					{{if .MsgRG}}
+					<div class="erro">
+						{{.MsgRG}}
+					</div>
+					{{end}}
+					<br/>
+
+					CPF:
+					<p class="field">
+					<input type="text"
+						name="cpf"
+						placeholder="CPF"
+						value="{{.CPF}}"
+						class="{{if .MsgCPF}}erro{{end}}"/>
+						<i class="icon-large"><img src="../materiais/imagens/item{{if .MsgCPF}}-com-erro{{end}}.png"></i>
+					</p>
+					{{if .MsgCPF}}
+					<div class="erro">
+						{{.MsgCPF}}
+					</div>
+					{{end}}
+					<br/>
+
+					Idade:
+					<p class="field">
+					<select id="idade" name="idade">
+						<option value="Menos de 18 anos"
+							{{if iguais .Idade "Menos de 18 anos"}}selected{{end}}>
+							Menos de 18 anos
+						</option>
+						<option value="De 18 a 25 anos"
+							{{if iguais .Idade "De 18 a 25 anos"}}selected{{end}}>
+							De 18 a 25 anos
+						</option>
+						<option value="Mais de 25 anos"
+							{{if iguais .Idade "Mais de 25 anos"}}selected{{end}}>
+							Mais de 25 anos
+						</option>
+					</select>
+					<i class="icon-large"><img src="../materiais/imagens/item.png"></i>
+					</p>
+					<br/>
+
+					Como soube da coleta?
+					<p class="field">
+					<select id="como-soube" name="como-soube">
+						<option value="Amigos"
+							{{if iguais .ComoSoube "Amigos"}}selected{{end}}>
+							Amigos
+						</option>
+						<option value="E-mail"
+							{{if iguais .ComoSoube "E-mail"}}selected{{end}}>
+							E-mail
+						</option>
+						<option value="Facebook do TETO"
+							{{if iguais .ComoSoube "Facebook do TETO"}}selected{{end}}>
+							Facebook do TETO
+						</option>
+						<option value="Twitter do TETO"
+							{{if iguais .ComoSoube "Twitter do TETO"}}selected{{end}}>
+							Twitter do TETO
+						</option>
+						<option value="Jornais de bairro"
+							{{if iguais .ComoSoube "Jornais de bairro"}}selected{{end}}>
+							Jornais de bairro
+						</option>
+						<option value="Propaganda no metrô"
+							{{if iguais .ComoSoube "Propaganda no metrô"}}selected{{end}}>
+							Propaganda no metrô
+						</option>
+						<option value="Telefonema do TETO"
+							{{if iguais .ComoSoube "Telefonema do TETO"}}selected{{end}}>
+							Telefonema do TETO
+						</option>
+						<option value="Universidade"
+							{{if iguais .ComoSoube "Universidade"}}selected{{end}}>
+							Universidade
+						</option>
+						<option value="Outra fonte"
+							{{if iguais .ComoSoube "Outra fonte"}}selected{{end}}>
+							Outra fonte
+						</option>
+					</select>
+					<i class="icon-large"><img src="../materiais/imagens/item.png"></i>
+					</p>
+
+					<br/>
+
+					Turnos:
+					<div id="turnos">
+						{{range turnos}}
+						<input id="turno-{{.Turno.Id}}"
+							type="checkbox"
+							name="turnos"
+							value="{{.Turno.Id}}"
+							{{if .Selecionado}}
+							checked="checked"
+							{{end}}
+							style="margin-top: 5px; margin-right: 5px;"/>
+						<label for="turno-{{.Turno.Id}}"
+							style="float: none; padding: 0; background: transparent; border-radius: 0; box-shadow: none; line-height: 26px;">
+							{{.Turno.String}}
+						</label>
+						<br/>
+						{{end}}
+					</div>
+					{{if .MsgTurnos}}
+					<div class="erro">
+						{{.MsgTurnos}}
+					</div>
+					{{end}}
+
+					<br/>
+					<br/>
+
+					Esquina: 
+					<span id="exibicao-esquina">
+						{{or .Esquina.Cruzamento "nenhuma esquina selecionada"}}
+					</span>
+					<input type="button"
+						id="alterar"
+						value="Alterar"/>
+
+					<input id="esquina"
+						type="hidden"
+						name="esquina"
+						value="{{.Esquina.Id}}"/>
+
+					<input id="zona-oculta"
+						type="hidden"
+						name="zona"
+						value="{{.Zona.Id}}"/>
+
+					<div id="selecionar-esquina"
+						style="display: none">
+						Zona:
+						<p class="field">
+							<select id="zona"
+								name="zona">
+								{{range zonas}}
+								<option value="{{.Zona.Id}}"
+									{{if .Selecionado}}
+									selected="selected"
+									{{end}}>
+									{{.Zona.Nome}}
+								</option>
+								{{end}}
+							</select>
+							{{.MsgZona}}
+						</p>
+
+						<br/>
+
+						<p class="field">
+							<input type="text"
+								id="filtro"
+								name="filtro"
+								class="filtro"
+								placeholder="Filtrar resultados"/>
+						</p>
+
+						<br/>
+
+						<div id="esquinas-exibidas">
+							{{range esquinas}}
+							<label for="{{.Esquina.Id}}">
+								<input type="radio"
+									class="selecao-esquina"
+									value="{{.Esquina.Id}}"
+									name="selecao-esquina"
+									id="{{.Esquina.Id}}"
+									{{if .Selecionado}}
+									checked
+									{{end}}/>
+									{{.Esquina.Cruzamento}}
+								<br/>
+							</label>
+							{{end}}
+						</div>
+					</div>
+
+					<br/>
+					<br/>
+
+					<button type="submit"
+						id="atualizar"/>
+						Atualizar
+					</button>
+				</form> 
+			</section>
+		</div>
+	</body>
+</html>

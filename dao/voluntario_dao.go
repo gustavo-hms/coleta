@@ -90,10 +90,10 @@ func (dao *VoluntarioDAO) createTurnos(voluntário *modelos.Voluntário) error {
 }
 
 func (dao *VoluntarioDAO) update(voluntario *modelos.Voluntário) error {
-	query := "UPDATE voluntario SET zona_id = ?, lider_id = ?, esquina_id = ? " +
+	query := "UPDATE voluntario SET zona_id = ?, lider_id = ?, esquina_id = ?, " +
 		"nome_completo = ?, telefone_residencial = ?, telefone_celular = ?, " +
-		"operadora_celular = ?, email = ?, rg = ?, cpf = ?, idade = ? " +
-		"como_soube_coleta_2013 = ?, cadastrado_em = ?"
+		"operadora_celular = ?, email = ?, rg = ?, cpf = ?, idade = ?, " +
+		"como_soube_coleta_2013 = ?, cadastrado_em = ? WHERE id = ?"
 	row, err := dao.Exec(
 		query,
 		voluntario.Zona.Id,
@@ -109,6 +109,7 @@ func (dao *VoluntarioDAO) update(voluntario *modelos.Voluntário) error {
 		voluntario.Idade,
 		voluntario.ComoSoube,
 		voluntario.CadastradoEm,
+		voluntario.Id,
 	)
 
 	if err != nil {
@@ -147,9 +148,9 @@ func (dao *VoluntarioDAO) deleteTurnos(id int) error {
 	return err
 }
 
-func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntário, error) {
-	query := fmt.Sprintf("SELECT %s FROM voluntario WHERE id = ?", dao.fields)
-	row := dao.QueryRow(query, id)
+func (dao *VoluntarioDAO) FindByEmail(email string) (*modelos.Voluntário, error) {
+	query := fmt.Sprintf("SELECT %s FROM voluntario WHERE email = ?", dao.fields)
+	row := dao.QueryRow(query, email)
 
 	voluntario := new(modelos.Voluntário)
 	voluntario.Zona = new(modelos.Zona)
@@ -180,6 +181,55 @@ func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntário, error) {
 
 	if voluntario.CadastradoEm, err = time.Parse("2006-01-02 15:04:05", cadastradoEm); err != nil {
 		return nil, err
+	}
+
+	voluntario.Turnos, err = dao.loadTurnos(voluntario.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return voluntario, nil
+}
+
+func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntário, error) {
+	query := fmt.Sprintf("SELECT %s FROM voluntario WHERE id = ?", dao.fields)
+	row := dao.QueryRow(query, id)
+
+	voluntario := new(modelos.Voluntário)
+	voluntario.Zona = new(modelos.Zona)
+	voluntario.Líder = new(modelos.Líder)
+	voluntario.Esquina = new(modelos.Esquina)
+	var cadastradoEm string
+
+	err := row.Scan(
+		&voluntario.Id,
+		&voluntario.Zona.Id,
+		&voluntario.Líder.Id,
+		&voluntario.Esquina.Id,
+		&voluntario.Nome,
+		&voluntario.TelefoneResidencial,
+		&voluntario.TelefoneCelular,
+		&voluntario.Operadora,
+		&voluntario.Email,
+		&voluntario.RG,
+		&voluntario.CPF,
+		&voluntario.Idade,
+		&voluntario.ComoSoube,
+		&cadastradoEm,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if voluntario.CadastradoEm, err = time.Parse("2006-01-02 15:04:05", cadastradoEm); err != nil {
+		return nil, err
+	}
+
+	esquinaDAO := NewEsquinaDAO(dao.Tx)
+	esquina, _ := esquinaDAO.FindById(voluntario.Esquina.Id)
+	if esquina != nil {
+		voluntario.Esquina = esquina
 	}
 
 	voluntario.Turnos, err = dao.loadTurnos(id)
