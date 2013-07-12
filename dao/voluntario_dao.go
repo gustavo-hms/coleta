@@ -4,6 +4,7 @@ import (
 	"coleta/modelos"
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -193,6 +194,7 @@ func (dao *VoluntarioDAO) BuscaPorEsquina(idDaEsquina int) (voluntários []model
 	query := fmt.Sprintf("SELECT %s FROM voluntario WHERE esquina_id = ?", dao.fields)
 	rows, err := dao.Query(query, idDaEsquina)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
@@ -217,14 +219,16 @@ func (dao *VoluntarioDAO) BuscaPorEsquina(idDaEsquina int) (voluntários []model
 			&voluntário.CPF,
 			&voluntário.Idade,
 			&voluntário.ComoSoube,
-			cadastradoEm,
+			&cadastradoEm,
 		)
 
 		if err != nil {
+			log.Println(err)
 			return nil, err
 		}
 
 		if voluntário.CadastradoEm, err = time.Parse("2006-01-02 15:04:05", cadastradoEm); err != nil {
+			log.Println(err)
 			return nil, err
 		}
 
@@ -234,6 +238,7 @@ func (dao *VoluntarioDAO) BuscaPorEsquina(idDaEsquina int) (voluntários []model
 	for i, _ := range voluntários {
 		voluntários[i].Turnos, err = dao.loadTurnos(voluntários[i].Id)
 		if err != nil {
+			log.Println(err)
 			return nil, err
 		}
 	}

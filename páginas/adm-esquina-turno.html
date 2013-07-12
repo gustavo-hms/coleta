@@ -8,6 +8,7 @@
         <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
 
         <link rel="stylesheet" type="text/css" href="../materiais/css/style.css" />
+        <link rel="stylesheet" type="text/css" href="../materiais/css/adm-esquina-turno.css" />
     </head>
 
 	<body>
@@ -17,7 +18,7 @@
 			<div class="content_wrapper">
 				<div class="container">
 					<div class="conteudo">
-						<h1>{{.Cruzamento}}</h1>
+						<h1 class="titulo">{{.Cruzamento}}, turno {{turno}}</h1>
 						<center>
 							<a href="{{.Localização}}"
 								target="__blank">Mapa</a>
@@ -27,18 +28,16 @@
 						<br/>
 
 						<section class="main">
-							{{range $id, $participantes := .Participantes}}
-							<h3>
-								<a href="?turno={{$id}}">
-									Turno {{$id}}
-								</a>
-							</h3>
-								{{len $participantes.Líderes}} 
-								líder{{if plural (len $participantes.Líderes)}}es{{end}}
-								e {{len $participantes.Voluntários}} 
-								voluntário{{if plural (len $participantes.Voluntários)}}s{{end}}
-							<br/>
-							<br/>
+							<h2 class="turno">Líderes</h2>
+
+							{{range (index .Participantes turno).Líderes}}
+								{{template "adm-esquina-líder.html" .}}
+							{{end}}
+
+							<h2 class="turno">Voluntários</h2>
+
+							{{range (index .Participantes turno).Voluntários}}
+								{{template "adm-esquina-voluntário.html" .}}
 							{{end}}
 						</section>
 					</div>

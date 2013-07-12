@@ -1,0 +1,36 @@
+<br/>
+<h3>
+	<a href="../lider/{{.Id}}">
+		{{.Nome}}
+	</a>
+</h3>
+<table>
+	{{if .TelefoneResidencial}}
+	<tr>
+		<td class="nome-do-campo">Telefone residencial</td>
+		<td>{{.TelefoneResidencial}}</td>
+	</tr>
+	{{end}}
+	{{if .TelefoneCelular}}
+	<tr>
+		<td class="nome-do-campo">Telefone celular</td>
+		<td>{{.TelefoneCelular}}</td>
+	</tr>
+	{{end}}
+	{{if .TelefoneCelular}}
+	<tr>
+		<td class="nome-do-campo">Operadora</td>
+		<td>{{.Operadora}}</td>
+	</tr>
+	{{end}}
+	{{if .Email}}
+	<tr>
+		<td class="nome-do-campo">E-mail</td>
+		<td>{{.Email}}</td>
+	</tr>
+	{{end}}
+	<tr>
+		<td class="nome-do-campo">Cadastrado em</td>
+		<td>{{.CadastradoEm.Local.Format "2/1/2006, 15h04"}}</td>
+	</tr>
+</table>
