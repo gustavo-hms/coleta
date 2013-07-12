@@ -191,7 +191,7 @@
 	
 						<div id="selecao-zona"
 							class="selecao"
-							style="display: none">
+							{{if (or (.Líder.Id) (not .Zona.Id))}}style="display: none"{{end}}>
 							Já escolheu sua zona? Dê uma olhada no <a href='materiais/mapa.html' title='Mapa das zonas' target='_blank'>mapa</a> e veja onde é melhor pra você
 							<p class="field">
 							<select id="zona" name="zona">
