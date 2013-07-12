@@ -13,6 +13,12 @@ type Esquina struct {
 	QtdDeLíderes     int
 	QtdDeVoluntários int
 	Zona             Zona
+	Participantes    map[string]Participantes
+}
+
+type Participantes struct {
+	Líderes     []Líder
+	Voluntários []Voluntário
 }
 
 func (e *Esquina) Preencher(campos func(string) string) {

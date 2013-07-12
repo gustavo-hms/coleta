@@ -189,8 +189,60 @@ func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntário, error) {
 	return voluntario, nil
 }
 
+func (dao *VoluntarioDAO) BuscaPorEsquina(idDaEsquina int) (voluntários []modelos.Voluntário, err error) {
+	query := fmt.Sprintf("SELECT %s FROM voluntario WHERE esquina_id = ?", dao.fields)
+	rows, err := dao.Query(query, idDaEsquina)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var voluntário modelos.Voluntário
+		voluntário.Zona = new(modelos.Zona)
+		voluntário.Líder = new(modelos.Líder)
+		voluntário.Esquina = new(modelos.Esquina)
+		var cadastradoEm string
+
+		err := rows.Scan(
+			&voluntário.Id,
+			&voluntário.Zona.Id,
+			&voluntário.Líder.Id,
+			&voluntário.Esquina.Id,
+			&voluntário.Nome,
+			&voluntário.TelefoneResidencial,
+			&voluntário.TelefoneCelular,
+			&voluntário.Operadora,
+			&voluntário.Email,
+			&voluntário.RG,
+			&voluntário.CPF,
+			&voluntário.Idade,
+			&voluntário.ComoSoube,
+			cadastradoEm,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if voluntário.CadastradoEm, err = time.Parse("2006-01-02 15:04:05", cadastradoEm); err != nil {
+			return nil, err
+		}
+
+		voluntários = append(voluntários, voluntário)
+	}
+
+	for i, _ := range voluntários {
+		voluntários[i].Turnos, err = dao.loadTurnos(voluntários[i].Id)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return voluntários, nil
+}
+
 func (dao *VoluntarioDAO) loadTurnos(idDoVoluntario int) ([]modelos.Turno, error) {
-	query := "SELECT turno FROM turnos_do_lider WHERE lider_id = ?"
+	query := "SELECT turno FROM turnos_do_voluntario WHERE voluntario_id = ?"
 	rows, err := dao.Query(query, idDoVoluntario)
 	if err != nil {
 		return nil, err
