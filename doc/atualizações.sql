@@ -11,6 +11,8 @@ alter table voluntario add column cpf varchar(20);
 alter table voluntario add column idade varchar(20);
 alter table voluntario add column cadastrado_em DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00';
 
+alter table zona add column bloqueada tinyint(1) not null default 0;
+
 create table turnos_do_voluntario (
 	voluntario_id int(11) not null,
 	turno varchar(20)
