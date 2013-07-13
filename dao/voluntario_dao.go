@@ -241,7 +241,7 @@ func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntário, error) {
 }
 
 func (dao *VoluntarioDAO) BuscaPorEsquina(idDaEsquina int) (voluntários []modelos.Voluntário, err error) {
-	query := fmt.Sprintf("SELECT %s FROM voluntario WHERE esquina_id = ?", dao.fields)
+	query := fmt.Sprintf("SELECT %s FROM voluntario WHERE esquina_id = ? ORDER BY lider_id DESC", dao.fields)
 	rows, err := dao.Query(query, idDaEsquina)
 	if err != nil {
 		log.Println(err)
