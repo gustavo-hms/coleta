@@ -52,7 +52,6 @@ func main() {
 	for _, líder := range líderes {
 		esquina := esquinaLivreParaLíder(tx, líder)
 		if esquina != nil {
-			print("Colocando líder ", líder.Id, " na esquina ", esquina.Id, "\n")
 			esquina.AcrescentarLíder(líder)
 			líder.Esquina = esquina
 			gravarLíder(tx, líder)
@@ -76,7 +75,6 @@ func main() {
 	for _, voluntário := range voluntários {
 		esquina := esquinaLivreParaVoluntário(tx, voluntário)
 		if esquina != nil {
-			print("Colocando voluntário ", voluntário.Id, " na esquina ", esquina.Id, "\n")
 			esquina.AcrescentarVoluntário(voluntário)
 			voluntário.Esquina = esquina
 			gravarVoluntário(tx, voluntário)
