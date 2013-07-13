@@ -7,21 +7,21 @@ import (
 )
 
 type Voluntário struct {
-	Id                  int
-	Zona                *Zona
-	Líder               *Líder
-	Esquina             *Esquina
-	Nome                string
-	TelefoneResidencial string
-	TelefoneCelular     string
-	Operadora           string
-	RG                  string
-	CPF                 string
-	Idade               string
-	Email               string
-	Turnos              []Turno
-	ComoSoube           string
-	CadastradoEm        time.Time
+	Id                  int       `json:"id"`
+	Zona                *Zona     `json:"-"`
+	Líder               *Líder    `json:"-"`
+	Esquina             *Esquina  `json:"-"`
+	Nome                string    `json:"nome"`
+	TelefoneResidencial string    `json:"-"`
+	TelefoneCelular     string    `json:"-"`
+	Operadora           string    `json:"-"`
+	RG                  string    `json:"-"`
+	CPF                 string    `json:"-"`
+	Idade               string    `json:"-"`
+	Email               string    `json:"-"`
+	Turnos              []Turno   `json:"-"`
+	ComoSoube           string    `json:"-"`
+	CadastradoEm        time.Time `json:"-"`
 }
 
 func NovoVoluntário() *Voluntário {

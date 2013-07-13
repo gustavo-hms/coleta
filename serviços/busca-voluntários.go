@@ -9,13 +9,13 @@ import (
 )
 
 func init() {
-	registrar("/busca/lideres", BuscaLíderes{})
-	registrarSeguro("/adm/busca/lideres", BuscaLíderes{})
+	registrar("/busca/voluntarios", BuscaVoluntários{})
+	registrarSeguro("/adm/busca/voluntarios", BuscaVoluntários{})
 }
 
-type BuscaLíderes struct{}
+type BuscaVoluntários struct{}
 
-func (b BuscaLíderes) Get(w http.ResponseWriter, r *http.Request) {
+func (b BuscaVoluntários) Get(w http.ResponseWriter, r *http.Request) {
 	trecho := r.FormValue("contem")
 	if len(trecho) < 3 {
 		w.WriteHeader(http.StatusNotFound)
@@ -28,15 +28,15 @@ func (b BuscaLíderes) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	líderDAO := dao.NewLiderDAO(tx)
-	líderes, err := líderDAO.FindAllThatMatches(trecho)
+	voluntárioDAO := dao.NewVoluntarioDAO(tx)
+	voluntários, err := voluntárioDAO.FindAllThatMatches(trecho)
 	if err != nil {
 		log.Println(err)
 		erroInterno(w, r)
 		return
 	}
 
-	bytes, err := json.Marshal(líderes)
+	bytes, err := json.Marshal(voluntários)
 	if err != nil {
 		log.Println(err)
 		erroInterno(w, r)

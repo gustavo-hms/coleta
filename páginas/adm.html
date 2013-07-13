@@ -8,6 +8,10 @@
         <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
 
         <link rel="stylesheet" type="text/css" href="adm/materiais/css/style.css" />
+        <link rel="stylesheet" type="text/css" href="adm/materiais/css/adm.css" />
+
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src='adm/materiais/js/adm.js'></script>
     </head>
 
 	<body>
@@ -20,10 +24,36 @@
 						<h1>Administração</h1>
 
 						<section class="main">
-							{{range .}}
-							<a href="adm/zona/{{.Id}}">{{.Nome}}</a>
-							<br/>
-							{{end}}
+							<table>
+								<tr>
+									<td class="esquerda">
+										{{range .}}
+										<a href="adm/zona/{{.Id}}">{{.Nome}}</a>
+										<br/>
+										{{end}}
+
+										<br/>
+										<br/>
+										<b><a href="adm/zonas">Alterar bloqueio de zonas</a></b>
+									</td>
+									<td>
+										Encontre facilmente uma pessoa inscrita
+
+										<div id="selecao-lider"
+											class="selecao" >
+
+											<p class="field">
+											<input type="text"
+												id="busca"
+												class="busca"
+												placeholder="Nome"/>
+											<i class="icon-large"><img src="adm/materiais/imagens/item.png"></i>
+											</p>
+											<div id="inscritos"></div>
+										</div>
+									</td>
+								</tr>
+							</table>
 						</section>
 					</div>
 				</div>

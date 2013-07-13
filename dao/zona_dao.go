@@ -20,7 +20,7 @@ type ZonaDAO struct {
 func NewZonaDAO(tx *sql.Tx) *ZonaDAO {
 	return &ZonaDAO{
 		Tx:     tx,
-		fields: "id, nome",
+		fields: "id, nome, bloqueada",
 	}
 }
 
@@ -33,8 +33,8 @@ func (dao *ZonaDAO) Save(zona *modelos.Zona) error {
 }
 
 func (dao *ZonaDAO) create(zona *modelos.Zona) error {
-	query := fmt.Sprintf("INSERT INTO zona (%s) VALUES (DEFAULT, ?)", dao.fields)
-	res, err := dao.Exec(query, zona.Nome)
+	query := fmt.Sprintf("INSERT INTO zona (%s) VALUES (DEFAULT, ?, ?)", dao.fields)
+	res, err := dao.Exec(query, zona.Nome, zona.Bloqueada)
 	if err != nil {
 		return err
 	}
@@ -49,8 +49,8 @@ func (dao *ZonaDAO) create(zona *modelos.Zona) error {
 }
 
 func (dao *ZonaDAO) update(zona *modelos.Zona) error {
-	query := "UPDATE zona SET nome = ?"
-	row, err := dao.Exec(query, zona.Nome)
+	query := "UPDATE zona SET nome = ?, bloqueada = ? WHERE id = ?"
+	row, err := dao.Exec(query, zona.Nome, zona.Bloqueada, zona.Id)
 	if err != nil {
 		return err
 	}
@@ -77,6 +77,7 @@ func (dao *ZonaDAO) BuscaCompleta(id string) (*modelos.Zona, error) {
 	err := row.Scan(
 		&zona.Id,
 		&zona.Nome,
+		&zona.Bloqueada,
 	)
 
 	if err != nil {
@@ -112,19 +113,9 @@ func (dao *ZonaDAO) FindAllWithOptions(opções int) (zonas []*modelos.Zona, err
 
 	for rows.Next() {
 		zona := new(modelos.Zona)
-		rows.Scan(&zona.Id, &zona.Nome)
+		rows.Scan(&zona.Id, &zona.Nome, &zona.Bloqueada)
 
-		zonaBloqueada := false
-
-		if filtrarBloqueadas {
-			for _, bloqueada := range modelos.ZonasBloqueadas {
-				if bloqueada == zona.Nome {
-					zonaBloqueada = true
-				}
-			}
-		}
-
-		if !zonaBloqueada {
+		if !filtrarBloqueadas || !zona.Bloqueada {
 			zonas = append(zonas, zona)
 		}
 	}
@@ -153,5 +144,4 @@ func (dao *ZonaDAO) Delete(id int) error {
 	}
 
 	return err
-
 }
