@@ -12,7 +12,7 @@ import (
 
 const (
 	MáximoDeLíderes                    = 1
-	MáximoDeVoluntáriosAltaPrioridade  = 1
+	MáximoDeVoluntáriosAltaPrioridade  = 17
 	MáximoDeVoluntáriosBaixaPrioridade = 13
 )
 
