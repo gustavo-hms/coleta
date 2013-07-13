@@ -101,25 +101,14 @@ func carregarLíderes(tx *sql.Tx) []modelos.Líder {
 	return líderes
 }
 
-var cacheDasEsquinas = make(map[int][]modelos.Esquina)
-
 func esquinaLivreParaLíder(tx *sql.Tx, líder modelos.Líder) *modelos.Esquina {
-	ok := true
-	var esquinas []modelos.Esquina
+	esquinaDAO := dao.NewEsquinaDAO(tx)
+	id := fmt.Sprint(líder.Zona.Id)
 
-	esquinas, ok = cacheDasEsquinas[líder.Zona.Id]
-	if !ok {
-		esquinaDAO := dao.NewEsquinaDAO(tx)
-		id := fmt.Sprint(líder.Zona.Id)
-
-		var err error
-		esquinas, err = esquinaDAO.BuscaCompletaPorZona(id)
-		if err != nil {
-			log.Println(err)
-			return nil
-		}
-
-		cacheDasEsquinas[líder.Zona.Id] = esquinas
+	esquinas, err := esquinaDAO.BuscaCompletaPorZona(id)
+	if err != nil {
+		log.Println(err)
+		return nil
 	}
 
 	for i, _ := range esquinas {
@@ -196,22 +185,13 @@ func esquinaLivreParaVoluntário(tx *sql.Tx, voluntário modelos.Voluntário) *m
 		zona = voluntário.Líder.Zona
 	}
 
-	ok := true
-	var esquinas []modelos.Esquina
+	esquinaDAO := dao.NewEsquinaDAO(tx)
+	id := fmt.Sprint(zona.Id)
 
-	esquinas, ok = cacheDasEsquinas[zona.Id]
-	if !ok {
-		esquinaDAO := dao.NewEsquinaDAO(tx)
-		id := fmt.Sprint(zona.Id)
-
-		var err error
-		esquinas, err = esquinaDAO.BuscaCompletaPorZona(id)
-		if err != nil {
-			log.Println(err)
-			return nil
-		}
-
-		cacheDasEsquinas[zona.Id] = esquinas
+	esquinas, err := esquinaDAO.BuscaCompletaPorZona(id)
+	if err != nil {
+		log.Println(err)
+		return nil
 	}
 
 	for i, _ := range esquinas {
