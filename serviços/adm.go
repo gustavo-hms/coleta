@@ -10,6 +10,7 @@ import (
 
 func init() {
 	registrarSeguro("/adm", Adm{})
+	registrar("/adm", Redirecionamento{})
 	registrar("/adm/", Redirecionamento{})
 }
 
