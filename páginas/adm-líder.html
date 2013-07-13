@@ -20,6 +20,8 @@
 		<div class=container>
 			<section class="main">
 				<form action="{{.Id}}" method="post" class="form-1">
+					<h2>Edição de líder</h2>
+
 					<p class="field">
 						<input type="text" name="nome" placeholder="Nome completo" value="{{.Nome}}" class="{{if .MsgNome}}erro{{end}}"/> 
 						<i class="icon-large"><img src="../materiais/imagens/item{{if .MsgNome}}-com-erro{{end}}.png"></i>
