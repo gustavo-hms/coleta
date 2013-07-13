@@ -206,7 +206,10 @@ func (dao *EsquinaDAO) BuscarPorZona(idDaZona string) ([]modelos.Esquina, error)
 }
 
 func (dao *EsquinaDAO) BuscaCompletaPorZona(idDaZona string) ([]modelos.Esquina, error) {
-	query := fmt.Sprintf("SELECT %s FROM esquina WHERE zona_id = ?", dao.fields)
+	query := fmt.Sprintf(
+		"SELECT %s FROM esquina WHERE zona_id = ? ORDER BY prioridade DESC",
+		dao.fields,
+	)
 	rows, err := dao.Query(query, idDaZona)
 	if err != nil {
 		return nil, err
@@ -235,12 +238,29 @@ func (dao *EsquinaDAO) BuscaCompletaPorZona(idDaZona string) ([]modelos.Esquina,
 			return nil, err
 		}
 
+		esquinas[i].Participantes = make(map[string]modelos.Participantes)
+
+		líderes, err := líderDAO.BuscaPorEsquina(esquinas[i].Id)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		dao.preencherLíderes(esquinas[i].Participantes, líderes)
+
 		esquinas[i].QtdDeVoluntários, err =
 			voluntárioDAO.QtdPorEsquina(esquinas[i].Id)
 		if err != nil {
 			log.Println(err)
 			return nil, err
 		}
+
+		voluntários, err := voluntárioDAO.BuscaPorEsquina(esquinas[i].Id)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+
+		dao.preencherVoluntários(esquinas[i].Participantes, voluntários)
 	}
 
 	return esquinas, nil

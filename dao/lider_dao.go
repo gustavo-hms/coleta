@@ -214,11 +214,6 @@ func (dao *LiderDAO) FindAllThatMatches(text string) (líderes []*modelos.Líder
 			return nil, err
 		}
 
-		//		lider.Turnos, err = dao.loadTurnos(lider.Id)
-		//		if err != nil {
-		//			return nil, err
-		//		}
-
 		líderes = append(líderes, lider)
 	}
 

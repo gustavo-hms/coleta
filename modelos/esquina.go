@@ -5,6 +5,11 @@ import (
 	"strconv"
 )
 
+const (
+	AltaPrioridade  = "alta"
+	BaixaPrioridade = "baixa"
+)
+
 type Esquina struct {
 	Id               int
 	Cruzamento       string
@@ -19,6 +24,22 @@ type Esquina struct {
 type Participantes struct {
 	Líderes     []Líder
 	Voluntários []Voluntário
+}
+
+func (e *Esquina) AcrescentarLíder(líder Líder) {
+	for _, turno := range líder.Turnos {
+		participantes := e.Participantes[turno.Id]
+		participantes.Líderes = append(participantes.Líderes, líder)
+		e.Participantes[turno.Id] = participantes
+	}
+}
+
+func (e *Esquina) AcrescentarVoluntário(voluntário Voluntário) {
+	for _, turno := range voluntário.Turnos {
+		participantes := e.Participantes[turno.Id]
+		participantes.Voluntários = append(participantes.Voluntários, voluntário)
+		e.Participantes[turno.Id] = participantes
+	}
 }
 
 func (e *Esquina) Preencher(campos func(string) string) {
