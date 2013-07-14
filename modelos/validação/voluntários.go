@@ -67,9 +67,9 @@ func (v *VoluntárioComErros) validarCamposObrigatórios() *VoluntárioComErros 
 		v.MsgEmail = "Este campo não pode estar vazio"
 	}
 
-	if v.CPF == "" {
+	if v.RG == "" {
 		v.errosEncontrados = true
-		v.MsgCPF = "Este campo não pode estar vazio"
+		v.MsgRG = "Este campo não pode estar vazio"
 	}
 
 	if v.Voluntário.Id == 0 && v.Zona.Id == 0 {

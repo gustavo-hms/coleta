@@ -24,7 +24,7 @@ func NovaEsquinaComErros(esquina *modelos.Esquina) *EsquinaComErros {
 
 func ValidarEsquina(esquina *modelos.Esquina) *EsquinaComErros {
 	return NovaEsquinaComErros(esquina).
-		validarCamposObrigatórios().validarSintaxe().apurarErros()
+		validarCamposObrigatórios().apurarErros()
 }
 
 func (e *EsquinaComErros) apurarErros() *EsquinaComErros {
@@ -39,11 +39,6 @@ func (e *EsquinaComErros) validarCamposObrigatórios() *EsquinaComErros {
 	if e.Cruzamento == "" {
 		e.errosEncontrados = true
 		e.MsgCruzamento = "Este campo não pode estar vazio"
-	}
-
-	if e.Localização == "" {
-		e.errosEncontrados = true
-		e.MsgLocalização = "Este campo não pode estar vazio"
 	}
 
 	if e.Zona.Id < 0 {
