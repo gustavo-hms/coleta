@@ -1,5 +1,10 @@
 td.esquerda {
-	padding-right: 70px;
+/*	padding-right: 70px;*/
+	width: 30%;
+}
+
+#tabela-administrativa {
+	width: 100%;
 }
 
 #selecao-lider {

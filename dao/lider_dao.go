@@ -220,6 +220,46 @@ func (dao *LiderDAO) FindAllThatMatches(text string) (líderes []*modelos.Líder
 	return líderes, nil
 }
 
+func (dao *LiderDAO) Todos() (líderes []modelos.Líder, err error) {
+	query := fmt.Sprintf("SELECT %s FROM lider", dao.fields)
+	rows, err := dao.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		lider := new(modelos.Líder)
+		lider.Zona = new(modelos.Zona)
+		lider.Esquina = new(modelos.Esquina)
+
+		var cadastradoEm string
+
+		err := rows.Scan(
+			&lider.Id,
+			&lider.Zona.Id,
+			&lider.Esquina.Id,
+			&cadastradoEm,
+			&lider.Nome,
+			&lider.TelefoneResidencial,
+			&lider.TelefoneCelular,
+			&lider.Operadora,
+			&lider.Email,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if lider.CadastradoEm, err = time.Parse("2006-01-02 15:04:05", cadastradoEm); err != nil {
+			return nil, err
+		}
+
+		líderes = append(líderes, *lider)
+	}
+
+	return líderes, nil
+}
+
 func (dao *LiderDAO) BuscaPorEsquina(idDaEsquina int) (líderes []modelos.Líder, err error) {
 	query := fmt.Sprintf("SELECT %s FROM lider WHERE esquina_id = ?", dao.fields)
 	rows, err := dao.Query(query, idDaEsquina)
