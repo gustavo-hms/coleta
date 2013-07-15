@@ -21,6 +21,7 @@ function dialogo() {
 				"Ok": function() {
 					$("#esquina").val($(".selecao-esquina:checked").val())
 					$("#zona-oculta").val($("#zona").val())
+					$("#zona-selecionada").text($("#zona option").filter(":selected").text())
 					$("#exibicao-esquina").html($(".selecao-esquina:checked").
 						parent().text())
 					$(this).dialog("close");

@@ -63,7 +63,13 @@
 
 					<br/>
 
-		
+					Zona:
+					<span id="zona-selecionada">
+						{{range zonas}}
+						{{if .Selecionado}}{{.Zona.Nome}}{{end}}
+						{{end}}
+					</span>
+					<br/>
 					<br/>
 
 				Esquina: <span id="exibicao-esquina">{{or .Esquina.Cruzamento "nenhuma esquina selecionada"}}</span><input type="button" id="alterar" value="Alterar">

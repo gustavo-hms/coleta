@@ -50,7 +50,20 @@ func (l AdmVoluntário) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	voluntárioDAO.Commit()
+	if voluntário.Líder.Id != 0 {
+		líderDAO := dao.NewLiderDAO(tx)
+		líder, err := líderDAO.FindById(voluntário.Líder.Id)
+		if err != nil {
+			tx.Rollback()
+			log.Printf("Erro ao carregar líder com id %d: %s", voluntário.Líder.Id, err)
+			erroInterno(w, r)
+			return
+		}
+
+		voluntário.Líder = líder
+	}
+
+	tx.Commit()
 
 	l.get(w, r, &validação.VoluntárioComErros{Voluntário: *voluntário})
 }

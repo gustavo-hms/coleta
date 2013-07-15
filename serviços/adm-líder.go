@@ -6,6 +6,7 @@ import (
 	"coleta/modelos"
 	"coleta/modelos/validação"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -60,7 +61,7 @@ func (l AdmLíder) get(
 	r *http.Request,
 	líder *validação.LíderComErros,
 ) {
-	t := exibiçãoDoLíder(líder, "adm-líder.html")
+	t := exibiçãoDoLíderAdm(líder, "adm-líder.html")
 	if t != nil {
 		err := t.ExecuteTemplate(w, "adm-líder.html", líder)
 		if err != nil {
@@ -127,4 +128,88 @@ func (l AdmLíder) Post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, "%s", página)
+}
+
+func exibiçãoDoLíderAdm(líder *validação.LíderComErros, página string) *template.Template {
+	tx, err := dao.DB.Begin()
+	if err != nil {
+		log.Println("Erro ao iniciar transação:", err)
+		return nil
+	}
+
+	esquinaDAO := dao.NewEsquinaDAO(tx)
+	esquinas, err := esquinaDAO.BuscarPorZona(fmt.Sprintf("%d", líder.Zona.Id))
+	if err != nil {
+		esquinaDAO.Rollback()
+		log.Println("Erro ao buscar esquinas:", err)
+		return nil
+	}
+
+	zonaDAO := dao.NewZonaDAO(tx)
+	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
+	if err != nil {
+		zonaDAO.Rollback()
+		log.Println("Erro ao buscar zonas:", err)
+		return nil
+	}
+
+	zonaDAO.Commit()
+
+	funcMap := template.FuncMap{
+		"esquinas": func() []esquinaComSeleção {
+			seleção := make([]esquinaComSeleção, 0, len(esquinas))
+			for _, esquina := range esquinas {
+				s := esquinaComSeleção{Esquina: esquina}
+				if líder != nil && líder.Esquina.Id == esquina.Id {
+					s.Selecionado = true
+				}
+				seleção = append(seleção, s)
+			}
+			return seleção
+		},
+
+		"zonas": func() []zonaComSeleção {
+			seleção := make([]zonaComSeleção, 0, len(zonas))
+			for _, zona := range zonas {
+				s := zonaComSeleção{Zona: *zona}
+				if líder != nil && líder.Zona.Id == zona.Id {
+					s.Selecionado = true
+				}
+				seleção = append(seleção, s)
+			}
+			return seleção
+		},
+
+		"turnos": func() []turnoComSeleção {
+			turnos := modelos.Turnos()
+			seleção := make([]turnoComSeleção, 0, len(turnos))
+			for _, turno := range turnos {
+				s := turnoComSeleção{Turno: turno}
+				if líder != nil {
+					for _, t := range líder.Turnos {
+						if s.Turno.Id == t.Id {
+							s.Selecionado = true
+						}
+					}
+				}
+
+				seleção = append(seleção, s)
+			}
+
+			return seleção
+		},
+
+		"iguais": func(x, y string) bool {
+			return x == y
+		},
+	}
+
+	t, err := template.New("esquinas").Funcs(funcMap).
+		ParseFiles(config.Dados.DiretórioDasPáginas + "/" + página)
+	if err != nil {
+		log.Println("Ali:", err)
+		return nil
+	}
+
+	return t
 }

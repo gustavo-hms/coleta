@@ -264,6 +264,20 @@
 					<br/>
 					<br/>
 
+					{{if .Líder.Id}}
+						Líder: {{.Líder.Nome}}
+					{{else}}
+					Zona:
+					<span id="zona-selecionada">
+						{{range zonas}}
+						{{if .Selecionado}}{{.Zona.Nome}}{{end}}
+						{{end}}
+					</span>
+					{{end}}
+
+					<br/>
+					<br/>
+
 					Esquina: 
 					<span id="exibicao-esquina">
 						{{or .Esquina.Cruzamento "nenhuma esquina selecionada"}}
