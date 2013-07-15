@@ -123,7 +123,7 @@ func exibiçãoDoVoluntário(voluntário *validação.VoluntárioComErros, pági
 	}
 
 	zonaDAO := dao.NewZonaDAO(tx)
-	zonas, err := zonaDAO.FindAll()
+	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
 	if err != nil {
 		zonaDAO.Rollback()
 		log.Println("Erro ao buscar zonas:", err)
