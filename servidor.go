@@ -29,6 +29,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	f, _ := os.Open("coleta.log")
+	log.SetOutput(f)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	go http.ListenAndServe(":"+config.Dados.Porta, serviços.MuxSimples)

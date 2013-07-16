@@ -10,6 +10,13 @@ import (
 
 func init() {
 	registrar("/", Raiz{})
+	registrarSeguro("/", RedirecionamentoRaiz{})
+}
+
+type RedirecionamentoRaiz struct{}
+
+func (_ RedirecionamentoRaiz) Get(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "http://tetocoleta.com.br", http.StatusSeeOther)
 }
 
 type Raiz struct{}
