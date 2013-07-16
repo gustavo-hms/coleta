@@ -28,14 +28,18 @@ func main() {
 		fmt.Println("Não foi possível conectar-se ao banco. Erro:", err)
 		os.Exit(1)
 	}
+	f, err := os.OpenFile("coleta.log", os.O_WRONLY|os.O_CREATE, 0640)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-	f, _ := os.Open("coleta.log")
 	log.SetOutput(f)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	go http.ListenAndServe(":"+config.Dados.Porta, serviços.MuxSimples)
 
-	err := http.ListenAndServeTLS(
+	err = http.ListenAndServeTLS(
 		":"+config.Dados.PortaTLS,
 		config.Dados.ArquivoDeCertificado,
 		config.Dados.ArquivoDeChave,

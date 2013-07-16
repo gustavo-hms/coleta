@@ -17,7 +17,11 @@ const (
 )
 
 func init() {
-	f, _ := os.Open("alocação.log")
+	f, err := os.OpenFile("alocação.log", os.O_WRONLY|os.O_CREATE, 0640)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	log.SetOutput(f)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
