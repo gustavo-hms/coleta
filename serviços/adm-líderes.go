@@ -25,8 +25,15 @@ func (e *AdmLíderes) Get(w http.ResponseWriter, r *http.Request) {
 	líderDAO := dao.NewLiderDAO(tx)
 	líderes, err := líderDAO.Todos()
 	if err != nil {
+		líderDAO.Rollback()
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if err := líderDAO.Commit(); err != nil {
+		líderDAO.Rollback()
+		log.Println(err)
+		erroInterno(w, r)
 		return
 	}
 

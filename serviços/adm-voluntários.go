@@ -25,8 +25,15 @@ func (e *AdmVoluntários) Get(w http.ResponseWriter, r *http.Request) {
 	voluntárioDAO := dao.NewVoluntarioDAO(tx)
 	voluntários, err := voluntárioDAO.Todos()
 	if err != nil {
+		voluntárioDAO.Rollback()
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if err := voluntárioDAO.Commit(); err != nil {
+		voluntárioDAO.Rollback()
+		log.Println(err)
+		erroInterno(w, r)
 		return
 	}
 

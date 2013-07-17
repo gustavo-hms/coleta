@@ -118,7 +118,17 @@ func (v *VoluntárioComErros) validarPolíticas() *VoluntárioComErros {
 
 		voluntárioDAO := dao.NewVoluntarioDAO(tx)
 
-		if mesmoEmail, _ := voluntárioDAO.FindByEmail(v.Email); mesmoEmail != nil {
+		mesmoEmail, err := voluntárioDAO.FindByEmail(v.Email)
+		if err != nil {
+			voluntárioDAO.Rollback()
+			log.Println(err)
+		}
+		if err := voluntárioDAO.Commit(); err != nil {
+			voluntárioDAO.Rollback()
+			log.Println(err)
+		}
+
+		if mesmoEmail != nil {
 			v.errosEncontrados = true
 			v.MsgEmail = "Já existe alguém cadastrado com este mesmo e-mail. Por favor, informe outro endereço. Em caso de dúvidas, contacte seu voluntário de zona"
 		}
