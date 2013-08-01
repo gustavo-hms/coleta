@@ -3,6 +3,7 @@ package validação
 import (
 	"coleta/dao"
 	"coleta/modelos"
+	"database/sql"
 	"log"
 	"net/mail"
 	"strings"
@@ -72,9 +73,9 @@ func (v *VoluntárioComErros) validarCamposObrigatórios() *VoluntárioComErros 
 		v.MsgRG = "Este campo não pode estar vazio"
 	}
 
-	if v.Voluntário.Id == 0 && v.Zona.Id == 0 {
+	if v.Voluntário.Líder.Id == 0 && v.Zona.Id == 0 {
 		v.errosEncontrados = true
-		v.Msgvoluntário = "É necessário escolher entre um voluntário de esquina e uma zona"
+		v.Msgvoluntário = "É necessário escolher entre um amigo líder e uma zona"
 	}
 
 	if len(v.Turnos) == 0 {
@@ -119,9 +120,10 @@ func (v *VoluntárioComErros) validarPolíticas() *VoluntárioComErros {
 		voluntárioDAO := dao.NewVoluntarioDAO(tx)
 
 		mesmoEmail, err := voluntárioDAO.FindByEmail(v.Email)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			voluntárioDAO.Rollback()
 			log.Println(err)
+			return v
 		}
 		if err := voluntárioDAO.Commit(); err != nil {
 			voluntárioDAO.Rollback()
