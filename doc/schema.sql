@@ -50,6 +50,12 @@ CREATE TABLE voluntario (
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+create table turnos_do_voluntario (
+	voluntario_id int(11) not null,
+	turno varchar(20)
+) engine=InnoDB;
+
+
 INSERT INTO zona
 	(nome)
 VALUES
