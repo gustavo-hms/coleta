@@ -31,6 +31,13 @@ func (b BuscaVoluntários) Get(w http.ResponseWriter, r *http.Request) {
 	voluntárioDAO := dao.NewVoluntarioDAO(tx)
 	voluntários, err := voluntárioDAO.FindAllThatMatches(trecho)
 	if err != nil {
+		voluntárioDAO.Rollback()
+		log.Println(err)
+		erroInterno(w, r)
+		return
+	}
+	if err := voluntárioDAO.Commit(); err != nil {
+		voluntárioDAO.Rollback()
 		log.Println(err)
 		erroInterno(w, r)
 		return

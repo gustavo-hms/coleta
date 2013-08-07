@@ -105,7 +105,17 @@ func (l *LíderComErros) validarPolíticas() *LíderComErros {
 
 		líderDAO := dao.NewLiderDAO(tx)
 
-		if mesmoEmail, _ := líderDAO.FindByEmail(l.Email); mesmoEmail != nil {
+		mesmoEmail, err := líderDAO.FindByEmail(l.Email)
+		if err != nil {
+			líderDAO.Rollback()
+			log.Println(err)
+		}
+		if err := líderDAO.Commit(); err != nil {
+			líderDAO.Rollback()
+			log.Println(err)
+		}
+
+		if mesmoEmail != nil {
 			l.errosEncontrados = true
 			l.MsgEmail = "Já existe alguém cadastrado com este mesmo e-mail. Por favor, informe outro endereço. Em caso de dúvidas, contacte seu líder de zona"
 		}

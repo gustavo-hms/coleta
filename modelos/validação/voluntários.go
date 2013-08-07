@@ -3,6 +3,7 @@ package validação
 import (
 	"coleta/dao"
 	"coleta/modelos"
+	"database/sql"
 	"log"
 	"net/mail"
 	"strings"
@@ -72,9 +73,9 @@ func (v *VoluntárioComErros) validarCamposObrigatórios() *VoluntárioComErros 
 		v.MsgRG = "Este campo não pode estar vazio"
 	}
 
-	if v.Voluntário.Id == 0 && v.Zona.Id == 0 {
+	if v.Voluntário.Líder.Id == 0 && v.Zona.Id == 0 {
 		v.errosEncontrados = true
-		v.Msgvoluntário = "É necessário escolher entre um voluntário de esquina e uma zona"
+		v.Msgvoluntário = "É necessário escolher entre um amigo líder e uma zona"
 	}
 
 	if len(v.Turnos) == 0 {
@@ -118,7 +119,18 @@ func (v *VoluntárioComErros) validarPolíticas() *VoluntárioComErros {
 
 		voluntárioDAO := dao.NewVoluntarioDAO(tx)
 
-		if mesmoEmail, _ := voluntárioDAO.FindByEmail(v.Email); mesmoEmail != nil {
+		mesmoEmail, err := voluntárioDAO.FindByEmail(v.Email)
+		if err != nil && err != sql.ErrNoRows {
+			voluntárioDAO.Rollback()
+			log.Println(err)
+			return v
+		}
+		if err := voluntárioDAO.Commit(); err != nil {
+			voluntárioDAO.Rollback()
+			log.Println(err)
+		}
+
+		if mesmoEmail != nil {
 			v.errosEncontrados = true
 			v.MsgEmail = "Já existe alguém cadastrado com este mesmo e-mail. Por favor, informe outro endereço. Em caso de dúvidas, contacte seu voluntário de zona"
 		}

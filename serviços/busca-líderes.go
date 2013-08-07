@@ -31,7 +31,14 @@ func (b BuscaLíderes) Get(w http.ResponseWriter, r *http.Request) {
 	líderDAO := dao.NewLiderDAO(tx)
 	líderes, err := líderDAO.FindAllThatMatches(trecho)
 	if err != nil {
+		líderDAO.Rollback()
 		log.Println(err)
+		erroInterno(w, r)
+		return
+	}
+	if err := líderDAO.Commit(); err != nil {
+		líderDAO.Rollback()
+		log.Println("Erro no commit:", err)
 		erroInterno(w, r)
 		return
 	}
