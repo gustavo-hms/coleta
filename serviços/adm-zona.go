@@ -86,7 +86,7 @@ func (z AdmZona) getEsquinas(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	esquinaDAO := dao.NewEsquinaDAO(tx)
+	esquinaDAO := dao.NewEsquinaDAO(&dao.Tx{tx})
 	esquinas, err := esquinaDAO.BuscarPorZona(z.id)
 	if err != nil {
 		esquinaDAO.Rollback()

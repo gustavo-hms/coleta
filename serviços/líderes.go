@@ -82,7 +82,7 @@ func (l Líderes) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error
 }
 
 func exibiçãoDoLíder(líder *validação.LíderComErros, tx *dao.Tx, página string) *template.Template {
-	esquinaDAO := dao.NewEsquinaDAO(tx.Tx)
+	esquinaDAO := dao.NewEsquinaDAO(tx)
 	esquinas, err := esquinaDAO.BuscarPorZona(fmt.Sprintf("%d", líder.Zona.Id))
 	if err != nil {
 		log.Println("Erro ao buscar esquinas:", err)

@@ -2,7 +2,6 @@ package dao
 
 import (
 	"coleta/modelos"
-	"database/sql"
 	"errors"
 	"fmt"
 	"log"
@@ -13,11 +12,11 @@ var (
 )
 
 type EsquinaDAO struct {
-	*sql.Tx
+	*Tx
 	fields string
 }
 
-func NewEsquinaDAO(tx *sql.Tx) *EsquinaDAO {
+func NewEsquinaDAO(tx *Tx) *EsquinaDAO {
 	return &EsquinaDAO{
 		Tx:     tx,
 		fields: "id, zona_id, cruzamento, localizacao, prioridade",
@@ -120,7 +119,7 @@ func (dao *EsquinaDAO) BuscaCompletaPorId(id string) (*modelos.Esquina, error) {
 
 	esquina.Participantes = make(map[string]modelos.Participantes)
 
-	líderDAO := NewLiderDAO(&Tx{dao.Tx})
+	líderDAO := NewLiderDAO(dao.Tx)
 	líderes, err := líderDAO.BuscaPorEsquina(esquina.Id)
 	if err != nil {
 		log.Println(err)
@@ -129,7 +128,7 @@ func (dao *EsquinaDAO) BuscaCompletaPorId(id string) (*modelos.Esquina, error) {
 
 	dao.preencherLíderes(esquina.Participantes, líderes)
 
-	voluntárioDAO := NewVoluntarioDAO(&Tx{dao.Tx})
+	voluntárioDAO := NewVoluntarioDAO(dao.Tx)
 	voluntários, err := voluntárioDAO.BuscaPorEsquina(esquina.Id)
 	if err != nil {
 		log.Println(err)
@@ -229,8 +228,8 @@ func (dao *EsquinaDAO) BuscaCompletaPorZona(idDaZona string) ([]modelos.Esquina,
 		esquinas = append(esquinas, esquina)
 	}
 
-	líderDAO := NewLiderDAO(&Tx{dao.Tx})
-	voluntárioDAO := NewVoluntarioDAO(&Tx{dao.Tx})
+	líderDAO := NewLiderDAO(dao.Tx)
+	voluntárioDAO := NewVoluntarioDAO(dao.Tx)
 	for i, _ := range esquinas {
 		esquinas[i].QtdDeLíderes, err = líderDAO.QtdPorEsquina(esquinas[i].Id)
 		if err != nil {

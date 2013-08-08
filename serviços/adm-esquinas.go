@@ -11,36 +11,28 @@ import (
 )
 
 func init() {
-	registrarSeguro("/adm/esquinas", Esquinas{})
+	registrarSeguroComTransação("/adm/esquinas", Esquinas{})
 }
 
 type Esquinas struct{}
 
-func (e Esquinas) Get(w http.ResponseWriter, r *http.Request) {
+func (e Esquinas) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	esquina := new(modelos.Esquina)
-	e.get(w, r, validação.NovaEsquinaComErros(esquina))
+	return e.get(w, r, tx, validação.NovaEsquinaComErros(esquina))
 }
 
 func (e Esquinas) get(
 	w http.ResponseWriter,
 	r *http.Request,
+	tx *dao.Tx,
 	esquina *validação.EsquinaComErros,
-) {
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println("Início da transação:", err)
-		return
-	}
-
-	zonaDAO := dao.NewZonaDAO(tx)
+) error {
+	zonaDAO := dao.NewZonaDAO(tx.Tx)
 	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
 	if err != nil {
-		zonaDAO.Rollback()
 		log.Println(err)
-		return
+		return err
 	}
-
-	zonaDAO.Commit()
 
 	funcMap := template.FuncMap{
 		"zonas": func() []zonaComSeleção {
@@ -63,20 +55,24 @@ func (e Esquinas) get(
 	t, err := template.New("esquinas").Funcs(funcMap).
 		ParseFiles(config.Dados.DiretórioDasPáginas + "/adm-esquinas.html")
 	if err != nil {
-		log.Println("Ali:", err)
-		return
+		log.Println(err)
+		return err
 	}
 
 	err = t.ExecuteTemplate(w, "adm-esquinas.html", esquina)
 	if err != nil {
-		log.Println("Aqui:", err)
+		log.Println(err)
+		return err
 	}
+
+	return nil
 }
 
-func (e Esquinas) Post(w http.ResponseWriter, r *http.Request) {
+func (e Esquinas) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
+		return err
 	}
 
 	esquina := new(modelos.Esquina)
@@ -85,27 +81,15 @@ func (e Esquinas) Post(w http.ResponseWriter, r *http.Request) {
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		e.get(w, r, erros)
-		return
-	}
-
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		return
+		return e.get(w, r, tx, erros)
 	}
 
 	esquinaDAO := dao.NewEsquinaDAO(tx)
 	if err := esquinaDAO.Save(esquina); err != nil {
-		esquinaDAO.Rollback()
 		log.Println("Erro ao gravar esquina:", err)
-		return
+		return err
 	}
 
-	if err := esquinaDAO.Commit(); err != nil {
-		esquinaDAO.Rollback()
-		log.Println("Erro no commit:", err)
-	}
-
-	e.Get(w, r)
+	e.Get(w, r, tx)
+	return nil
 }

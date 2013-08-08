@@ -165,7 +165,7 @@ func (dao *LiderDAO) FindById(id int) (*modelos.Líder, error) {
 		return nil, err
 	}
 
-	esquinaDAO := NewEsquinaDAO(dao.Tx.Tx)
+	esquinaDAO := NewEsquinaDAO(dao.Tx)
 	esquina, _ := esquinaDAO.FindById(lider.Esquina.Id)
 	if esquina != nil {
 		lider.Esquina = esquina

@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	registrarSeguro("/adm/esquina/", new(AdmEsquina))
+	registrarSeguroComTransação("/adm/esquina/", new(AdmEsquina))
 }
 
 type AdmEsquina struct {
@@ -25,36 +25,26 @@ func idDaEsquina(endereço *url.URL) string {
 	return endereço.Path[idx+1:]
 }
 
-func (e *AdmEsquina) Get(w http.ResponseWriter, r *http.Request) {
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
+func (e *AdmEsquina) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	id := idDaEsquina(r.URL)
 	esquinaDAO := dao.NewEsquinaDAO(tx)
-	e.esquina, err = esquinaDAO.BuscaCompletaPorId(id)
+	esquina, err := esquinaDAO.BuscaCompletaPorId(id)
 	if err != nil {
-		esquinaDAO.Rollback()
 		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return err
 	}
 
-	esquinaDAO.Commit()
-
+	e.esquina = esquina
 	turno := r.FormValue("turno")
 	if turno != "" {
 		e.turno = turno
-		e.exibirTurno(w, r)
+		return e.exibirTurno(w, r)
 	} else {
-		e.exibiçãoGeral(w, r)
+		return e.exibiçãoGeral(w, r)
 	}
 }
 
-func (e AdmEsquina) exibirTurno(w http.ResponseWriter, r *http.Request) {
+func (e AdmEsquina) exibirTurno(w http.ResponseWriter, r *http.Request) error {
 	funcMap := template.FuncMap{
 		"turno": func() string {
 			return e.turno
@@ -69,16 +59,19 @@ func (e AdmEsquina) exibirTurno(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Println(err)
-		return
+		return err
 	}
 
 	err = t.ExecuteTemplate(w, "adm-esquina-turno.html", e.esquina)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
+
+	return nil
 }
 
-func (e AdmEsquina) exibiçãoGeral(w http.ResponseWriter, r *http.Request) {
+func (e AdmEsquina) exibiçãoGeral(w http.ResponseWriter, r *http.Request) error {
 	funcMap := template.FuncMap{
 		"plural": func(tamanho int) bool {
 			return tamanho != 1
@@ -89,11 +82,14 @@ func (e AdmEsquina) exibiçãoGeral(w http.ResponseWriter, r *http.Request) {
 		ParseFiles(config.Dados.DiretórioDasPáginas + "/adm-esquina.html")
 	if err != nil {
 		log.Println(err)
-		return
+		return err
 	}
 
 	err = t.ExecuteTemplate(w, "adm-esquina.html", e.esquina)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
+
+	return nil
 }

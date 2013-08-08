@@ -89,7 +89,7 @@ func (v Voluntários) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) e
 }
 
 func exibiçãoDoVoluntário(voluntário *validação.VoluntárioComErros, tx *dao.Tx, página string) *template.Template {
-	esquinaDAO := dao.NewEsquinaDAO(tx.Tx)
+	esquinaDAO := dao.NewEsquinaDAO(tx)
 	esquinas, err := esquinaDAO.BuscarPorZona(fmt.Sprintf("%d", voluntário.Zona.Id))
 	if err != nil {
 		log.Println("Erro ao buscar esquinas:", err)

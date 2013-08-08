@@ -225,7 +225,7 @@ func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntário, error) {
 		return nil, err
 	}
 
-	esquinaDAO := NewEsquinaDAO(dao.Tx.Tx)
+	esquinaDAO := NewEsquinaDAO(dao.Tx)
 	esquina, _ := esquinaDAO.FindById(voluntario.Esquina.Id)
 	if esquina != nil {
 		voluntario.Esquina = esquina
