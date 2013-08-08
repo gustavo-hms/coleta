@@ -45,14 +45,12 @@ func (l Líderes) get(
 }
 
 func (l Líderes) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
-	print("1\n")
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
 		return erroInesperado
 	}
 
-	print("2\n")
 	líder := modelos.NovoLíder()
 	líder.Preencher(r.Form)
 	erros, falha := validação.ValidarLíder(líder, tx)
@@ -61,27 +59,23 @@ func (l Líderes) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error
 		return falha
 	}
 
-	print("2,1\n")
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return l.get(w, r, tx, erros)
 	}
 
-	print("3\n")
 	líderDAO := dao.NewLiderDAO(tx)
 	if err := líderDAO.Save(líder); err != nil {
 		log.Println(err)
 		return err
 	}
 
-	print("4\n")
 	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
 		return erroInesperado
 	}
 
-	print("5\n")
 	fmt.Fprintf(w, "%s", página)
 
 	return nil
