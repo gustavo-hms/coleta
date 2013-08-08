@@ -89,8 +89,7 @@ func (l AdmLíder) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) erro
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		l.get(w, r, tx, erros)
-		return erroDeValidação
+		return l.get(w, r, tx, erros)
 	}
 
 	líderDAO := dao.NewLiderDAO(tx)

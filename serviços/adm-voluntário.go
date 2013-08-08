@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	registrarSeguro("/adm/voluntario/", AdmVoluntário{})
+	registrarSeguroComTransação("/adm/voluntario/", AdmVoluntário{})
 }
 
 type AdmVoluntário struct{}
@@ -25,79 +25,68 @@ func idDoVoluntário(endereço *url.URL) string {
 	return endereço.Path[idx+1:]
 }
 
-func (l AdmVoluntário) Get(w http.ResponseWriter, r *http.Request) {
+func (l AdmVoluntário) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	stringDoId := idDoVoluntário(r.URL)
 	id, err := strconv.Atoi(stringDoId)
 	if err != nil {
 		log.Printf("Não foi possível converter %s para um inteiro: %s", stringDoId, err)
-		erroInterno(w, r)
-		return
-	}
-
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	voluntárioDAO := dao.NewVoluntarioDAO(tx)
 	voluntário, err := voluntárioDAO.FindById(id)
 	if err != nil {
-		voluntárioDAO.Rollback()
 		log.Printf("Erro ao carregar voluntário com id %d: %s", id, err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	if voluntário.Líder.Id != 0 {
-		líderDAO := dao.NewLiderDAO(&dao.Tx{tx})
+		líderDAO := dao.NewLiderDAO(tx)
 		líder, err := líderDAO.FindById(voluntário.Líder.Id)
 		if err != nil {
-			tx.Rollback()
 			log.Printf("Erro ao carregar líder com id %d: %s", voluntário.Líder.Id, err)
-			erroInterno(w, r)
-			return
+			return err
 		}
 
 		voluntário.Líder = líder
 	}
 
-	tx.Commit()
-
-	l.get(w, r, &validação.VoluntárioComErros{Voluntário: *voluntário})
+	return l.get(w, r, tx, &validação.VoluntárioComErros{Voluntário: *voluntário})
 }
 
 func (l AdmVoluntário) get(
 	w http.ResponseWriter,
 	r *http.Request,
+	tx *dao.Tx,
 	voluntário *validação.VoluntárioComErros,
-) {
-	t := exibiçãoDoVoluntário(voluntário, "adm-voluntário.html")
-	if t != nil {
-		err := t.ExecuteTemplate(w, "adm-voluntário.html", voluntário)
-		if err != nil {
-			log.Println(err)
-			erroInterno(w, r)
-			return
-		}
+) error {
+	t := exibiçãoDoVoluntário(voluntário, tx, "adm-voluntário.html")
+
+	if t == nil {
+		return erroInesperado
 	}
+
+	err := t.ExecuteTemplate(w, "adm-voluntário.html", voluntário)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
 }
 
-func (l AdmVoluntário) Post(w http.ResponseWriter, r *http.Request) {
+func (l AdmVoluntário) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	stringDoId := idDoVoluntário(r.URL)
 	id, err := strconv.Atoi(stringDoId)
 	if err != nil {
 		log.Printf("Não foi possível converter %s para um inteiro:", stringDoId, err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	voluntário := modelos.NovoVoluntário()
@@ -107,37 +96,22 @@ func (l AdmVoluntário) Post(w http.ResponseWriter, r *http.Request) {
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		l.get(w, r, erros)
-		return
-	}
-
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		erroInterno(w, r)
-		return
+		return l.get(w, r, tx, erros)
 	}
 
 	voluntárioDAO := dao.NewVoluntarioDAO(tx)
 	if err := voluntárioDAO.Save(voluntário); err != nil {
-		voluntárioDAO.Rollback()
 		log.Println("Erro ao gravar voluntário:", err)
-		erroInterno(w, r)
-		return
-	}
-	if err := voluntárioDAO.Commit(); err != nil {
-		voluntárioDAO.Rollback()
-		log.Println("Erro no commit:", err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/atualização-sucesso.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo voluntários-sucesso.html:", err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	fmt.Fprintf(w, "%s", página)
+
+	return nil
 }

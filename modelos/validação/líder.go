@@ -5,7 +5,6 @@ import (
 	"coleta/modelos"
 	"database/sql"
 	"errors"
-	"fmt"
 	"log"
 	"net/mail"
 	"strings"

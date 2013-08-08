@@ -13,36 +13,42 @@ import (
 )
 
 func init() {
-	registrar("/voluntarios", Voluntários{})
+	registrarComTransação("/voluntarios", Voluntários{})
 }
 
 type Voluntários struct{}
 
-func (v Voluntários) Get(w http.ResponseWriter, r *http.Request) {
+func (v Voluntários) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	voluntário := modelos.NovoVoluntário()
-	v.get(w, r, validação.NovoVoluntárioComErros(voluntário))
+	return v.get(w, r, tx, validação.NovoVoluntárioComErros(voluntário))
 }
 
 func (v Voluntários) get(
 	w http.ResponseWriter,
 	r *http.Request,
+	tx *dao.Tx,
 	voluntário *validação.VoluntárioComErros,
-) {
-	t := exibiçãoDoVoluntário(voluntário, "voluntários.html")
-	if t != nil {
-		err := t.ExecuteTemplate(w, "voluntários.html", voluntário)
-		if err != nil {
-			log.Println("Aqui:", err)
-		}
+) error {
+	t := exibiçãoDoVoluntário(voluntário, tx, "voluntários.html")
+
+	if t == nil {
+		return erroInesperado
 	}
+
+	err := t.ExecuteTemplate(w, "voluntários.html", voluntário)
+	if err != nil {
+		log.Println("Aqui:", err)
+		return err
+	}
+
+	return nil
 }
 
-func (v Voluntários) Post(w http.ResponseWriter, r *http.Request) {
+func (v Voluntários) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	voluntário := modelos.NovoVoluntário()
@@ -51,86 +57,51 @@ func (v Voluntários) Post(w http.ResponseWriter, r *http.Request) {
 
 	if erros != nil {
 		if erros.Líder.Id != 0 {
-			tx, err := dao.DB.Begin()
-			if err != nil {
-				log.Println(err)
-				erroInterno(w, r)
-				return
-			}
-
-			líderDAO := dao.NewLiderDAO(&dao.Tx{tx})
+			líderDAO := dao.NewLiderDAO(tx)
 			l, err := líderDAO.FindById(voluntário.Líder.Id)
 			if err != nil {
-				líderDAO.Rollback()
 				log.Println(err)
-				erroInterno(w, r)
-				return
+				return err
 			}
 
 			erros.Líder = l
-			líderDAO.Commit()
 		}
 
 		w.WriteHeader(http.StatusBadRequest)
-		v.get(w, r, erros)
-		return
-	}
-
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		erroInterno(w, r)
-		return
+		return v.get(w, r, tx, erros)
 	}
 
 	voluntárioDAO := dao.NewVoluntarioDAO(tx)
 	if err := voluntárioDAO.Save(voluntário); err != nil {
-		voluntárioDAO.Rollback()
 		log.Println("Erro ao gravar voluntário:", err)
-		erroInterno(w, r)
-		return
-	}
-	if err := voluntárioDAO.Commit(); err != nil {
-		voluntárioDAO.Rollback()
-		log.Println("Erro no commit:", err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	fmt.Fprintf(w, "%s", página)
+
+	return nil
 }
 
-func exibiçãoDoVoluntário(voluntário *validação.VoluntárioComErros, página string) *template.Template {
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println("Erro ao iniciar transação:", err)
-		return nil
-	}
-
-	esquinaDAO := dao.NewEsquinaDAO(tx)
+func exibiçãoDoVoluntário(voluntário *validação.VoluntárioComErros, tx *dao.Tx, página string) *template.Template {
+	esquinaDAO := dao.NewEsquinaDAO(tx.Tx)
 	esquinas, err := esquinaDAO.BuscarPorZona(fmt.Sprintf("%d", voluntário.Zona.Id))
 	if err != nil {
-		esquinaDAO.Rollback()
 		log.Println("Erro ao buscar esquinas:", err)
 		return nil
 	}
 
-	zonaDAO := dao.NewZonaDAO(tx)
+	zonaDAO := dao.NewZonaDAO(tx.Tx)
 	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
 	if err != nil {
-		zonaDAO.Rollback()
 		log.Println("Erro ao buscar zonas:", err)
 		return nil
 	}
-
-	zonaDAO.Commit()
 
 	funcMap := template.FuncMap{
 		"esquinas": func() []esquinaComSeleção {
@@ -184,7 +155,7 @@ func exibiçãoDoVoluntário(voluntário *validação.VoluntárioComErros, pági
 	t, err := template.New("esquinas").Funcs(funcMap).
 		ParseFiles(config.Dados.DiretórioDasPáginas + "/" + página)
 	if err != nil {
-		log.Println("Ali:", err)
+		log.Println(err)
 		return nil
 	}
 

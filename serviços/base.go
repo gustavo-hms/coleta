@@ -153,6 +153,7 @@ func (s serviçoComTransação) pósTratamento(w http.ResponseWriter, r *http.Re
 
 	if err := tx.Commit(); err != nil {
 		erroInterno(w, r)
+		log.Println(err)
 
 		if err := tx.Rollback(); err != nil {
 			log.Println(err)

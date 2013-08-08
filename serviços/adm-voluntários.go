@@ -9,32 +9,17 @@ import (
 )
 
 func init() {
-	registrarSeguro("/adm/voluntarios", new(AdmVoluntários))
+	registrarSeguroComTransação("/adm/voluntarios", new(AdmVoluntários))
 }
 
 type AdmVoluntários struct{}
 
-func (e *AdmVoluntários) Get(w http.ResponseWriter, r *http.Request) {
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
+func (e *AdmVoluntários) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	voluntárioDAO := dao.NewVoluntarioDAO(tx)
 	voluntários, err := voluntárioDAO.Todos()
 	if err != nil {
-		voluntárioDAO.Rollback()
 		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	if err := voluntárioDAO.Commit(); err != nil {
-		voluntárioDAO.Rollback()
-		log.Println(err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	t, err := template.New("voluntários").ParseFiles(
@@ -43,11 +28,14 @@ func (e *AdmVoluntários) Get(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Println(err)
-		return
+		return err
 	}
 
 	err = t.ExecuteTemplate(w, "adm-voluntários.html", voluntários)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
+
+	return nil
 }

@@ -129,7 +129,7 @@ func (dao *EsquinaDAO) BuscaCompletaPorId(id string) (*modelos.Esquina, error) {
 
 	dao.preencherLíderes(esquina.Participantes, líderes)
 
-	voluntárioDAO := NewVoluntarioDAO(dao.Tx)
+	voluntárioDAO := NewVoluntarioDAO(&Tx{dao.Tx})
 	voluntários, err := voluntárioDAO.BuscaPorEsquina(esquina.Id)
 	if err != nil {
 		log.Println(err)
@@ -230,7 +230,7 @@ func (dao *EsquinaDAO) BuscaCompletaPorZona(idDaZona string) ([]modelos.Esquina,
 	}
 
 	líderDAO := NewLiderDAO(&Tx{dao.Tx})
-	voluntárioDAO := NewVoluntarioDAO(dao.Tx)
+	voluntárioDAO := NewVoluntarioDAO(&Tx{dao.Tx})
 	for i, _ := range esquinas {
 		esquinas[i].QtdDeLíderes, err = líderDAO.QtdPorEsquina(esquinas[i].Id)
 		if err != nil {

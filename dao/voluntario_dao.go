@@ -2,18 +2,17 @@ package dao
 
 import (
 	"coleta/modelos"
-	"database/sql"
 	"fmt"
 	"log"
 	"time"
 )
 
 type VoluntarioDAO struct {
-	*sql.Tx
+	*Tx
 	fields string
 }
 
-func NewVoluntarioDAO(tx *sql.Tx) *VoluntarioDAO {
+func NewVoluntarioDAO(tx *Tx) *VoluntarioDAO {
 	return &VoluntarioDAO{
 		Tx: tx,
 		fields: "id, zona_id, lider_id, esquina_id, nome_completo, telefone_residencial, " +
@@ -226,7 +225,7 @@ func (dao *VoluntarioDAO) FindById(id int) (*modelos.Voluntário, error) {
 		return nil, err
 	}
 
-	esquinaDAO := NewEsquinaDAO(dao.Tx)
+	esquinaDAO := NewEsquinaDAO(dao.Tx.Tx)
 	esquina, _ := esquinaDAO.FindById(voluntario.Esquina.Id)
 	if esquina != nil {
 		voluntario.Esquina = esquina
