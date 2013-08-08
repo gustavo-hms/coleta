@@ -1,10 +1,10 @@
 package validação
 
 import (
-	"coleta/dao"
+	//	"coleta/dao"
 	"coleta/modelos"
-	"database/sql"
-	"log"
+	//	"database/sql"
+	//	"log"
 	"net/mail"
 	"strings"
 )
@@ -109,32 +109,32 @@ func (v *VoluntárioComErros) validarPolíticas() *VoluntárioComErros {
 		return v
 	}
 
-	if v.Id == 0 {
-		tx, err := dao.DB.Begin()
-		defer tx.Commit()
-		if err != nil {
-			log.Println(err)
-			return v
-		}
-
-		voluntárioDAO := dao.NewVoluntarioDAO(tx)
-
-		mesmoEmail, err := voluntárioDAO.FindByEmail(v.Email)
-		if err != nil && err != sql.ErrNoRows {
-			voluntárioDAO.Rollback()
-			log.Println(err)
-			return v
-		}
-		if err := voluntárioDAO.Commit(); err != nil {
-			voluntárioDAO.Rollback()
-			log.Println(err)
-		}
-
-		if mesmoEmail != nil {
-			v.errosEncontrados = true
-			v.MsgEmail = "Já existe alguém cadastrado com este mesmo e-mail. Por favor, informe outro endereço. Em caso de dúvidas, contacte seu voluntário de zona"
-		}
-	}
+	//	if v.Id == 0 {
+	//		tx, err := dao.DB.Begin()
+	//		defer tx.Commit()
+	//		if err != nil {
+	//			log.Println(err)
+	//			return v
+	//		}
+	//
+	//		voluntárioDAO := dao.NewVoluntarioDAO(tx)
+	//
+	//		mesmoEmail, err := voluntárioDAO.FindByEmail(v.Email)
+	//		if err != nil && err != sql.ErrNoRows {
+	//			voluntárioDAO.Rollback()
+	//			log.Println(err)
+	//			return v
+	//		}
+	//		if err := voluntárioDAO.Commit(); err != nil {
+	//			voluntárioDAO.Rollback()
+	//			log.Println(err)
+	//		}
+	//
+	//		if mesmoEmail != nil {
+	//			v.errosEncontrados = true
+	//			v.MsgEmail = "Já existe alguém cadastrado com este mesmo e-mail. Por favor, informe outro endereço. Em caso de dúvidas, contacte seu voluntário de zona"
+	//		}
+	//	}
 
 	return v
 }

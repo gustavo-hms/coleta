@@ -2,7 +2,6 @@ package dao
 
 import (
 	"coleta/modelos"
-	"database/sql"
 	"fmt"
 	"log"
 	"time"
@@ -166,7 +165,7 @@ func (dao *LiderDAO) FindById(id int) (*modelos.Líder, error) {
 		return nil, err
 	}
 
-	esquinaDAO := NewEsquinaDAO(dao.Tx)
+	esquinaDAO := NewEsquinaDAO(dao.Tx.Tx)
 	esquina, _ := esquinaDAO.FindById(lider.Esquina.Id)
 	if esquina != nil {
 		lider.Esquina = esquina

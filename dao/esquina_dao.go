@@ -13,11 +13,11 @@ var (
 )
 
 type EsquinaDAO struct {
-	*Tx
+	*sql.Tx
 	fields string
 }
 
-func NewEsquinaDAO(tx *Tx) *EsquinaDAO {
+func NewEsquinaDAO(tx *sql.Tx) *EsquinaDAO {
 	return &EsquinaDAO{
 		Tx:     tx,
 		fields: "id, zona_id, cruzamento, localizacao, prioridade",
@@ -120,7 +120,7 @@ func (dao *EsquinaDAO) BuscaCompletaPorId(id string) (*modelos.Esquina, error) {
 
 	esquina.Participantes = make(map[string]modelos.Participantes)
 
-	líderDAO := NewLiderDAO(dao.Tx)
+	líderDAO := NewLiderDAO(&Tx{dao.Tx})
 	líderes, err := líderDAO.BuscaPorEsquina(esquina.Id)
 	if err != nil {
 		log.Println(err)
@@ -229,7 +229,7 @@ func (dao *EsquinaDAO) BuscaCompletaPorZona(idDaZona string) ([]modelos.Esquina,
 		esquinas = append(esquinas, esquina)
 	}
 
-	líderDAO := NewLiderDAO(dao.Tx)
+	líderDAO := NewLiderDAO(&Tx{dao.Tx})
 	voluntárioDAO := NewVoluntarioDAO(dao.Tx)
 	for i, _ := range esquinas {
 		esquinas[i].QtdDeLíderes, err = líderDAO.QtdPorEsquina(esquinas[i].Id)

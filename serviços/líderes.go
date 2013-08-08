@@ -5,7 +5,6 @@ import (
 	"coleta/dao"
 	"coleta/modelos"
 	"coleta/modelos/validação"
-	"database/sql"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -19,7 +18,7 @@ func init() {
 
 type Líderes struct{}
 
-func (l Líderes) Get(w http.ResponseWriter, r *http.Request, tx *sql.Tx) error {
+func (l Líderes) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	líder := modelos.NovoLíder()
 	return l.get(w, r, tx, validação.NovoLíderComErros(líder))
 }
@@ -27,7 +26,7 @@ func (l Líderes) Get(w http.ResponseWriter, r *http.Request, tx *sql.Tx) error 
 func (l Líderes) get(
 	w http.ResponseWriter,
 	r *http.Request,
-	tx *sql.Tx,
+	tx *dao.Tx,
 	líder *validação.LíderComErros,
 ) error {
 	t := exibiçãoDoLíder(líder, tx, "líderes.html")
@@ -45,49 +44,58 @@ func (l Líderes) get(
 	return nil
 }
 
-func (l Líderes) Post(w http.ResponseWriter, r *http.Request, tx *sql.Tx) error {
+func (l Líderes) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
+	print("1\n")
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
 		return erroInesperado
 	}
 
+	print("2\n")
 	líder := modelos.NovoLíder()
 	líder.Preencher(r.Form)
-	erros := validação.ValidarLíder(líder)
+	erros, falha := validação.ValidarLíder(líder, tx)
 
-	if erros != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		l.get(w, r, tx, erros)
-		return erroDeValidação
+	if falha != nil {
+		return falha
 	}
 
+	print("2,1\n")
+	if erros != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return l.get(w, r, tx, erros)
+	}
+
+	print("3\n")
 	líderDAO := dao.NewLiderDAO(tx)
 	if err := líderDAO.Save(líder); err != nil {
 		log.Println(err)
 		return err
 	}
 
+	print("4\n")
 	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
 		return erroInesperado
 	}
 
+	print("5\n")
 	fmt.Fprintf(w, "%s", página)
 
 	return nil
 }
 
-func exibiçãoDoLíder(líder *validação.LíderComErros, tx *sql.Tx, página string) *template.Template {
-	esquinaDAO := dao.NewEsquinaDAO(tx)
+func exibiçãoDoLíder(líder *validação.LíderComErros, tx *dao.Tx, página string) *template.Template {
+	esquinaDAO := dao.NewEsquinaDAO(tx.Tx)
 	esquinas, err := esquinaDAO.BuscarPorZona(fmt.Sprintf("%d", líder.Zona.Id))
 	if err != nil {
 		log.Println("Erro ao buscar esquinas:", err)
 		return nil
 	}
 
-	zonaDAO := dao.NewZonaDAO(tx)
+	zonaDAO := dao.NewZonaDAO(tx.Tx)
 	zonas, err := zonaDAO.FindAll()
 	if err != nil {
 		log.Println("Erro ao buscar zonas:", err)

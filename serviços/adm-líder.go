@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	registrarSeguro("/adm/lider/", AdmLíder{})
+	registrarSeguroComTransação("/adm/lider/", AdmLíder{})
 }
 
 type AdmLíder struct{}
@@ -26,134 +26,104 @@ func idDoLíder(endereço *url.URL) string {
 	return endereço.Path[idx+1:]
 }
 
-func (l AdmLíder) Get(w http.ResponseWriter, r *http.Request) {
+func (l AdmLíder) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	stringDoId := idDoLíder(r.URL)
 	id, err := strconv.Atoi(stringDoId)
 	if err != nil {
 		log.Printf("Não foi possível converter %s para um inteiro: %s", stringDoId, err)
-		erroInterno(w, r)
-		return
-	}
-
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	líderDAO := dao.NewLiderDAO(tx)
 	líder, err := líderDAO.FindById(id)
 	if err != nil {
-		líderDAO.Rollback()
 		log.Printf("Erro ao carregar líder com id %d: %s", id, err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
-	líderDAO.Commit()
-
-	l.get(w, r, &validação.LíderComErros{Líder: *líder})
+	return l.get(w, r, tx, &validação.LíderComErros{Líder: *líder})
 }
 
 func (l AdmLíder) get(
 	w http.ResponseWriter,
 	r *http.Request,
+	tx *dao.Tx,
 	líder *validação.LíderComErros,
-) {
-	t := exibiçãoDoLíderAdm(líder, "adm-líder.html")
-	if t != nil {
-		err := t.ExecuteTemplate(w, "adm-líder.html", líder)
-		if err != nil {
-			log.Println("Aqui:", err)
-			erroInterno(w, r)
-			return
-		}
+) error {
+	t := exibiçãoDoLíderAdm(líder, tx, "adm-líder.html")
+	if t == nil {
+		return erroInesperado
 	}
+
+	err := t.ExecuteTemplate(w, "adm-líder.html", líder)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
 }
 
-func (l AdmLíder) Post(w http.ResponseWriter, r *http.Request) {
+func (l AdmLíder) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
-		erroInterno(w, r)
-		return
+		return erroInesperado
 	}
 
 	stringDoId := idDoLíder(r.URL)
 	id, err := strconv.Atoi(stringDoId)
 	if err != nil {
 		log.Printf("Não foi possível converter %s para um inteiro:", stringDoId, err)
-		erroInterno(w, r)
-		return
+		return erroInesperado
 	}
 
 	líder := modelos.NovoLíder()
 	líder.Id = id
 	líder.Preencher(r.Form)
-	erros := validação.ValidarLíder(líder)
+	erros, falha := validação.ValidarLíder(líder, tx)
+
+	if falha != nil {
+		return falha
+	}
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		l.get(w, r, erros)
-		return
-	}
-
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		erroInterno(w, r)
-		return
+		l.get(w, r, tx, erros)
+		return erroDeValidação
 	}
 
 	líderDAO := dao.NewLiderDAO(tx)
 	if err := líderDAO.Save(líder); err != nil {
-		líderDAO.Rollback()
-		log.Println("Erro ao gravar líder:", err)
-		erroInterno(w, r)
-		return
-	}
-	if err := líderDAO.Commit(); err != nil {
-		líderDAO.Rollback()
-		log.Println("Erro no commit:", err)
-		erroInterno(w, r)
-		return
+		log.Println(err)
+		return err
 	}
 
 	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/atualização-sucesso.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo líderes-sucesso.html:", err)
-		erroInterno(w, r)
-		return
+		return erroInesperado
 	}
 
 	fmt.Fprintf(w, "%s", página)
+
+	return nil
 }
 
-func exibiçãoDoLíderAdm(líder *validação.LíderComErros, página string) *template.Template {
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println("Erro ao iniciar transação:", err)
-		return nil
-	}
-
-	esquinaDAO := dao.NewEsquinaDAO(tx)
+func exibiçãoDoLíderAdm(líder *validação.LíderComErros, tx *dao.Tx, página string) *template.Template {
+	esquinaDAO := dao.NewEsquinaDAO(tx.Tx)
 	esquinas, err := esquinaDAO.BuscarPorZona(fmt.Sprintf("%d", líder.Zona.Id))
 	if err != nil {
-		esquinaDAO.Rollback()
 		log.Println("Erro ao buscar esquinas:", err)
 		return nil
 	}
 
-	zonaDAO := dao.NewZonaDAO(tx)
+	zonaDAO := dao.NewZonaDAO(tx.Tx)
 	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
 	if err != nil {
-		zonaDAO.Rollback()
 		log.Println("Erro ao buscar zonas:", err)
 		return nil
 	}
-
-	zonaDAO.Commit()
 
 	funcMap := template.FuncMap{
 		"esquinas": func() []esquinaComSeleção {
@@ -207,7 +177,7 @@ func exibiçãoDoLíderAdm(líder *validação.LíderComErros, página string) *
 	t, err := template.New("esquinas").Funcs(funcMap).
 		ParseFiles(config.Dados.DiretórioDasPáginas + "/" + página)
 	if err != nil {
-		log.Println("Ali:", err)
+		log.Println(err)
 		return nil
 	}
 

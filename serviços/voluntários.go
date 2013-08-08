@@ -58,7 +58,7 @@ func (v Voluntários) Post(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			líderDAO := dao.NewLiderDAO(tx)
+			líderDAO := dao.NewLiderDAO(&dao.Tx{tx})
 			l, err := líderDAO.FindById(voluntário.Líder.Id)
 			if err != nil {
 				líderDAO.Rollback()

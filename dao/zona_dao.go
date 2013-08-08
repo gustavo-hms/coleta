@@ -13,11 +13,11 @@ const (
 )
 
 type ZonaDAO struct {
-	*Tx
+	*sql.Tx
 	fields string
 }
 
-func NewZonaDAO(tx *Tx) *ZonaDAO {
+func NewZonaDAO(tx *sql.Tx) *ZonaDAO {
 	return &ZonaDAO{
 		Tx:     tx,
 		fields: "id, nome, bloqueada",

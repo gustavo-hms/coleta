@@ -51,7 +51,7 @@ func (l AdmVoluntário) Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if voluntário.Líder.Id != 0 {
-		líderDAO := dao.NewLiderDAO(tx)
+		líderDAO := dao.NewLiderDAO(&dao.Tx{tx})
 		líder, err := líderDAO.FindById(voluntário.Líder.Id)
 		if err != nil {
 			tx.Rollback()

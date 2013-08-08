@@ -22,7 +22,7 @@ func (e *AdmLíderes) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	líderDAO := dao.NewLiderDAO(tx)
+	líderDAO := dao.NewLiderDAO(&dao.Tx{tx})
 	líderes, err := líderDAO.Todos()
 	if err != nil {
 		líderDAO.Rollback()

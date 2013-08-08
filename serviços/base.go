@@ -2,7 +2,6 @@ package serviços
 
 import (
 	"coleta/dao"
-	"database/sql"
 	"log"
 	"net/http"
 	"reflect"
@@ -132,7 +131,7 @@ func (s *serviçoComTransação) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	s.pósTratamento(w, r, tx)
 }
 
-func (s serviçoComTransação) préTratamento(w http.ResponseWriter, r *http.Request) *sql.Tx {
+func (s serviçoComTransação) préTratamento(w http.ResponseWriter, r *http.Request) *dao.Tx {
 	tx, err := dao.DB.Begin()
 	if err != nil {
 		log.Println(err)
@@ -140,10 +139,10 @@ func (s serviçoComTransação) préTratamento(w http.ResponseWriter, r *http.Re
 		return nil
 	}
 
-	return tx
+	return &dao.Tx{tx}
 }
 
-func (s serviçoComTransação) pósTratamento(w http.ResponseWriter, r *http.Request, tx *sql.Tx) {
+func (s serviçoComTransação) pósTratamento(w http.ResponseWriter, r *http.Request, tx *dao.Tx) {
 	if s.erro {
 		if err := tx.Rollback(); err != nil {
 			log.Println(err)
@@ -165,7 +164,7 @@ func (s serviçoComTransação) nãoImplementado(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func (s *serviçoComTransação) chamarMétodoSePossível(nome string, w http.ResponseWriter, r *http.Request, tx *sql.Tx) {
+func (s *serviçoComTransação) chamarMétodoSePossível(nome string, w http.ResponseWriter, r *http.Request, tx *dao.Tx) {
 	método := reflect.ValueOf(s.provedor).MethodByName(nome)
 	if método.IsValid() {
 		args := []reflect.Value{

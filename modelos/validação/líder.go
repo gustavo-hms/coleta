@@ -3,15 +3,21 @@ package validação
 import (
 	"coleta/dao"
 	"coleta/modelos"
+	"database/sql"
+	"errors"
+	"fmt"
 	"log"
 	"net/mail"
 	"strings"
 )
 
+var erroInesperado = errors.New("Erro inesperado")
+
 type LíderComErros struct {
 	modelos.Líder
 
 	errosEncontrados bool
+	falha            bool
 
 	MsgNome                string
 	MsgTelefoneResidencial string
@@ -32,20 +38,24 @@ func NovoLíderComErros(líder *modelos.Líder) *LíderComErros {
 	return l
 }
 
-func ValidarLíder(líder *modelos.Líder) *LíderComErros {
+func ValidarLíder(líder *modelos.Líder, tx *dao.Tx) (*LíderComErros, error) {
 	return NovoLíderComErros(líder).
 		validarCamposObrigatórios().
 		validarSintaxe().
-		validarPolíticas().
+		validarPolíticas(tx).
 		apurarErros()
 }
 
-func (l *LíderComErros) apurarErros() *LíderComErros {
-	if l.errosEncontrados {
-		return l
+func (l *LíderComErros) apurarErros() (*LíderComErros, error) {
+	if l.falha {
+		return nil, erroInesperado
 	}
 
-	return nil
+	if l.errosEncontrados {
+		return l, nil
+	}
+
+	return nil, nil
 }
 
 func (l *LíderComErros) validarCamposObrigatórios() *LíderComErros {
@@ -85,7 +95,7 @@ func (l *LíderComErros) validarSintaxe() *LíderComErros {
 	return l
 }
 
-func (l *LíderComErros) validarPolíticas() *LíderComErros {
+func (l *LíderComErros) validarPolíticas(tx *dao.Tx) *LíderComErros {
 	if l.Nome != "" && len(strings.Fields(l.Nome)) < 2 {
 		l.errosEncontrados = true
 		l.MsgNome = "Por favor, informe seu nome completo"
@@ -96,22 +106,11 @@ func (l *LíderComErros) validarPolíticas() *LíderComErros {
 	}
 
 	if l.Id == 0 {
-		tx, err := dao.DB.Begin()
-		defer tx.Commit()
-		if err != nil {
-			log.Println(err)
-			return l
-		}
-
 		líderDAO := dao.NewLiderDAO(tx)
 
 		mesmoEmail, err := líderDAO.FindByEmail(l.Email)
-		if err != nil {
-			líderDAO.Rollback()
-			log.Println(err)
-		}
-		if err := líderDAO.Commit(); err != nil {
-			líderDAO.Rollback()
+		if err != nil && err != sql.ErrNoRows {
+			l.falha = true
 			log.Println(err)
 		}
 

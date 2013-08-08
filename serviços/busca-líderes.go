@@ -28,7 +28,7 @@ func (b BuscaLíderes) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	líderDAO := dao.NewLiderDAO(tx)
+	líderDAO := dao.NewLiderDAO(&dao.Tx{tx})
 	líderes, err := líderDAO.FindAllThatMatches(trecho)
 	if err != nil {
 		líderDAO.Rollback()

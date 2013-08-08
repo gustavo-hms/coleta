@@ -10,7 +10,9 @@ import (
 
 var DB *sql.DB
 
-type Tx sql.Tx
+type Tx struct {
+	*sql.Tx
+}
 
 func Conn() (err error) {
 	usuário := config.Dados.Banco.Usuário
