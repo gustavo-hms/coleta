@@ -13,11 +13,11 @@ var (
 )
 
 type EsquinaDAO struct {
-	*sql.Tx
+	*Tx
 	fields string
 }
 
-func NewEsquinaDAO(tx *sql.Tx) *EsquinaDAO {
+func NewEsquinaDAO(tx *Tx) *EsquinaDAO {
 	return &EsquinaDAO{
 		Tx:     tx,
 		fields: "id, zona_id, cruzamento, localizacao, prioridade",

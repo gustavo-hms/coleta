@@ -10,6 +10,8 @@ import (
 
 var DB *sql.DB
 
+type Tx sql.Tx
+
 func Conn() (err error) {
 	usuário := config.Dados.Banco.Usuário
 	host := config.Dados.Banco.Host

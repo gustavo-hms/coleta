@@ -9,11 +9,11 @@ import (
 )
 
 type LiderDAO struct {
-	*sql.Tx
+	*Tx
 	fields string
 }
 
-func NewLiderDAO(tx *sql.Tx) *LiderDAO {
+func NewLiderDAO(tx *Tx) *LiderDAO {
 	return &LiderDAO{
 		Tx: tx,
 		fields: "id, zona_id, esquina_id, cadastrado_em, nome_completo, " +

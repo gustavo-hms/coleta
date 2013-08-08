@@ -9,11 +9,11 @@ import (
 )
 
 type VoluntarioDAO struct {
-	*sql.Tx
+	*Tx
 	fields string
 }
 
-func NewVoluntarioDAO(tx *sql.Tx) *VoluntarioDAO {
+func NewVoluntarioDAO(tx *Tx) *VoluntarioDAO {
 	return &VoluntarioDAO{
 		Tx: tx,
 		fields: "id, zona_id, lider_id, esquina_id, nome_completo, telefone_residencial, " +
