@@ -27,7 +27,7 @@ func (e Esquinas) get(
 	tx *dao.Tx,
 	esquina *validação.EsquinaComErros,
 ) error {
-	zonaDAO := dao.NewZonaDAO(tx.Tx)
+	zonaDAO := dao.NewZonaDAO(tx)
 	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
 	if err != nil {
 		log.Println(err)

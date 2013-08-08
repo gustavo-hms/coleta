@@ -25,7 +25,7 @@ func idDoVoluntário(endereço *url.URL) string {
 	return endereço.Path[idx+1:]
 }
 
-func (l AdmVoluntário) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
+func (v AdmVoluntário) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	stringDoId := idDoVoluntário(r.URL)
 	id, err := strconv.Atoi(stringDoId)
 	if err != nil {
@@ -51,10 +51,10 @@ func (l AdmVoluntário) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) 
 		voluntário.Líder = líder
 	}
 
-	return l.get(w, r, tx, &validação.VoluntárioComErros{Voluntário: *voluntário})
+	return v.get(w, r, tx, &validação.VoluntárioComErros{Voluntário: *voluntário})
 }
 
-func (l AdmVoluntário) get(
+func (v AdmVoluntário) get(
 	w http.ResponseWriter,
 	r *http.Request,
 	tx *dao.Tx,
@@ -75,7 +75,7 @@ func (l AdmVoluntário) get(
 	return nil
 }
 
-func (l AdmVoluntário) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
+func (v AdmVoluntário) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
@@ -96,7 +96,7 @@ func (l AdmVoluntário) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx)
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		return l.get(w, r, tx, erros)
+		return v.get(w, r, tx, erros)
 	}
 
 	voluntárioDAO := dao.NewVoluntarioDAO(tx)

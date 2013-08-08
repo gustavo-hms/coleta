@@ -11,68 +11,53 @@ import (
 )
 
 func init() {
-	registrarSeguro("/adm/zonas", AdmZonas{})
+	registrarSeguroComTransação("/adm/zonas", AdmZonas{})
 }
 
 type AdmZonas struct{}
 
-func (a AdmZonas) Get(w http.ResponseWriter, r *http.Request) {
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
+func (a AdmZonas) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	zonaDAO := dao.NewZonaDAO(tx)
 	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
 	if err != nil {
-		zonaDAO.Rollback()
 		log.Println(err)
-		return
+		return err
 	}
-
-	zonaDAO.Commit()
 
 	t, err := template.New("adm-zonas").
 		ParseFiles(config.Dados.DiretórioDasPáginas + "/adm-zonas.html")
 	if err != nil {
 		log.Println(err)
-		return
+		return err
 	}
 
 	err = t.ExecuteTemplate(w, "adm-zonas.html", zonas)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
+
+	return nil
 }
 
-func (a AdmZonas) Post(w http.ResponseWriter, r *http.Request) {
+func (a AdmZonas) Post(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	if len(r.Form["bloqueadas"]) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, "Erro ao ler formulário")
-		return
-	}
-
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		return
+		return nil
 	}
 
 	zonaDAO := dao.NewZonaDAO(tx)
 	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
 	if err != nil {
-		zonaDAO.Rollback()
 		log.Println(err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	for _, zona := range zonas {
@@ -84,22 +69,14 @@ func (a AdmZonas) Post(w http.ResponseWriter, r *http.Request) {
 
 		err = zonaDAO.Save(zona)
 		if err != nil && err != dao.ErrRowsNotAffected {
-			zonaDAO.Rollback()
 			log.Println(err)
-			erroInterno(w, r)
-			return
+			return err
 		}
 	}
 
-	err = zonaDAO.Commit()
-	if err != nil {
-		log.Println(err)
-		tx.Rollback()
-		erroInterno(w, r)
-		return
-	}
-
 	http.Redirect(w, r, ".", http.StatusSeeOther)
+
+	return nil
 }
 
 func encontrada(id int, bloqueadas []string) bool {

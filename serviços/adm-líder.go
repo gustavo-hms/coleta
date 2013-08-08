@@ -117,7 +117,7 @@ func exibiçãoDoLíderAdm(líder *validação.LíderComErros, tx *dao.Tx, pági
 		return nil
 	}
 
-	zonaDAO := dao.NewZonaDAO(tx.Tx)
+	zonaDAO := dao.NewZonaDAO(tx)
 	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
 	if err != nil {
 		log.Println("Erro ao buscar zonas:", err)

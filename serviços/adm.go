@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	registrarSeguro("/adm", Adm{})
+	registrarSeguroComTransação("/adm", Adm{})
 	registrar("/adm", Redirecionamento{})
 	registrar("/adm/", Redirecionamento{})
 }
@@ -22,32 +22,26 @@ func (_ Redirecionamento) Get(w http.ResponseWriter, r *http.Request) {
 
 type Adm struct{}
 
-func (a Adm) Get(w http.ResponseWriter, r *http.Request) {
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println("Início da transação:", err)
-		return
-	}
-
+func (a Adm) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
 	zonaDAO := dao.NewZonaDAO(tx)
 	zonas, err := zonaDAO.FindAllWithOptions(dao.OpçãoNãoFiltrarBloqueadas)
 	if err != nil {
-		zonaDAO.Rollback()
 		log.Println(err)
-		return
+		return err
 	}
-
-	zonaDAO.Commit()
 
 	t, err := template.New("adm").
 		ParseFiles(config.Dados.DiretórioDasPáginas + "/adm.html")
 	if err != nil {
 		log.Println(err)
-		return
+		return err
 	}
 
 	err = t.ExecuteTemplate(w, "adm.html", zonas)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
+
+	return nil
 }

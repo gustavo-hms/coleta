@@ -2,7 +2,6 @@ package dao
 
 import (
 	"coleta/modelos"
-	"database/sql"
 	"fmt"
 	"log"
 )
@@ -13,11 +12,11 @@ const (
 )
 
 type ZonaDAO struct {
-	*sql.Tx
+	*Tx
 	fields string
 }
 
-func NewZonaDAO(tx *sql.Tx) *ZonaDAO {
+func NewZonaDAO(tx *Tx) *ZonaDAO {
 	return &ZonaDAO{
 		Tx:     tx,
 		fields: "id, nome, bloqueada",
@@ -85,7 +84,7 @@ func (dao *ZonaDAO) BuscaCompleta(id string) (*modelos.Zona, error) {
 		return nil, err
 	}
 
-	esquinaDAO := NewEsquinaDAO(&Tx{dao.Tx})
+	esquinaDAO := NewEsquinaDAO(dao.Tx)
 	zona.Esquinas, err = esquinaDAO.BuscaCompletaPorZona(id)
 	if err != nil {
 		log.Println(err)

@@ -9,32 +9,17 @@ import (
 )
 
 func init() {
-	registrarSeguro("/adm/lideres", new(AdmLíderes))
+	registrarSeguroComTransação("/adm/lideres", new(AdmLíderes))
 }
 
 type AdmLíderes struct{}
 
-func (e *AdmLíderes) Get(w http.ResponseWriter, r *http.Request) {
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	líderDAO := dao.NewLiderDAO(&dao.Tx{tx})
+func (e *AdmLíderes) Get(w http.ResponseWriter, r *http.Request, tx *dao.Tx) error {
+	líderDAO := dao.NewLiderDAO(tx)
 	líderes, err := líderDAO.Todos()
 	if err != nil {
-		líderDAO.Rollback()
 		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	if err := líderDAO.Commit(); err != nil {
-		líderDAO.Rollback()
-		log.Println(err)
-		erroInterno(w, r)
-		return
+		return err
 	}
 
 	t, err := template.New("líderes").ParseFiles(
@@ -43,11 +28,14 @@ func (e *AdmLíderes) Get(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Println(err)
-		return
+		return err
 	}
 
 	err = t.ExecuteTemplate(w, "adm-líderes.html", líderes)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
+
+	return nil
 }
