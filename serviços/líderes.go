@@ -5,6 +5,7 @@ import (
 	"coleta/dao"
 	"coleta/modelos"
 	"coleta/modelos/validação"
+	"database/sql"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -13,36 +14,42 @@ import (
 )
 
 func init() {
-	registrar("/lideres", Líderes{})
+	registrarComTransação("/lideres", Líderes{})
 }
 
 type Líderes struct{}
 
-func (l Líderes) Get(w http.ResponseWriter, r *http.Request) {
+func (l Líderes) Get(w http.ResponseWriter, r *http.Request, tx *sql.Tx) error {
 	líder := modelos.NovoLíder()
-	l.get(w, r, validação.NovoLíderComErros(líder))
+	return l.get(w, r, tx, validação.NovoLíderComErros(líder))
 }
 
 func (l Líderes) get(
 	w http.ResponseWriter,
 	r *http.Request,
+	tx *sql.Tx,
 	líder *validação.LíderComErros,
-) {
-	t := exibiçãoDoLíder(líder, "líderes.html")
-	if t != nil {
-		err := t.ExecuteTemplate(w, "líderes.html", líder)
-		if err != nil {
-			log.Println("Aqui:", err)
-		}
+) error {
+	t := exibiçãoDoLíder(líder, tx, "líderes.html")
+
+	if t == nil {
+		return erroInesperado
 	}
+
+	err := t.ExecuteTemplate(w, "líderes.html", líder)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
 }
 
-func (l Líderes) Post(w http.ResponseWriter, r *http.Request) {
+func (l Líderes) Post(w http.ResponseWriter, r *http.Request, tx *sql.Tx) error {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Erro ao analisar formulário:", err)
-		erroInterno(w, r)
-		return
+		return erroInesperado
 	}
 
 	líder := modelos.NovoLíder()
@@ -51,52 +58,31 @@ func (l Líderes) Post(w http.ResponseWriter, r *http.Request) {
 
 	if erros != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		l.get(w, r, erros)
-		return
-	}
-
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println(err)
-		erroInterno(w, r)
-		return
+		l.get(w, r, tx, erros)
+		return erroDeValidação
 	}
 
 	líderDAO := dao.NewLiderDAO(tx)
 	if err := líderDAO.Save(líder); err != nil {
-		líderDAO.Rollback()
-		log.Println("Erro ao gravar líder:", err)
-		erroInterno(w, r)
-		return
-	}
-	if err := líderDAO.Commit(); err != nil {
-		líderDAO.Rollback()
-		log.Println("Erro no commit:", err)
-		erroInterno(w, r)
-		return
+		log.Println(err)
+		return err
 	}
 
 	página, err := ioutil.ReadFile(config.Dados.DiretórioDasPáginas + "/cadastro-sucesso.html")
 	if err != nil {
 		log.Println("Erro ao abrir o arquivo cadastro-sucesso.html:", err)
-		erroInterno(w, r)
-		return
+		return erroInesperado
 	}
 
 	fmt.Fprintf(w, "%s", página)
+
+	return nil
 }
 
-func exibiçãoDoLíder(líder *validação.LíderComErros, página string) *template.Template {
-	tx, err := dao.DB.Begin()
-	if err != nil {
-		log.Println("Erro ao iniciar transação:", err)
-		return nil
-	}
-
+func exibiçãoDoLíder(líder *validação.LíderComErros, tx *sql.Tx, página string) *template.Template {
 	esquinaDAO := dao.NewEsquinaDAO(tx)
 	esquinas, err := esquinaDAO.BuscarPorZona(fmt.Sprintf("%d", líder.Zona.Id))
 	if err != nil {
-		esquinaDAO.Rollback()
 		log.Println("Erro ao buscar esquinas:", err)
 		return nil
 	}
@@ -104,12 +90,9 @@ func exibiçãoDoLíder(líder *validação.LíderComErros, página string) *tem
 	zonaDAO := dao.NewZonaDAO(tx)
 	zonas, err := zonaDAO.FindAll()
 	if err != nil {
-		zonaDAO.Rollback()
 		log.Println("Erro ao buscar zonas:", err)
 		return nil
 	}
-
-	zonaDAO.Commit()
 
 	funcMap := template.FuncMap{
 		"esquinas": func() []esquinaComSeleção {
@@ -163,7 +146,7 @@ func exibiçãoDoLíder(líder *validação.LíderComErros, página string) *tem
 	t, err := template.New("esquinas").Funcs(funcMap).
 		ParseFiles(config.Dados.DiretórioDasPáginas + "/" + página)
 	if err != nil {
-		log.Println("Ali:", err)
+		log.Println(err)
 		return nil
 	}
 

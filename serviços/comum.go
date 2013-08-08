@@ -2,14 +2,20 @@ package serviços
 
 import (
 	"coleta/modelos"
+	"errors"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"net/http"
 )
 
-var sessões = sessions.NewCookieStore(
-	securecookie.GenerateRandomKey(32),
-	securecookie.GenerateRandomKey(32),
+var (
+	erroInesperado  = errors.New("Erro inesperado")
+	erroDeValidação = errors.New("Erro de validação")
+
+	sessões = sessions.NewCookieStore(
+		securecookie.GenerateRandomKey(32),
+		securecookie.GenerateRandomKey(32),
+	)
 )
 
 func init() {
