@@ -388,6 +388,14 @@ func (dao *VoluntarioDAO) Todos() (voluntários []modelos.Voluntário, err error
 		voluntários = append(voluntários, voluntário)
 	}
 
+	for i, _ := range voluntários {
+		turnos, erro := dao.loadTurnos(voluntários[i].Id)
+		if erro != nil {
+			return nil, erro
+		}
+		voluntários[i].Turnos = turnos
+	}
+
 	return voluntários, nil
 }
 

@@ -256,6 +256,14 @@ func (dao *LiderDAO) Todos() (líderes []modelos.Líder, err error) {
 		líderes = append(líderes, *lider)
 	}
 
+	for i, _ := range líderes {
+		turnos, erro := dao.loadTurnos(líderes[i].Id)
+		if erro != nil {
+			return nil, erro
+		}
+		líderes[i].Turnos = turnos
+	}
+
 	return líderes, nil
 }
 

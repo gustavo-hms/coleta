@@ -46,6 +46,10 @@
 		<td>{{.Idade}}</td>
 	</tr>
 	<tr>
+		<td class="nome-do-campo">Turnos</td>
+		<td>| {{range .Turnos}}{{.Id}} | {{end}}</td>
+	</tr>
+	<tr>
 		<td class="nome-do-campo">Como soube da Coleta</td>
 		<td>{{.ComoSoube}}</td>
 	</tr>

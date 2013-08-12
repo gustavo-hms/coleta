@@ -28,6 +28,10 @@
 		<td class="nome-do-campo">E-mail</td>
 		<td>{{.Email}}</td>
 	</tr>
+	<tr>
+		<td class="nome-do-campo">Turnos</td>
+		<td>| {{range .Turnos}}{{.Id}} | {{end}}</td>
+	</tr>
 	{{end}}
 	<tr>
 		<td class="nome-do-campo">Cadastrado em</td>
