@@ -33,9 +33,10 @@
 									Turno {{$id}}
 								</a>
 							</h3>
-								{{len $participantes.Líderes}} 
-								líder{{if plural (len $participantes.Líderes)}}es{{end}}
-								e {{len $participantes.Voluntários}} 
+								{{if $participantes.Líderes}}
+								{{(index ($participantes.Líderes) 0).Nome}} e
+								{{end}}
+								{{len $participantes.Voluntários}} 
 								voluntário{{if plural (len $participantes.Voluntários)}}s{{end}}
 							<br/>
 							<br/>
