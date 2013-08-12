@@ -123,6 +123,7 @@ func exibiçãoDoLíder(líder *validação.LíderComErros, tx *dao.Tx, página 
 
 		"turnos": func() []turnoComSeleção {
 			turnos := modelos.Turnos()
+			turnos = turnos[:2]
 			seleção := make([]turnoComSeleção, 0, len(turnos))
 			for _, turno := range turnos {
 				s := turnoComSeleção{Turno: turno}

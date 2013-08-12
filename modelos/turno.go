@@ -58,9 +58,9 @@ func (t Turno) String() string {
 	var diaDaSemana string
 	switch t.Início.Weekday() {
 	case time.Friday:
-		diaDaSemana = "sexta-feira"
+		diaDaSemana = "SEXTA-FEIRA"
 	default:
-		diaDaSemana = "sábado"
+		diaDaSemana = "SÁBADO"
 	}
 	return t.Início.Format("2/1/2006, das 15h04 às ") + t.Fim.Format("15h04, ") + diaDaSemana
 }
