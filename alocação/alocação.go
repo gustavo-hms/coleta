@@ -4,7 +4,6 @@ import (
 	"coleta/config"
 	"coleta/dao"
 	"coleta/modelos"
-	"database/sql"
 	"fmt"
 	"log"
 	"os"
@@ -25,15 +24,10 @@ func init() {
 	log.SetOutput(f)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	if len(os.Args) != 2 {
-		fmt.Println(uso())
-		os.Exit(1)
-	}
-
-	if err := config.Ler(os.Args[1]); err != nil {
-		fmt.Printf("Não foi possível ler o arquivo de configuração %s. Erro: %s", os.Args[1], err)
-		os.Exit(1)
-	}
+	config.Dados.Banco.Base = "base"
+	config.Dados.Banco.Usuário = "usuário"
+	config.Dados.Banco.Host = "127.0.0.1"
+	config.Dados.Banco.Senha = ""
 
 	if err := dao.Conn(); err != nil {
 		fmt.Println("Não foi possível conectar-se ao banco. Erro:", err)
@@ -46,11 +40,13 @@ func uso() string {
 }
 
 func main() {
-	tx, err := dao.DB.Begin()
+	transação, err := dao.DB.Begin()
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
+
+	tx := &dao.Tx{transação}
 
 	líderes := carregarLíderes(tx)
 	for _, líder := range líderes {
@@ -69,11 +65,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	tx, err = dao.DB.Begin()
+	transação, err = dao.DB.Begin()
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
+
+	tx = &dao.Tx{transação}
 
 	voluntários := carregarVoluntários(tx)
 	for _, voluntário := range voluntários {
@@ -93,7 +91,7 @@ func main() {
 	}
 }
 
-func carregarLíderes(tx *sql.Tx) []modelos.Líder {
+func carregarLíderes(tx *dao.Tx) []modelos.Líder {
 	líderDAO := dao.NewLiderDAO(tx)
 	líderes, err := líderDAO.BuscaPorEsquina(0)
 	if err != nil {
@@ -103,7 +101,7 @@ func carregarLíderes(tx *sql.Tx) []modelos.Líder {
 	return líderes
 }
 
-func esquinaLivreParaLíder(tx *sql.Tx, líder modelos.Líder) *modelos.Esquina {
+func esquinaLivreParaLíder(tx *dao.Tx, líder modelos.Líder) *modelos.Esquina {
 	esquinaDAO := dao.NewEsquinaDAO(tx)
 	id := fmt.Sprint(líder.Zona.Id)
 
@@ -127,7 +125,7 @@ func esquinaLivreParaLíder(tx *sql.Tx, líder modelos.Líder) *modelos.Esquina 
 	return nil
 }
 
-func gravarLíder(tx *sql.Tx, líder modelos.Líder) {
+func gravarLíder(tx *dao.Tx, líder modelos.Líder) {
 	líderDAO := dao.NewLiderDAO(tx)
 	err := líderDAO.Save(&líder)
 	if err != nil {
@@ -135,7 +133,7 @@ func gravarLíder(tx *sql.Tx, líder modelos.Líder) {
 	}
 }
 
-func carregarVoluntários(tx *sql.Tx) []modelos.Voluntário {
+func carregarVoluntários(tx *dao.Tx) []modelos.Voluntário {
 	voluntárioDAO := dao.NewVoluntarioDAO(tx)
 	voluntários, err := voluntárioDAO.BuscaPorEsquina(0)
 	if err != nil {
@@ -145,7 +143,7 @@ func carregarVoluntários(tx *sql.Tx) []modelos.Voluntário {
 	return voluntários
 }
 
-func esquinaLivreParaVoluntário(tx *sql.Tx, voluntário modelos.Voluntário) *modelos.Esquina {
+func esquinaLivreParaVoluntário(tx *dao.Tx, voluntário modelos.Voluntário) *modelos.Esquina {
 	zona := voluntário.Zona
 
 	if voluntário.Líder.Id != 0 {
@@ -210,7 +208,7 @@ func esquinaLivreParaVoluntário(tx *sql.Tx, voluntário modelos.Voluntário) *m
 	return nil
 }
 
-func gravarVoluntário(tx *sql.Tx, voluntário modelos.Voluntário) {
+func gravarVoluntário(tx *dao.Tx, voluntário modelos.Voluntário) {
 	voluntárioDAO := dao.NewVoluntarioDAO(tx)
 	err := voluntárioDAO.Save(&voluntário)
 	if err != nil {
