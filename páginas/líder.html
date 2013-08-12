@@ -28,9 +28,22 @@
 		<td class="nome-do-campo">E-mail</td>
 		<td>{{.Email}}</td>
 	</tr>
+	{{end}}
 	<tr>
 		<td class="nome-do-campo">Turnos</td>
 		<td>| {{range .Turnos}}{{.Id}} | {{end}}</td>
+	</tr>
+	{{if .Zona.Id}}
+	<tr>
+		<td class="nome-do-campo">Zona</td>
+		<td>{{.Zona.Nome}}</td>
+	</tr>
+	{{end}}
+
+	{{if .Esquina.Id}}
+	<tr>
+		<td class="nome-do-campo">Esquina</td>
+		<td>{{.Esquina.Cruzamento}}</td>
 	</tr>
 	{{end}}
 	<tr>

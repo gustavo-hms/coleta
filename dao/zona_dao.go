@@ -126,6 +126,20 @@ func (dao *ZonaDAO) FindAllWithOptions(opções int) (zonas []*modelos.Zona, err
 	return zonas, nil
 }
 
+func (dao *ZonaDAO) FindById(id int) (*modelos.Zona, error) {
+	query := fmt.Sprintf("SELECT %s FROM zona WHERE id = ?", dao.fields)
+	row := dao.QueryRow(query, id)
+
+	zona := new(modelos.Zona)
+	err := row.Scan(&zona.Id, &zona.Nome, &zona.Bloqueada)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return zona, nil
+}
+
 func (dao *ZonaDAO) Delete(id int) error {
 	query := "DELETE FROM zona WHERE id = ?"
 	res, err := dao.Exec(query, id)

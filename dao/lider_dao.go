@@ -220,7 +220,7 @@ func (dao *LiderDAO) FindAllThatMatches(text string) (líderes []*modelos.Líder
 }
 
 func (dao *LiderDAO) Todos() (líderes []modelos.Líder, err error) {
-	query := fmt.Sprintf("SELECT %s FROM lider", dao.fields)
+	query := fmt.Sprintf("SELECT %s FROM lider ORDER BY id DESC", dao.fields)
 	rows, err := dao.Query(query)
 	if err != nil {
 		return nil, err
@@ -256,12 +256,32 @@ func (dao *LiderDAO) Todos() (líderes []modelos.Líder, err error) {
 		líderes = append(líderes, *lider)
 	}
 
+	esquinaDAO := NewEsquinaDAO(dao.Tx)
+	zonaDAO := NewZonaDAO(dao.Tx)
 	for i, _ := range líderes {
 		turnos, erro := dao.loadTurnos(líderes[i].Id)
 		if erro != nil {
 			return nil, erro
 		}
 		líderes[i].Turnos = turnos
+
+		if líderes[i].Esquina.Id != 0 {
+			líderes[i].Esquina, erro =
+				esquinaDAO.FindById(líderes[i].Esquina.Id)
+
+			if erro != nil {
+				return nil, erro
+			}
+		}
+
+		if líderes[i].Zona.Id != 0 {
+			líderes[i].Zona, erro =
+				zonaDAO.FindById(líderes[i].Zona.Id)
+
+			if erro != nil {
+				return nil, erro
+			}
+		}
 	}
 
 	return líderes, nil
