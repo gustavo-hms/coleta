@@ -344,7 +344,7 @@ func (dao *VoluntarioDAO) FindAllThatMatches(text string) (voluntários []modelo
 }
 
 func (dao *VoluntarioDAO) Todos() (voluntários []modelos.Voluntário, err error) {
-	query := fmt.Sprintf("SELECT %s FROM voluntario", dao.fields)
+	query := fmt.Sprintf("SELECT %s FROM voluntario ORDER BY id DESC", dao.fields)
 	rows, err := dao.Query(query)
 	if err != nil {
 		log.Println(err)
@@ -388,12 +388,41 @@ func (dao *VoluntarioDAO) Todos() (voluntários []modelos.Voluntário, err error
 		voluntários = append(voluntários, voluntário)
 	}
 
+	esquinaDAO := NewEsquinaDAO(dao.Tx)
+	líderDAO := NewLiderDAO(dao.Tx)
+	zonaDAO := NewZonaDAO(dao.Tx)
 	for i, _ := range voluntários {
 		turnos, erro := dao.loadTurnos(voluntários[i].Id)
 		if erro != nil {
 			return nil, erro
 		}
 		voluntários[i].Turnos = turnos
+
+		if voluntários[i].Esquina.Id != 0 {
+			voluntários[i].Esquina, erro =
+				esquinaDAO.FindById(voluntários[i].Esquina.Id)
+
+			if erro != nil {
+				return nil, erro
+			}
+		}
+
+		if voluntários[i].Líder.Id != 0 {
+			voluntários[i].Líder, erro =
+				líderDAO.FindById(voluntários[i].Líder.Id)
+
+			if erro != nil {
+				return nil, erro
+			}
+		} else if voluntários[i].Zona.Id != 0 {
+			voluntários[i].Zona, erro =
+				zonaDAO.FindById(voluntários[i].Zona.Id)
+
+			if erro != nil {
+				return nil, erro
+			}
+		}
+
 	}
 
 	return voluntários, nil

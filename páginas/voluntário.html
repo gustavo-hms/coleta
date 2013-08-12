@@ -49,6 +49,24 @@
 		<td class="nome-do-campo">Turnos</td>
 		<td>| {{range .Turnos}}{{.Id}} | {{end}}</td>
 	</tr>
+	{{if .Líder.Id}}
+	<tr>
+		<td class="nome-do-campo">Líder</td>
+		<td>{{.Líder.Nome}}</td>
+	</tr>
+	{{else}}
+	<tr>
+		<td class="nome-do-campo">Zona</td>
+		<td>{{.Zona.Nome}}</td>
+	</tr>
+	{{end}}
+
+	{{if .Esquina.Id}}
+	<tr>
+		<td class="nome-do-campo">Esquina</td>
+		<td>{{.Esquina.Cruzamento}}</td>
+	</tr>
+	{{end}}
 	<tr>
 		<td class="nome-do-campo">Como soube da Coleta</td>
 		<td>{{.ComoSoube}}</td>
